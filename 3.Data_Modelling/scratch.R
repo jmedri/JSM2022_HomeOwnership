@@ -68,3 +68,38 @@ initialize("1", FALSE)
 do_all_model_analyses()
 initialize("1", TRUE)
 do_all_model_analyses()
+
+initialize("1", FALSE)
+xxx <- load_model("1") |> brms::posterior_epred(ndraws = 100) |> colMeans()
+xxx <- xxx / MODEL_DATA$size
+
+initialize("4", FALSE)
+yyy <- load_model("1") |> brms::posterior_epred(ndraws = 100) |> colMeans()
+yyy <- yyy / MODEL_DATA$size
+
+cbind(xxx, yyy)[1:10,]
+
+plot(xxx, yyy)
+
+cor(xxx, yyy)
+
+sqrt(sum((xxx - yyy)^2) / length(xxx))
+
+sss$fixed
+
+for (prior_type in c("1", "2", "3", "4")) {
+  initialize(prior_type, FALSE)
+  # compute_model("4")
+  # do_all_model_analyses()
+  make_model_coef_table()
+  make_mean_vs_model_table()
+  make_model_effect_county("New York/New York County")
+  make_model_effect_county("Florida/Hillsborough County")
+  initialize(prior_type, TRUE)
+  make_model_coef_table()
+  make_mean_vs_model_table()
+  make_model_effect_county("New York/New York County")
+  make_model_effect_county("Florida/Hillsborough County")
+  # compute_model("4")
+  # do_all_model_analyses()
+}

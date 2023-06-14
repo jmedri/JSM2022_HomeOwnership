@@ -362,7 +362,7 @@ make_model_loo_table <- function() {
 
       x |>
         dplyr::mutate(` ` = ifelse(LOOIC <= min_looic + min_se, "†", "")) |>
-        dplyr::mutate(` ` = stringr::str_c(` `, ifelse(Model == "4", "*", "")))
+        dplyr::mutate(` ` = stringr::str_c(` `, ifelse(Model == FINAL_MODEL, "*", "")))
     })() |>
     (function(x) {
       dplyr::bind_cols(
@@ -407,7 +407,7 @@ plot_model_loo_figure <- function() {
 
   loo_data <- loo_data |>
     dplyr::mutate(annotation = ifelse(LOOIC <= min_looic + min_se, "†", "")) |>
-    dplyr::mutate(annotation = stringr::str_c(annotation, ifelse(Model == "4", "*", "")))
+    dplyr::mutate(annotation = stringr::str_c(annotation, ifelse(Model == FINAL_MODEL, "*", "")))
   
   span_x <- (
     max(loo_data[["LOOIC"]] + loo_data[["SE"]]) -
@@ -740,6 +740,26 @@ plot_prediction <- function(model,
   ggplot_out
 }
 
+make_outlier_tables <- function() {
+  CENSUS_DATA |>
+    dplyr::filter(
+      race == "Hispanic",
+      (0.3 <= hom.own) & (hom.own <= 0.4)
+    ) |>
+    dplyr::arrange(dplyr::desc(size)) |>
+    dplyr::select(county, hom.own, pop.share, pop.share.ratio, size) |>
+    save_csv(file.path(OUTPUT_DIR, "outliers", "hispanic_homown_0.3_0.4.csv"))
+
+  CENSUS_DATA |>
+    dplyr::filter(
+      race == "Black",
+      (0.55 <= hom.own) & (hom.own <= 0.7)
+    ) |>
+    dplyr::arrange(dplyr::desc(size)) |>
+    dplyr::select(county, hom.own, pop.share, pop.share.ratio, size) |>
+    save_csv(file.path(OUTPUT_DIR, "outliers", "black_homown_0.55_0.7.csv"))
+}
+
 make_model_coef_table <- function() {
   purrr::pwalk(
     tidyr::expand_grid(
@@ -773,6 +793,7 @@ make_model_coef_table <- function() {
               name |>
                 stringr::str_replace_all("phi_", "") |>
                 stringr::str_replace_all("^race", "") |>
+                stringr::str_replace_all("^state", "") |>
                 replace_all_pairs(
                   COLUMNS_PAPER_OLD,
                   COLUMNS_PAPER_NEW
@@ -834,7 +855,8 @@ make_model_coef_table <- function() {
         data_draws |>
           dplyr::group_by(name, name_base, name_race, component) |>
           dplyr::summarize(
-            Estimate = mean(value),
+            Mean = mean(value),
+            SD = sd(value),
             `2.5%` = quantile(value, 0.025),
             `97.5%` = quantile(value, 0.975),
             .groups = "drop"
@@ -853,12 +875,16 @@ make_model_coef_table <- function() {
           ) |>
           dplyr::arrange(component, name_base, name_race) |>
           dplyr::mutate(component = stringr::str_to_title(component)) |>
-          dplyr::select(
+          dplyr::transmute(
             Component = component,
-            `Variable Name` = name,
-            Estimate,
+            Name = name,
+            Mean,
+            SD,
             `2.5%`,
-            `97.5%`
+            `97.5%`,
+            `Mean*` = exp(Mean),
+            `2.5%*` = exp(`2.5%`),
+            `97.5%*` = exp(`97.5%`)
           )
       )
 
@@ -879,19 +905,32 @@ make_model_coef_table <- function() {
       data_coef_tex <- (
         data_coef |>
           dplyr::mutate(
-            `Variable Name` = stringr::str_replace_all(
-              `Variable Name`,
+            Component = forcats::fct_relabel(
+              Component,
+              function(x) {
+                c(
+                  Response = "$\\mathrm{logit}(\\theta)$",
+                  Precision = "$\\log(\\phi)$"
+                )[x]
+              }
+            ),
+            Name = stringr::str_replace_all(
+              Name,
               "\\w+",
               "$\\\\mathit{\\0}$"
             ),
-            Estimate = sprintf("$%.2f$", Estimate),
+            Mean = sprintf("$%.2f$", Mean),
+            SD = sprintf("$%.2f$", SD),
             `2.5%` = sprintf("$%.2f$", `2.5%`),
             `97.5%` = sprintf("$%.2f$", `97.5%`),
+            `Mean*` = sprintf("$%.2f$", `Mean*`),
+            `2.5%*` = sprintf("$%.2f$", `2.5%*`),
+            `97.5%*` = sprintf("$%.2f$", `97.5%*`)
           )
       )
 
       data_coef_tex |>
-        xtable::xtable(align = "rllrrr") |>
+        xtable::xtable(align = "rll|rrrr|rrr") |>
         save_tex_formatted(
           file.path(
             OUTPUT_DIR,
@@ -903,7 +942,7 @@ make_model_coef_table <- function() {
               ".tex"
             )
           ),
-          hline_after_extra = max(which(data_coef_tex[["Component"]] == "Response")),
+          hline_after_extra = max(which(as.integer(data_coef_tex[["Component"]]) == 2)),
           sanitize.text.function = base::I,
           sanitize.colnames.function = xtable::sanitize
         )
@@ -956,7 +995,7 @@ make_model_coef_table <- function() {
             ) |>
             dplyr::arrange(name_base, name_race) |>
             dplyr::select(
-              `Variable Name` = name,
+              Name = name,
               Unit,
               Effect,
               `2.5%`,
@@ -979,8 +1018,8 @@ make_model_coef_table <- function() {
 
         data_effect |>
           dplyr::mutate(
-            `Variable Name` = stringr::str_replace_all(
-              `Variable Name`,
+            Name = stringr::str_replace_all(
+              Name,
               "\\w+",
               "$\\\\mathit{\\0}$"
             ),
@@ -1013,26 +1052,6 @@ make_model_coef_table <- function() {
   )
 }
 
-make_outlier_tables <- function() {
-  CENSUS_DATA |>
-    dplyr::filter(
-      race == "Hispanic",
-      (0.3 <= hom.own) & (hom.own <= 0.4)
-    ) |>
-    dplyr::arrange(dplyr::desc(size)) |>
-    dplyr::select(county, hom.own, pop.share, pop.share.ratio, size) |>
-    save_csv(file.path(OUTPUT_DIR, "outliers", "hispanic_homown_0.3_0.4.csv"))
-
-  CENSUS_DATA |>
-    dplyr::filter(
-      race == "Black",
-      (0.55 <= hom.own) & (hom.own <= 0.7)
-    ) |>
-    dplyr::arrange(dplyr::desc(size)) |>
-    dplyr::select(county, hom.own, pop.share, pop.share.ratio, size) |>
-    save_csv(file.path(OUTPUT_DIR, "outliers", "black_homown_0.55_0.7.csv"))
-}
-
 make_mean_vs_model_table <- function() {
   MODEL_NAMES |>
   purrr::walk(
@@ -1042,9 +1061,9 @@ make_mean_vs_model_table <- function() {
           file.path(OUTPUT_DIR, "model_effect",
                     paste0("model_effect_", model_name, ".csv"))
         ) |>
-          dplyr::filter(`Variable Name` %in% RACES_MODEL) |>
+          dplyr::filter(Name %in% RACES_MODEL) |>
           dplyr::select(
-            race = `Variable Name`,
+            race = Name,
             hom.own_fitted = Effect
           )
       )
@@ -1363,7 +1382,7 @@ do_all_model_analyses <- function() {
   #' @description Do all model analyses once the models have been computed.
 
   make_model_summaries()
-  if (!SAMPLE_PRIOR) {
+  if ((PRIOR_TYPE == FINAL_PRIOR_TYPE) && !SAMPLE_PRIOR) {
     make_model_loo_table()
     plot_model_loo_figure()
   }
@@ -1371,8 +1390,8 @@ do_all_model_analyses <- function() {
   plot_post_pred_stat_all()
   plot_var_hist()
   do_missing_value_analysis()
-  make_model_coef_table()
   make_outlier_tables()
+  make_model_coef_table()
   make_mean_vs_model_table()
   make_model_effect_county("New York/New York County")
   make_model_effect_county("Florida/Hillsborough County")

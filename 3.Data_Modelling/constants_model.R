@@ -182,9 +182,10 @@ MODEL_INFO <- list(
 # Only do the full analysis with the final prior.
 # Otherwise do the analysis with the first two models.
 if (PRIOR_TYPE == FINAL_PRIOR_TYPE) {
-  MODEL_NAMES <- names(MODEL_INFO)[2:length(MODEL_INFO)]
+  # Omit Model 0 (binomial model) since it is not a Bayesian model.
+  MODEL_NAMES <- names(MODEL_INFO)[2:length(MODEL_INFO)] 
 } else {
-  MODEL_NAMES <- "1"
+  MODEL_NAMES <- FINAL_MODEL
 }
 
 # Final model information.
