@@ -1,11 +1,34 @@
 sensitivity_analysis <- function() {
   initialize(FINAL_PRIOR_TYPE, FALSE)
 
-  model_post <- load_model(FINAL_MODEL)
+  means_final <- load_model(FINAL_MODEL) |>
+    brms::posterior_epred(ndraws = 4000) |>
+    colMeans() |>
+    x => x / MODEL_DATA[["size"]]
 
-  initialize(FINAL_PRIOR_TYPE, TRUE)
+  purrr::map(
+    PRIOR_TYPE_LIST,
+    function (prior_type) {
+      if (prior_type == FINAL_PRIOR_TYPE) {
+        return()
+      }
 
-  model_prior <- load_model(FINAL_MODEL)
+      initialize(prior_type, FALSE)
 
-  
+      means <- load_model(FINAL_MODEL) |>
+        brms::posterior_epred(ndraws = 4000) |>
+        colMeans() |>
+        x => x / MODEL_DATA[["size"]]
+
+      tibble::tibble(
+        prior_type = prior_type,
+        rmse = sqrt(mean((means_final - means)^2)),
+        r = cor(means_final, means)
+      )
+    }
+  ) |>
+  purrr::list_rbind() |>
+  save_csv(file.path(OUTPUT_SENSITIVITY_DIR, "sensitivity_analysis.csv"))
 }
+
+# TODO: ADD THE PLOT OF POSTERIR VS POSTERIOR FOR PARAMS

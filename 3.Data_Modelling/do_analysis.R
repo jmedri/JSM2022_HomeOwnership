@@ -10,3 +10,5 @@ for (prior_type in PRIOR_TYPE_LIST) {
     do_all_model_analyses()
   }
 }
+
+sensitivity_analysis()

@@ -70,12 +70,13 @@ initialize("1", TRUE)
 do_all_model_analyses()
 
 initialize("1", FALSE)
-xxx <- load_model("1") |> brms::posterior_epred(ndraws = 100) |> colMeans()
+xxx <- load_model("4") |> brms::posterior_epred() |> colMeans()
 xxx <- xxx / MODEL_DATA$size
 
-initialize("4", FALSE)
-yyy <- load_model("1") |> brms::posterior_epred(ndraws = 100) |> colMeans()
+initialize("3", FALSE)
+yyy <- load_model("4") |> brms::posterior_epred() |> colMeans()
 yyy <- yyy / MODEL_DATA$size
+sqrt(mean((xxx - yyy)^2))
 
 cbind(xxx, yyy)[1:10,]
 
@@ -83,7 +84,6 @@ plot(xxx, yyy)
 
 cor(xxx, yyy)
 
-sqrt(sum((xxx - yyy)^2) / length(xxx))
 
 sss$fixed
 

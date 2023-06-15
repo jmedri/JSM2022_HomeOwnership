@@ -26,6 +26,7 @@ initialize <- function(
   source("3.Data_Modelling/utils_census_data.R")
   source("3.Data_Modelling/analysis_exploratory.R")
   source("3.Data_Modelling/analysis_model.R")
+  source("3.Data_Modelling/analysis_sensitivity.R")
 
   # Load data
   load_shape_data()
