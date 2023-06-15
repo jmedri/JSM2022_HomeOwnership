@@ -103,3 +103,20 @@ for (prior_type in c("1", "2", "3", "4")) {
   # compute_model("4")
   # do_all_model_analyses()
 }
+
+initialize("1", FALSE)
+
+compute_model("4", iter = 100, overwrite = TRUE)
+
+xxx <- load_model("4") 
+
+summary(xxx)
+
+yyy <- posterior::as_draws_df(xxx)
+
+summary(yyy)
+
+colnames(yyy)
+yyy <- get_model_draws("4", FALSE)
+yyy
+colnames(yyy)

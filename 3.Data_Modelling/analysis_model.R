@@ -760,6 +760,64 @@ make_outlier_tables <- function() {
     save_csv(file.path(OUTPUT_DIR, "outliers", "black_homown_0.55_0.7.csv"))
 }
 
+get_model_draws <- function(model_name, with_state) {
+  load_model(model_name) |>
+  posterior::as_draws_df() |>
+  dplyr::select(dplyr::starts_with("b_")) |>
+  dplyr::mutate(iter = seq_len(dplyr::n())) |>
+  x => (
+    if (with_state) {
+      x
+    } else {
+      x |>
+      dplyr::select(!dplyr::starts_with("b_state"))
+    }
+  ) |>
+  tidyr::pivot_longer(!iter) |>
+  dplyr::mutate(name = stringr::str_replace(name, "^b_", "")) |>
+  dplyr::mutate(
+    component = ifelse(
+      stringr::str_detect(name, "^phi_"),
+      "precision",
+      "response"
+    )
+  ) |>
+  dplyr::mutate(
+    name = (
+      name |>
+        stringr::str_replace("^phi_", "") |>
+        stringr::str_replace("^race", "") |>
+        stringr::str_replace("^state", "") |>
+        replace_all_pairs(
+          COLUMNS_PAPER_OLD,
+          COLUMNS_PAPER_NEW
+        )
+    )
+  ) |>
+  dplyr::mutate(
+    name_split = (
+      stringr::str_split(name, ":") |>
+        purrr::map(rev)
+    ),
+    name_base = (
+      name_split |>
+        purrr::map_chr(purrr::chuck, 1)
+    ),
+    name_race = (
+      name_split |>
+        purrr::map_chr(purrr::pluck, 2, .default = NA)
+    )
+  ) |>
+  dplyr::select(!name_split) |>
+  dplyr::mutate(
+    name = ifelse(
+      is.na(name_race),
+      name_base,
+      stringr::str_c(name_base, ":", name_race)
+    )
+  )
+}
+
 make_model_coef_table <- function() {
   purrr::pwalk(
     tidyr::expand_grid(
@@ -767,89 +825,7 @@ make_model_coef_table <- function() {
       with_state = c(FALSE, TRUE)
     ),
     function(model_name, with_state) {
-      data_draws <- (
-        load_model(model_name) |>
-          posterior::as_draws_df() |>
-          dplyr::select(dplyr::starts_with("b_")) |>
-          (function(x) {
-            if (with_state) {
-              x
-            } else {
-              x |>
-              dplyr::select(!dplyr::starts_with("b_state"))
-            }
-          })() |>
-          tidyr::pivot_longer(dplyr::everything()) |>
-          dplyr::mutate(name = stringr::str_replace(name, "b_", "")) |>
-          dplyr::mutate(
-            component = ifelse(
-              stringr::str_detect(name, "phi_"),
-              "precision",
-              "response"
-            )
-          ) |>
-          dplyr::mutate(
-            name = (
-              name |>
-                stringr::str_replace_all("phi_", "") |>
-                stringr::str_replace_all("^race", "") |>
-                stringr::str_replace_all("^state", "") |>
-                replace_all_pairs(
-                  COLUMNS_PAPER_OLD,
-                  COLUMNS_PAPER_NEW
-                )
-            )
-          ) |>
-          dplyr::mutate(
-            name_split = (
-              stringr::str_split(name, ":") |>
-                purrr::map(rev)
-            ),
-            name_base = (
-              name_split |>
-                purrr::map_chr(purrr::chuck, 1)
-            ),
-            name_race = (
-              name_split |>
-                purrr::map_chr(purrr::pluck, 2, .default = NA)
-            )
-          ) |>
-          dplyr::group_by(component, name_base) |>
-          dplyr::mutate(interaction = any(!is.na(name_race))) |>
-          dplyr::ungroup() |>
-          dplyr::mutate(
-            name_race = ifelse(
-              interaction & is.na(name_race),
-              "WhiteNH",
-              name_race
-            )
-          ) |>
-          dplyr::nest_by(name_base, component, interaction, .keep = TRUE) |>
-          purrr::pmap_dfr(
-            function(name_base, component, interaction, data) {
-              if (interaction) {
-                data |>
-                  dplyr::mutate(
-                    value = ifelse(
-                      name_race == "WhiteNH",
-                      value,
-                      value + value[name_race == "WhiteNH"]
-                    )
-                  )
-              } else {
-                data
-              }
-            }
-          ) |>
-          dplyr::mutate(
-            name = ifelse(
-              is.na(name_race),
-              name_base,
-              stringr::str_c(name_base, ":", name_race)
-            )
-          ) |>
-          dplyr::select(!c(name_split, interaction))
-      )
+      data_draws <- get_model_draws(model_name, with_state)
 
       data_coef <- (
         data_draws |>
@@ -864,11 +840,7 @@ make_model_coef_table <- function() {
           dplyr::mutate(
             name_base = factor(
               name_base,
-              c(
-                "Intercept",
-                RACES_MODEL,
-                COLUMNS_PAPER_NEW
-              )
+              c("Intercept", RACES_MODEL, COLUMNS_PAPER_NEW)
             ),
             name_race = factor(name_race, RACES_MODEL),
             component = factor(component, c("response", "precision"))
@@ -985,11 +957,7 @@ make_model_coef_table <- function() {
             dplyr::mutate(
               name_base = factor(
                 name_base,
-                c(
-                  "Intercept",
-                  RACES_MODEL,
-                  COLUMNS_PAPER_NEW
-                )
+                c("Intercept", RACES_MODEL, COLUMNS_PAPER_NEW)
               ),
               name_race = factor(name_race, RACES_MODEL)
             ) |>

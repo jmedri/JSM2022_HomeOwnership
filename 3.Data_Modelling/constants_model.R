@@ -95,9 +95,9 @@ MODEL_INFO <- list(
       hom.own.count | trials(size) ~
         state +
         race +
-        edu.hs * race +
-        emp.ue * race +
-        inc.inc.trans * race,
+        edu.hs : race +
+        emp.ue : race +
+        inc.inc.trans : race,
       phi ~ hom.tot.log
     ),
     prior = PRIOR_BETA_BIN_1
@@ -112,8 +112,8 @@ MODEL_INFO <- list(
       hom.own.count | trials(size) ~
         state +
         race +
-        edu.hs * race +
-        inc.inc.trans * race,
+        edu.hs : race +
+        inc.inc.trans : race,
       phi ~ hom.tot.log
     ),
     prior = PRIOR_BETA_BIN_1
@@ -126,7 +126,7 @@ MODEL_INFO <- list(
       hom.own.count | trials(size) ~
         state +
         race +
-        inc.inc.trans * race,
+        inc.inc.trans : race,
       phi ~ hom.tot.log
     ),
     prior = PRIOR_BETA_BIN_1
@@ -148,7 +148,7 @@ MODEL_INFO <- list(
     formula = brms::bf(
       hom.own.count | trials(size) ~
         race +
-        inc.inc.trans * race,
+        inc.inc.trans : race,
       phi ~ hom.tot.log
     ),
     prior = PRIOR_BETA_BIN_1
@@ -172,7 +172,7 @@ MODEL_INFO <- list(
       hom.own.count | trials(size) ~
         state +
         race +
-        inc.inc.trans * race,
+        inc.inc.trans : race,
       phi ~ 1
     ),
     prior = PRIOR_BETA_BIN_2
