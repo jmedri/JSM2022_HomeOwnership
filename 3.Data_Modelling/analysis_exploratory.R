@@ -392,14 +392,15 @@ make_var_ranges_table <- function() {
     dplyr::select(
       edu.hs,
       emp.ue,
-      fin.cost,
-      occ.fam,
+      # fin.cost,
+      # occ.fam,
       hom.own,
       inc.inc,
-      val.hom,
-      val.tax,
+      # val.hom,
+      # val.tax,
+      # val.mort,
       pop.tot,
-      size,
+      size
     ) |>
     tidyr::pivot_longer(dplyr::everything()) |>
     dplyr::nest_by(name) |>
@@ -418,12 +419,12 @@ make_var_ranges_table <- function() {
         edu.hs = "High school attainment",
         emp.ue = "Unemployment",
         inc.inc = "Annual income",
-        fin.cost = "Housing cost",
+        # fin.cost = "Housing cost",
         hom.own = "Home ownership",
-        val.hom = "Housing value",
-        val.tax = "Housing tax",
-        val.mort = "Households with a mortgage",
-        occ.fam = "Family occupancy",
+        # val.hom = "Housing value",
+        # val.tax = "Housing tax",
+        # val.mort = "Households with a mortgage",
+        # occ.fam = "Family occupancy",
         pop.tot = "Population",
         size = "Sample size"
       )[name],
@@ -431,27 +432,38 @@ make_var_ranges_table <- function() {
         edu.hs = "Percentage of 18+ population",
         emp.ue = "Percentage of total labor force",
         inc.inc = "Annual amount in current US\\$",
-        fin.cost = "Percentage of owner-occupied household income",
+        # fin.cost = "Percentage of owner-occupied household income",
         hom.own = "Percentage of occupied households",
-        val.hom = "Amount in current US\\$",
-        val.tax = "Annual amount in current US\\$",
-        val.mort = "Percentage of owner-occupied households",
-        occ.fam = "Percentage of owner-occupied households",
+        # val.hom = "Amount in current US\\$",
+        # val.tax = "Annual amount in current US\\$",
+        # val.mort = "Percentage of owner-occupied households",
+        # occ.fam = "Percentage of owner-occupied households",
         pop.tot = "Total inhabitants",
         size = "Total interviews"
       )[name],
+      # `County Range` = if (name %in% c("edu.hs", "emp.ue", "fin.cost", "hom.own", "occ.fam", "val.mort")) {
+      #   sprintf("%.1f\\%%--%.1f\\%%", low * 100, high * 100)
+      # } else if (name == "inc.inc") {
+      #   sprintf("\\$%.0fk--\\$%.0fk", round(low / 1000), round(high / 1000))
+      # } else if (name == "size") {
+      #   sprintf("%.0f--%.0fk", round(low), round(high / 1000))
+      # } else if (name == "pop.tot") {
+      #   sprintf("%.0fk--%.0fk", round(low / 1000), round(high / 1000))
+      # } else if (name == "val.hom") {
+      #   sprintf("\\$%.0fk--\\$%.0fk", round(low / 1000), round(high / 1000))
+      # } else if (name == "val.tax") {
+      #   sprintf("\\$%.0f--\\$%.0fk", round(low), round(high / 1000))
+      # } else {
+      #   stop("Impossible.")
+      # }
       `County Range` = if (name %in% c("edu.hs", "emp.ue", "fin.cost", "hom.own", "occ.fam", "val.mort")) {
-        sprintf("%.1f\\%%--%.1f\\%%", low * 100, high * 100)
-      } else if (name == "inc.inc") {
-        sprintf("\\$%.0fk--\\$%.0fk", round(low / 1000), round(high / 1000))
-      } else if (name == "size") {
-        sprintf("%.0f--%.0fk", round(low), round(high / 1000))
-      } else if (name == "pop.tot") {
-        sprintf("%.0fk--%.0fk", round(low / 1000), round(high / 1000))
-      } else if (name == "val.hom") {
-        sprintf("\\$%.0fk--\\$%.0fk", round(low / 1000), round(high / 1000))
-      } else if (name == "val.tax") {
-        sprintf("\\$%.0f--\\$%.0fk", round(low), round(high / 1000))
+        sprintf("%.1f\\%% - %.1f\\%%", low * 100, high * 100)
+      } else if (name %in% c("inc.inc", "val.hom", "val.tax")) {
+        paste0("\\$", format(signif(round(low), 3), big.mark = ","), " - \\$",
+          format(signif(round(high), 3), big.mark = ","))
+      } else if (name %in% c("size", "pop.tot")) {
+        paste0(format(signif(round(low), 3), big.mark = ","), " - ",
+          format(signif(round(high), 3), big.mark = ","))
       } else {
         stop("Impossible.")
       }
@@ -466,16 +478,16 @@ make_var_ranges_table <- function() {
         c(
           "housing_header",
           "hom.own",
-          "fin.cost",
-          "val.hom",
-          "val.tax",
-          "val.mort",
+          # "fin.cost",
+          # "val.hom",
+          # "val.tax",
+          # "val.mort",
           "sociodemographic_header",
           "edu.hs",
           "inc.inc",
           "emp.ue",
           "pop.tot",
-          "occ.fam",
+          # "occ.fam",
           "survey_header",
           "size"
         )
@@ -565,7 +577,6 @@ make_data_summary <- function() {
   data_by_race |>
     save_csv(file.path(OUTPUT_EXPLORATORY_DIR, "census_data_by_race_means.csv"))
 }
-
 
 plot_state_ranges <- function() {
   (
@@ -1039,6 +1050,75 @@ make_model_formula_table <- function() {
     )
 }
 
+make_size_table <- function() {
+  columns <- c(
+    "S1501" = "edu.tot",
+    "S2301" = "emp.tot",
+    "S2503" = "fin.tot",
+    "S2502" = "hom.tot",
+    "S1903" = "inc.tot",
+    "S2501" = "occ.tot",
+    "S2506+ S2507*" = "val.tot",
+    "B98001" = "size"
+  )
+  desc <- c(
+    "S1501" = "Education",
+    "S2301" = "Employment",
+    "S2503" = "Financial characteristics",
+    "S2502" = "Housing demographics",
+    "S1903" = "Income",
+    "S2501" = "Housing occupancy characteristics",
+    "S2506+ S2507*" = "Housing financial characteristics",
+    "B98001" = "Survey sample size"
+  )
+  samp = c(
+    "S1501" = "Population aged 18+",
+    "S2301" = "Population aged 16+",
+    "S2503" = "Occupied housing units",
+    "S2502" = "Occupied housing units",
+    "S1903" = "Occupied housing units",
+    "S2501" = "Occupied housing units",
+    "S2506+ S2507*" = "Owned housing units",
+    "B98001" = "Interviewed households"
+  )
+
+  label <- function(x) {
+    format(signif(x / 1000, 3), big.mark = ",")
+  }
+
+  CENSUS_DATA |>
+    dplyr::filter(race == "Total") |>
+    dplyr::select(dplyr::all_of(columns)) |>
+    dplyr::summarize(dplyr::across(
+      dplyr::everything(),
+      function(x) {
+        low <- quantile(x, 0.1)
+        high <- quantile(x, 0.9)
+        paste0(label(low), " - ", label(high))
+      }
+    )) |>
+    tidyr::pivot_longer(
+      cols = dplyr::everything(),
+      names_to = "Table",
+      values_to = "Size"
+    ) |>
+    dplyr::mutate(
+      Description = desc[`Table`],
+      Sample = samp[`Table`]
+    ) |>
+    dplyr::select(`Table`, Description, Sample, Size) |>
+    dplyr::rename(`Size (thousands)` = Size) |>
+    xtable::xtable() |>
+    save_tex(
+      file.path(OUTPUT_EXPLORATORY_DIR, "size_table", "size_table.tex")
+    )
+}
+
+make_means_table <- function() {
+  CENSUS_DATA |> I()
+    # CONTINUE HERE!!
+}
+
 do_all_exploratory_analyses <- function() {
   plot_pair_all(
     CENSUS_DATA,
@@ -1061,4 +1141,5 @@ do_all_exploratory_analyses <- function() {
   do_binomial_model_analysis()
   do_missing_value_analysis()
   make_model_formula_table()
+  make_size_table()
 }

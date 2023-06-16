@@ -87,22 +87,18 @@ cor(xxx, yyy)
 
 sss$fixed
 
-for (prior_type in c("1", "2", "3", "4")) {
-  initialize(prior_type, FALSE)
-  # compute_model("4")
-  # do_all_model_analyses()
-  make_model_coef_table()
-  make_mean_vs_model_table()
-  make_model_effect_county("New York/New York County")
-  make_model_effect_county("Florida/Hillsborough County")
-  initialize(prior_type, TRUE)
-  make_model_coef_table()
-  make_mean_vs_model_table()
-  make_model_effect_county("New York/New York County")
-  make_model_effect_county("Florida/Hillsborough County")
-  # compute_model("4")
-  # do_all_model_analyses()
+for (prior_type in c("1")) {
+  for (sample_prior in c(TRUE, FALSE)) {
+    initialize(prior_type, sample_prior)
+    do_all_compute_models()
+    do_all_model_analyses()
+  }
 }
+
+# make_model_coef_table()
+# make_mean_vs_model_table()
+# make_model_effect_county("New York/New York County")
+# make_model_effect_county("Florida/Hillsborough County")
 
 initialize("1", FALSE)
 
@@ -120,3 +116,44 @@ colnames(yyy)
 yyy <- get_model_draws("4", FALSE)
 yyy
 colnames(yyy)
+
+initialize("1", FALSE)
+xxx <- join_with_shape(CENSUS_DATA, "state") |>
+  dplyr::filter(race %in% RACES_MODEL) |>
+  dplyr::filter(state %in% CONTIGUOUS_STATES) |>
+  dplyr::mutate(
+    inc.inc.trans = inc.inc / 1e5,
+    hom.tot.log = log(hom.tot),
+    hom.own.count = round(hom.own * size),
+    county = factor(county),
+    state = as.numeric(factor(state))
+  ) |>
+  tidyr::drop_na(hom.own.count, inc.inc.trans)
+sss <- STATE_SHAPE_DATA |> dplyr::filter(state %in% CONTIGUOUS_STATES) |>
+  dplyr::mutate(state = factor(state))
+
+# Get the spatial weight matrix from xxx
+library(spdep)
+WWW <- poly2nb(sss) |> nb2mat(style = "B")
+
+sum(rowSums(WWW) == 0)
+
+mod <- brms::brm(
+  formula = brms::bf(
+    hom.own.count | trials(size) ~
+      race +
+      inc.inc.trans +
+      car(W, state)
+  ),
+  family = brms::beta_binomial(),
+  data = xxx,
+  data2 = list(W = WWW)
+)
+
+STATE_SHAPE_DATA
+
+summary(mod)
+
+plot(xxx, par = "inc.inc.trans")
+tm_shape(xxx) + tm_fill("hom.own")
+tm_shape(xxx) + tm_fill("inc.inc.trans")
