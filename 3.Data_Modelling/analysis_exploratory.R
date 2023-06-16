@@ -659,7 +659,6 @@ make_data_summary <- function() {
       suffix = c("_mean", "_sd")
     ) |>
     dplyr::mutate(
-      race = factor(race, RACES),
       var = factor(var)
     ) |>
     dplyr::mutate(
@@ -680,18 +679,20 @@ make_data_summary <- function() {
     dplyr::nest_by(var, .keep = TRUE) |>
     purrr::pmap(
       function(var, data) {
+        force(data)
+
+        # For ordering from lowest to highest in each panel
         data <- (
           data |>
-          dplyr::arrange(dplyr::desc(val_mean)) |>
-          dplyr::mutate(race = forcats::fct_infreq(race))
+          dplyr::arrange(val_mean) |>
+          dplyr::mutate(race_2 = paste(1:nrow(data), race))
         )
+
         # Order by frequency and make the plot
         list(
           ggplot2::geom_hline( # The dotted line
             data = data,
-            mapping = ggplot2::aes(
-              yintercept = race
-            ),
+            mapping = ggplot2::aes(yintercept = race_2),
             linetype = "dotted",
             alpha = 0.3
           ),
@@ -699,7 +700,7 @@ make_data_summary <- function() {
             data = data,
             mapping = ggplot2::aes(
               x = val_mean,
-              y = race,
+              y = race_2,
               color = race
             ),
             size = 2
@@ -707,7 +708,7 @@ make_data_summary <- function() {
           ggplot2::geom_errorbarh( # The SD error bars
             data = data,
             mapping = ggplot2::aes(
-              y = race,
+              y = race_2,
               xmin = val_mean - val_sd,
               xmax = val_mean + val_sd,
               color = race
@@ -729,6 +730,13 @@ make_data_summary <- function() {
     ggplot2::theme_classic(GGPLOT_BASE_SIZE_BIG) +
     ggplot2::ylab("Group") +
     ggplot2::xlab("Mean (+/-SD)") +
+    ggplot2::scale_y_discrete(
+      labels = function(x) {
+        x |>
+        stringr::str_split(" ") |>
+        purrr::map_chr(\(x) x[[2]])
+      }
+    ) +
     ggplot2::theme(legend.position = "none")
   ) |>
   save_ggplot(
@@ -1327,3 +1335,5 @@ do_all_exploratory_analyses <- function() {
   make_model_formula_table()
   make_size_table()
 }
+
+make_data_summary()
