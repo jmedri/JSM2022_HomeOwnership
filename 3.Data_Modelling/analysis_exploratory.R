@@ -547,21 +547,210 @@ make_data_summary <- function() {
     file_name = file.path(OUTPUT_EXPLORATORY_DIR, "model_data_summary.txt")
   )
 
-  data_by_race <- (
+  data_by_race_mean <- (
     CENSUS_DATA |>
       dplyr::group_by(race) |>
       dplyr::summarize(
-        edu.hs = weighted.mean(edu.hs, edu.tot, na.rm = TRUE),
-        emp.ue = weighted.mean(emp.ue, emp.tot, na.rm = TRUE),
-        fin.cost = weighted.mean(fin.cost, fin.tot, na.rm = TRUE),
-        fin.inc = weighted.mean(fin.inc, fin.tot, na.rm = TRUE),
-        hom.own = weighted.mean(hom.own, hom.tot),
-        inc.inc = weighted.mean(inc.inc, inc.tot, na.rm = TRUE),
-        occ.fam = weighted.mean(occ.fam, occ.tot),
-        pop.share = weighted.mean(pop.share, pop.tot.all),
-        val.hom = weighted.mean(val.hom, val.tot, na.rm = TRUE),
-        val.mort = weighted.mean(val.mort, val.tot, na.rm = TRUE),
-        val.tax = weighted.mean(val.tax, val.tot, na.rm = TRUE),
+        edu.hs = matrixStats::weightedMean(edu.hs, edu.tot, na.rm = TRUE),
+        emp.ue = matrixStats::weightedMean(emp.ue, emp.tot, na.rm = TRUE),
+        fin.cost = matrixStats::weightedMean(fin.cost, fin.tot, na.rm = TRUE),
+        fin.inc = matrixStats::weightedMean(fin.inc, fin.tot, na.rm = TRUE),
+        hom.own = matrixStats::weightedMean(hom.own, hom.tot),
+        inc.inc = matrixStats::weightedMean(inc.inc, inc.tot, na.rm = TRUE),
+        occ.fam = matrixStats::weightedMean(occ.fam, occ.tot),
+        pop.share = matrixStats::weightedMean(pop.share, pop.tot.all),
+        val.hom = matrixStats::weightedMean(val.hom, val.tot, na.rm = TRUE),
+        val.mort = matrixStats::weightedMean(val.mort, val.tot, na.rm = TRUE),
+        val.tax = matrixStats::weightedMean(val.tax, val.tot, na.rm = TRUE),
+        edu.tot = mean(edu.tot),
+        emp.tot = mean(emp.tot),
+        fin.tot = mean(fin.tot),
+        hom.tot = mean(hom.tot),
+        inc.tot = mean(inc.tot),
+        occ.tot = mean(occ.tot),
+        pop.tot = mean(pop.tot),
+        size = mean(size),
+        val.tot = mean(val.tot)
+      )
+  )
+  data_by_race_sd <- (
+    CENSUS_DATA |>
+      dplyr::group_by(race) |>
+      dplyr::summarize(
+        edu.hs = matrixStats::weightedSd(edu.hs, edu.tot, na.rm = TRUE),
+        emp.ue = matrixStats::weightedSd(emp.ue, emp.tot, na.rm = TRUE),
+        fin.cost = matrixStats::weightedSd(fin.cost, fin.tot, na.rm = TRUE),
+        fin.inc = matrixStats::weightedSd(fin.inc, fin.tot, na.rm = TRUE),
+        hom.own = matrixStats::weightedSd(hom.own, hom.tot),
+        inc.inc = matrixStats::weightedSd(inc.inc, inc.tot, na.rm = TRUE),
+        occ.fam = matrixStats::weightedSd(occ.fam, occ.tot),
+        pop.share = matrixStats::weightedSd(pop.share, pop.tot.all),
+        val.hom = matrixStats::weightedSd(val.hom, val.tot, na.rm = TRUE),
+        val.mort = matrixStats::weightedSd(val.mort, val.tot, na.rm = TRUE),
+        val.tax = matrixStats::weightedSd(val.tax, val.tot, na.rm = TRUE),
+        edu.tot = sd(edu.tot),
+        emp.tot = sd(emp.tot),
+        fin.tot = sd(fin.tot),
+        hom.tot = sd(hom.tot),
+        inc.tot = sd(inc.tot),
+        occ.tot = sd(occ.tot),
+        pop.tot = sd(pop.tot),
+        size = sd(size),
+        val.tot = sd(val.tot)
+      )
+  )
+
+  data_by_race_mean |>
+    save_csv(file.path(OUTPUT_EXPLORATORY_DIR, "census_data_by_race_means.csv"))
+
+  # Get the race dot chart data
+  data_by_race_mean <- (
+    data_by_race_mean |>
+    dplyr::select(
+      race,
+      hom.own,
+      edu.hs,
+      inc.inc,
+      emp.ue,
+      pop.share
+    ) |>
+    dplyr::mutate(
+      hom.own = 100 * hom.own,
+      pop.share = 100 * pop.share,
+      edu.hs = 100 * edu.hs,
+      emp.ue = 100 * emp.ue,
+      inc.inc = inc.inc / 1000
+    ) |>
+    tidyr::pivot_longer(
+      cols = !race,
+      names_to = "var",
+      values_to = "val"
+    )
+  )
+  data_by_race_sd <- (
+    data_by_race_sd |>
+    dplyr::select(
+      race,
+      hom.own,
+      edu.hs,
+      inc.inc,
+      emp.ue,
+      pop.share
+    ) |>
+    dplyr::mutate(
+      hom.own = 100 * hom.own,
+      pop.share = 100 * pop.share,
+      edu.hs = 100 * edu.hs,
+      emp.ue = 100 * emp.ue,
+      inc.inc = inc.inc / 1000
+    ) |>
+    tidyr::pivot_longer(
+      cols = !race,
+      names_to = "var",
+      values_to = "val"
+    )
+  )
+
+  data_by_race <- (
+    dplyr::inner_join(
+      data_by_race_mean,
+      data_by_race_sd,
+      by = c("race", "var"),
+      suffix = c("_mean", "_sd")
+    ) |>
+    dplyr::mutate(
+      race = factor(race, RACES),
+      var = factor(var)
+    ) |>
+    dplyr::mutate(
+      var = forcats::fct_recode(
+        var,
+        "Home Ownership (%)" = "hom.own",
+        "High School Education (%)" = "edu.hs",
+        "Income ($1000)" = "inc.inc",
+        "Unemployment (%)" = "emp.ue",
+        "Population Share (%)" = "pop.share"
+      )
+    )
+  )
+
+  # Make the dot chart
+  ggplot_out <- (
+    data_by_race |>
+    dplyr::nest_by(var, .keep = TRUE) |>
+    purrr::pmap(
+      function(var, data) {
+        data <- (
+          data |>
+          dplyr::arrange(dplyr::desc(val_mean)) |>
+          dplyr::mutate(race = forcats::fct_infreq(race))
+        )
+        # Order by frequency and make the plot
+        list(
+          ggplot2::geom_hline( # The dotted line
+            data = data,
+            mapping = ggplot2::aes(
+              yintercept = race
+            ),
+            linetype = "dotted",
+            alpha = 0.3
+          ),
+          ggplot2::geom_point( # The mean points
+            data = data,
+            mapping = ggplot2::aes(
+              x = val_mean,
+              y = race,
+              color = race
+            ),
+            size = 2
+          ),
+          ggplot2::geom_errorbarh( # The SD error bars
+            data = data,
+            mapping = ggplot2::aes(
+              y = race,
+              xmin = val_mean - val_sd,
+              xmax = val_mean + val_sd,
+              color = race
+            ),
+            height = 0.5,
+            linewidth = 1
+          )
+        )
+      }
+    ) |>
+    purrr::list_c() |>
+    purrr::reduce(`+`, .init = ggplot2::ggplot())
+  )
+  
+  (
+    ggplot_out +
+    ggplot2::scale_color_manual(values = c(RACE_COLORS, Total = "#000000")) +
+    ggplot2::facet_wrap(dplyr::vars(var), ncol = 1, scales = "free") +
+    ggplot2::theme_classic(GGPLOT_BASE_SIZE_BIG) +
+    ggplot2::ylab("Group") +
+    ggplot2::xlab("Mean (+/-SD)") +
+    ggplot2::theme(legend.position = "none")
+  ) |>
+  save_ggplot(
+    file.path(OUTPUT_EXPLORATORY_DIR, "census_data_by_race_dot_chart.pdf"),
+    height = 2 * GGPLOT_HEIGHT
+  )
+
+  data_by_state <- (
+    CENSUS_DATA |>
+      dplyr::group_by(state) |>
+      dplyr::summarize(
+        edu.hs = matrixStats::weightedMean(edu.hs, edu.tot, na.rm = TRUE),
+        emp.ue = matrixStats::weightedMean(emp.ue, emp.tot, na.rm = TRUE),
+        fin.cost = matrixStats::weightedMean(fin.cost, fin.tot, na.rm = TRUE),
+        fin.inc = matrixStats::weightedMean(fin.inc, fin.tot, na.rm = TRUE),
+        hom.own = matrixStats::weightedMean(hom.own, hom.tot),
+        inc.inc = matrixStats::weightedMean(inc.inc, inc.tot, na.rm = TRUE),
+        occ.fam = matrixStats::weightedMean(occ.fam, occ.tot),
+        pop.share = matrixStats::weightedMean(pop.share, pop.tot.all),
+        val.hom = matrixStats::weightedMean(val.hom, val.tot, na.rm = TRUE),
+        val.mort = matrixStats::weightedMean(val.mort, val.tot, na.rm = TRUE),
+        val.tax = matrixStats::weightedMean(val.tax, val.tot, na.rm = TRUE),
         edu.tot = mean(edu.tot),
         emp.tot = mean(emp.tot),
         fin.tot = mean(fin.tot),
@@ -574,8 +763,8 @@ make_data_summary <- function() {
       )
   )
 
-  data_by_race |>
-    save_csv(file.path(OUTPUT_EXPLORATORY_DIR, "census_data_by_race_means.csv"))
+  data_by_state |>
+    save_csv(file.path(OUTPUT_EXPLORATORY_DIR, "census_data_by_state_means.csv"))
 }
 
 plot_state_ranges <- function() {
@@ -975,7 +1164,7 @@ make_model_formula_table <- function() {
       stringr::str_c(collapse = " ") |>
       stringr::str_split(" \\+ ") |>
       purrr::pluck(1) |>
-      (function(x) {
+      x => {
         # groups <- rep(seq_len(length(x)), each = 3)[seq_len(length(x))]
         groups <- rep(1, length(x))
         if (
@@ -986,7 +1175,7 @@ make_model_formula_table <- function() {
           groups[[length(x)]] <- groups[[length(x)]] + 1
         }
         split(x, groups)
-      })() |>
+      } |>
       purrr::map(stringr::str_c, collapse = " + ") |>
       purrr::flatten_chr() |>
       stringr::str_c(collapse = " + \\\\ & ")
@@ -1112,11 +1301,6 @@ make_size_table <- function() {
     save_tex(
       file.path(OUTPUT_EXPLORATORY_DIR, "size_table", "size_table.tex")
     )
-}
-
-make_means_table <- function() {
-  CENSUS_DATA |> I()
-    # CONTINUE HERE!!
 }
 
 do_all_exploratory_analyses <- function() {

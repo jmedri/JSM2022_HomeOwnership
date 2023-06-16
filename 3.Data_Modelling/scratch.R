@@ -150,6 +150,20 @@ mod <- brms::brm(
   data2 = list(W = WWW)
 )
 
+mod_2 <- brms::brm(
+  formula = brms::bf(
+    hom.own.count | trials(size) ~
+      race +
+      inc.inc.trans +
+      factor(state)
+  ),
+  family = brms::beta_binomial(),
+  data = xxx
+)
+
+summary(mod_2)
+
+
 STATE_SHAPE_DATA
 
 summary(mod)
