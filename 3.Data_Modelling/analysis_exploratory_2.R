@@ -576,7 +576,6 @@ plot_chloropleth <- function(
 
 #Figure 1a: Scatterplot of NY broken (Not broken by race)
 #6x8
-if (0) {
 sc_imd_ny <-
   plots(area = "County", Stated = "New York",
         Group1 = "Total", Group2 = "None", Group3 = "None", Group4 = "None",
@@ -609,14 +608,14 @@ bp_imd <-
 ggsave(
   file.path(OUTPUT_EXPLORATORY_DIR, "data_exploration", "bp_imd.pdf"),
   plot = bp_imd, width = 8, height = 6, units = "in", dpi = 300)
-}
+
 #Figure 3: Choropleth Map
 chloro_greens <- plot_chloropleth(col_pal = "Greens", group1 = "Total", free_scales = TRUE)
-tmap_save(chloro_greens, file.path(OUTPUT_EXPLORATORY_DIR, "data_exploration", "chloro_greens.pdf"),
+tmap_save(chloro_greens, file.path(OUTPUT_EXPLORATORY_DIR, "data_exploration", "choro_greens.pdf"),
   width = 8, height = 6, units = "in", dpi = 300)
 
 chloro_greys <- plot_chloropleth(col_pal = "Greys", group1 = "Total", free_scales = TRUE)
-tmap_save(chloro_greys, file.path(OUTPUT_EXPLORATORY_DIR, "data_exploration", "chloro_greys.pdf"),
+tmap_save(chloro_greys, file.path(OUTPUT_EXPLORATORY_DIR, "data_exploration", "choro_greys.pdf"),
   width = 8, height = 6, units = "in", dpi = 300)
 
 
@@ -624,13 +623,16 @@ tmap_save(chloro_greys, file.path(OUTPUT_EXPLORATORY_DIR, "data_exploration", "c
 
 #Section 2.2 Values
 
+############## I have put this code for producing the tables in another file ##############
+
 #Values obtained for Paragraph 1 of Section 2.2
 #Housing variables
-weighted.mean(data.county[data.county$Group == "Total",]$S2502.group.ownedp,
-              as.numeric(data.county[data.county$Group == "Total",]$S2502.group.total),
-              na.rm = TRUE)
+# weighted.mean(data.county[data.county$Group == "Total",]$S2502.group.ownedp,
+#               as.numeric(data.county[data.county$Group == "Total",]$S2502.group.total),
+#               na.rm = TRUE)
 
 ############## We are no longer displaying these variables ##############
+
 
 # weighted.mean(c(
 #   data.county[data.county$Group == "Total",]$S2507.costp.median,
@@ -676,143 +678,144 @@ weighted.mean(data.county[data.county$Group == "Total",]$S2502.group.ownedp,
 #and County Ranges
 #This code reproduces the results of Table 2
 
+
 #Home Ownership
 
-weighted.mean(data.county[data.county$Group == "Total",]$S2502.group.ownedp,
-              data.county[data.county$Group == "Total",]$S2502.group.total)
-quantile(data.county[data.county$Group == "Total",]$S2502.group.ownedp,
-         probs = c(0.1,0.9))
+# weighted.mean(data.county[data.county$Group == "Total",]$S2502.group.ownedp,
+#               data.county[data.county$Group == "Total",]$S2502.group.total)
+# quantile(data.county[data.county$Group == "Total",]$S2502.group.ownedp,
+#          probs = c(0.1,0.9))
 
-weighted.mean(data.county[data.county$Group == "WhiteNH",]$S2502.group.ownedp,
-              data.county[data.county$Group == "WhiteNH",]$S2502.group.total)
-weighted.mean(data.county[data.county$Group == "Black",]$S2502.group.ownedp,
-              data.county[data.county$Group == "Black",]$S2502.group.total)
-weighted.mean(data.county[data.county$Group == "Asian",]$S2502.group.ownedp,
-              data.county[data.county$Group == "Asian",]$S2502.group.total)
-weighted.mean(data.county[data.county$Group == "Hispanic",]$S2502.group.ownedp,
-              data.county[data.county$Group == "Hispanic",]$S2502.group.total)
+# weighted.mean(data.county[data.county$Group == "WhiteNH",]$S2502.group.ownedp,
+#               data.county[data.county$Group == "WhiteNH",]$S2502.group.total)
+# weighted.mean(data.county[data.county$Group == "Black",]$S2502.group.ownedp,
+#               data.county[data.county$Group == "Black",]$S2502.group.total)
+# weighted.mean(data.county[data.county$Group == "Asian",]$S2502.group.ownedp,
+#               data.county[data.county$Group == "Asian",]$S2502.group.total)
+# weighted.mean(data.county[data.county$Group == "Hispanic",]$S2502.group.ownedp,
+#               data.county[data.county$Group == "Hispanic",]$S2502.group.total)
 
-#High School Attainment
-weighted.mean(data.county[data.county$Group == "Total",]$S1501.group.HSp,
-              data.county[data.county$Group == "Total",]$S1501.group.total)
-quantile(data.county[data.county$Group == "Total",]$S1501.group.HSp,
-         probs = c(0.1,0.9))
+# #High School Attainment
+# weighted.mean(data.county[data.county$Group == "Total",]$S1501.group.HSp,
+#               data.county[data.county$Group == "Total",]$S1501.group.total)
+# quantile(data.county[data.county$Group == "Total",]$S1501.group.HSp,
+#          probs = c(0.1,0.9))
 
-weighted.mean(data.county[data.county$Group == "WhiteNH",]$S1501.group.HSp,
-              data.county[data.county$Group == "WhiteNH",]$S1501.group.total)
-weighted.mean(data.county[data.county$Group == "Black",]$S1501.group.HSp,
-              data.county[data.county$Group == "Black",]$S1501.group.total)
-weighted.mean(data.county[data.county$Group == "Asian",]$S1501.group.HSp,
-              data.county[data.county$Group == "Asian",]$S1501.group.total)
-weighted.mean(data.county[data.county$Group == "Hispanic",]$S1501.group.HSp,
-              data.county[data.county$Group == "Hispanic",]$S1501.group.total)
+# weighted.mean(data.county[data.county$Group == "WhiteNH",]$S1501.group.HSp,
+#               data.county[data.county$Group == "WhiteNH",]$S1501.group.total)
+# weighted.mean(data.county[data.county$Group == "Black",]$S1501.group.HSp,
+#               data.county[data.county$Group == "Black",]$S1501.group.total)
+# weighted.mean(data.county[data.county$Group == "Asian",]$S1501.group.HSp,
+#               data.county[data.county$Group == "Asian",]$S1501.group.total)
+# weighted.mean(data.county[data.county$Group == "Hispanic",]$S1501.group.HSp,
+#               data.county[data.county$Group == "Hispanic",]$S1501.group.total)
 
-#Annual Income
-weighted.mean(
-  as.numeric(
-  data.county[data.county$Group == "Total",]$S1903.group.medianincome),
-  as.numeric(
-    data.county[data.county$Group == "Total",]$S1903.group.total),
-  na.rm = TRUE)
-quantile(  as.numeric(
-  data.county[data.county$Group == "Total",]$S1903.group.medianincome),
-  probs = c(0.1,0.9), na.rm = TRUE)
+# #Annual Income
+# weighted.mean(
+#   as.numeric(
+#   data.county[data.county$Group == "Total",]$S1903.group.medianincome),
+#   as.numeric(
+#     data.county[data.county$Group == "Total",]$S1903.group.total),
+#   na.rm = TRUE)
+# quantile(  as.numeric(
+#   data.county[data.county$Group == "Total",]$S1903.group.medianincome),
+#   probs = c(0.1,0.9), na.rm = TRUE)
 
-weighted.mean(
-  as.numeric(
-    data.county[data.county$Group == "WhiteNH",]$S1903.group.medianincome),
-  as.numeric(
-    data.county[data.county$Group == "WhiteNH",]$S1903.group.total),
-  na.rm = TRUE)
+# weighted.mean(
+#   as.numeric(
+#     data.county[data.county$Group == "WhiteNH",]$S1903.group.medianincome),
+#   as.numeric(
+#     data.county[data.county$Group == "WhiteNH",]$S1903.group.total),
+#   na.rm = TRUE)
 
-weighted.mean(
-  as.numeric(
-    data.county[data.county$Group == "Black",]$S1903.group.medianincome),
-  as.numeric(
-    data.county[data.county$Group == "Black",]$S1903.group.total),
-  na.rm = TRUE)
+# weighted.mean(
+#   as.numeric(
+#     data.county[data.county$Group == "Black",]$S1903.group.medianincome),
+#   as.numeric(
+#     data.county[data.county$Group == "Black",]$S1903.group.total),
+#   na.rm = TRUE)
 
-weighted.mean(
-  as.numeric(
-    data.county[data.county$Group == "Asian",]$S1903.group.medianincome),
-  as.numeric(
-    data.county[data.county$Group == "Asian",]$S1903.group.total),
-  na.rm = TRUE)
+# weighted.mean(
+#   as.numeric(
+#     data.county[data.county$Group == "Asian",]$S1903.group.medianincome),
+#   as.numeric(
+#     data.county[data.county$Group == "Asian",]$S1903.group.total),
+#   na.rm = TRUE)
 
-weighted.mean(
-  as.numeric(
-    data.county[data.county$Group == "Hispanic",]$S1903.group.medianincome),
-  as.numeric(
-    data.county[data.county$Group == "Hispanic",]$S1903.group.total),
-  na.rm = TRUE)
+# weighted.mean(
+#   as.numeric(
+#     data.county[data.county$Group == "Hispanic",]$S1903.group.medianincome),
+#   as.numeric(
+#     data.county[data.county$Group == "Hispanic",]$S1903.group.total),
+#   na.rm = TRUE)
 
-#Unemployment
-weighted.mean(
-  as.numeric(
-    data.county[data.county$Group == "Total" &
-                  data.county$Year == 2020,]$S2301.group.ue),
-  as.numeric(
-    data.county[data.county$Group == "Total" &
-                  data.county$Year == 2020,]$S2301.group.total),
-  na.rm = TRUE)
-quantile(data.county[data.county$Group == "Total" &
-                       data.county$Year == 2020,]$S2301.group.ue,
-         probs = c(0.1,0.9))
+# #Unemployment
+# weighted.mean(
+#   as.numeric(
+#     data.county[data.county$Group == "Total" &
+#                   data.county$Year == 2020,]$S2301.group.ue),
+#   as.numeric(
+#     data.county[data.county$Group == "Total" &
+#                   data.county$Year == 2020,]$S2301.group.total),
+#   na.rm = TRUE)
+# quantile(data.county[data.county$Group == "Total" &
+#                        data.county$Year == 2020,]$S2301.group.ue,
+#          probs = c(0.1,0.9))
 
 
-weighted.mean(
-  as.numeric(
-    data.county[data.county$Group == "WhiteNH",]$S2301.group.ue),
-  as.numeric(
-    data.county[data.county$Group == "WhiteNH",]$S2301.group.total),
-  na.rm = TRUE)
+# weighted.mean(
+#   as.numeric(
+#     data.county[data.county$Group == "WhiteNH",]$S2301.group.ue),
+#   as.numeric(
+#     data.county[data.county$Group == "WhiteNH",]$S2301.group.total),
+#   na.rm = TRUE)
 
-weighted.mean(
-  as.numeric(
-    data.county[data.county$Group == "Black",]$S2301.group.ue),
-  as.numeric(
-    data.county[data.county$Group == "Black",]$S2301.group.total),
-  na.rm = TRUE)
+# weighted.mean(
+#   as.numeric(
+#     data.county[data.county$Group == "Black",]$S2301.group.ue),
+#   as.numeric(
+#     data.county[data.county$Group == "Black",]$S2301.group.total),
+#   na.rm = TRUE)
 
-weighted.mean(
-  as.numeric(
-    data.county[data.county$Group == "Asian",]$S2301.group.ue),
-  as.numeric(
-    data.county[data.county$Group == "Asian",]$S2301.group.total),
-  na.rm = TRUE)
+# weighted.mean(
+#   as.numeric(
+#     data.county[data.county$Group == "Asian",]$S2301.group.ue),
+#   as.numeric(
+#     data.county[data.county$Group == "Asian",]$S2301.group.total),
+#   na.rm = TRUE)
 
-weighted.mean(
-  as.numeric(
-    data.county[data.county$Group == "Hispanic",]$S2301.group.ue),
-  as.numeric(
-    data.county[data.county$Group == "Hispanic",]$S2301.group.total),
-  na.rm = TRUE)
+# weighted.mean(
+#   as.numeric(
+#     data.county[data.county$Group == "Hispanic",]$S2301.group.ue),
+#   as.numeric(
+#     data.county[data.county$Group == "Hispanic",]$S2301.group.total),
+#   na.rm = TRUE)
 
-#Population Share
-sum(as.numeric(
-  data.county[data.county$Group == "Total",]$DP05.group.pop))/
-  sum(as.numeric(
-    data.county[data.county$Group == "Total",]$DP05.group.pop))
-quantile(as.numeric(
-  data.county[data.county$Group == "Total",]$DP05.group.pop),
-  probs = c(0.1,0.9))
+# #Population Share
+# sum(as.numeric(
+#   data.county[data.county$Group == "Total",]$DP05.group.pop))/
+#   sum(as.numeric(
+#     data.county[data.county$Group == "Total",]$DP05.group.pop))
+# quantile(as.numeric(
+#   data.county[data.county$Group == "Total",]$DP05.group.pop),
+#   probs = c(0.1,0.9))
 
-sum(as.numeric(
-  data.county[data.county$Group == "WhiteNH",]$DP05.group.pop))/
-  sum(as.numeric(
-    data.county[data.county$Group == "Total",]$DP05.group.pop))
+# sum(as.numeric(
+#   data.county[data.county$Group == "WhiteNH",]$DP05.group.pop))/
+#   sum(as.numeric(
+#     data.county[data.county$Group == "Total",]$DP05.group.pop))
   
-sum(as.numeric(
-  data.county[data.county$Group == "Black",]$DP05.group.pop))/
-  sum(as.numeric(
-    data.county[data.county$Group == "Total",]$DP05.group.pop))
+# sum(as.numeric(
+#   data.county[data.county$Group == "Black",]$DP05.group.pop))/
+#   sum(as.numeric(
+#     data.county[data.county$Group == "Total",]$DP05.group.pop))
   
-sum(as.numeric(
-  data.county[data.county$Group == "Asian",]$DP05.group.pop))/
-  sum(as.numeric(
-    data.county[data.county$Group == "Total",]$DP05.group.pop))
+# sum(as.numeric(
+#   data.county[data.county$Group == "Asian",]$DP05.group.pop))/
+#   sum(as.numeric(
+#     data.county[data.county$Group == "Total",]$DP05.group.pop))
 
-sum(as.numeric(
-    data.county[data.county$Group == "Hispanic",]$DP05.group.pop))/
-    sum(as.numeric(
-      data.county[data.county$Group == "Total",]$DP05.group.pop))
+# sum(as.numeric(
+#     data.county[data.county$Group == "Hispanic",]$DP05.group.pop))/
+#     sum(as.numeric(
+#       data.county[data.county$Group == "Total",]$DP05.group.pop))
