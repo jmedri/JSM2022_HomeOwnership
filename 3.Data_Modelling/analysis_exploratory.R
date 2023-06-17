@@ -1,23 +1,25 @@
 #################### Functions ##################
 
-plot_chloropleth <- function(data,
-                             fill_var,
-                             title = NULL,
-                             facet_var = "race",
-                             facet_num_cols = NA,
-                             breaks = NULL,
-                             outline = TRUE,
-                             color_na = "black",
-                             free_scales = FALSE,
-                             log_scale = FALSE,
-                             legend_show = TRUE,
-                             legend_portrait = FALSE,
-                             main_title_size = 3,
-                             panel_label_size = 3,
-                             legend_title_size = 3,
-                             legend_text_size = 3,
-                             legend_height = 0.3,
-                             palette = NULL) {
+plot_chloropleth <- function(
+  data,
+  fill_var,
+  title = NULL,
+  facet_var = "race",
+  facet_num_cols = NA,
+  breaks = NULL,
+  outline = TRUE,
+  color_na = "black",
+  free_scales = FALSE,
+  log_scale = FALSE,
+  legend_show = TRUE,
+  legend_portrait = FALSE,
+  main_title_size = 3,
+  panel_label_size = 3,
+  legend_title_size = 3,
+  legend_text_size = 3,
+  legend_height = 0.3,
+  palette = NULL
+) {
 #' @title Plot chloropleth
 #' @param data The data frame with spatial geometry.
 #'        Must have a "geometry" column and have class "sf".
@@ -66,14 +68,17 @@ plot_chloropleth <- function(data,
     tmap_out <- tmap_out + tmap::tm_borders()
   }
   if (!is.null(facet_var)) {
-    tmap_out <- tmap_out +
+    tmap_out <- (
+      tmap_out +
       tmap::tm_facets(
         facet_var,
         free.scales = free_scales,
         ncol = facet_num_cols
       )
+    )
   }
-  tmap_out <- tmap_out +
+  tmap_out <- (
+    tmap_out +
     tmap::tm_layout(
       main.title = if (is.null(title)) fill_var else title,
       main.title.size = main_title_size,
@@ -86,6 +91,7 @@ plot_chloropleth <- function(data,
       legend.text.size = legend_text_size,
       legend.height = legend_height
     )
+  )
   tmap_out
 }
 

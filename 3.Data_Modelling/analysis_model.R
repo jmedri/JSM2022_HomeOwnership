@@ -593,17 +593,19 @@ plot_loo_pareto_k_all <- function() {
   )
 }
 
-plot_prediction <- function(model,
-                            data,
-                            new_data,
-                            separate_y = FALSE,
-                            x_lim_full = FALSE,
-                            fill_alpha = 0.3,
-                            title = NULL,
-                            show_subtitle = TRUE,
-                            base_size = 20,
-                            interval_size = 5,
-                            num_draws = 1000) {
+plot_prediction <- function(
+  model,
+  data,
+  new_data,
+  separate_y = FALSE,
+  x_lim_full = FALSE,
+  fill_alpha = 0.3,
+  title = NULL,
+  show_subtitle = TRUE,
+  base_size = 20,
+  interval_size = 5,
+  num_draws = 1000
+) {
 #' @title Plot predicted home ownership.
 #' @description Plots posterior predicted distributions for Bayesian models.
 #' @note This function needs library(ggdist) and library(brms)!
@@ -628,10 +630,14 @@ plot_prediction <- function(model,
 #' @param interval_size thickness of the part showing the median and .95 interval.
 #' @param num_draws number of posterior draws to use when estimating the prediction
 
+  # Check which variables need to be expanded to all possible values
   for (var_name in c("race", "state")) {
     if (
       !(var_name %in% names(new_data)) ||
+      (
+        (length(new_data[[var_name]]) == 1) &&
         (new_data[[var_name]] == "All")
+      )
     ) {
       new_data[[var_name]] <- if (var_name == "race") {
         RACES_MODEL

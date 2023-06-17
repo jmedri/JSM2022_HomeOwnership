@@ -460,70 +460,69 @@ plots <- function(area = "State",
 
 # Plots Function (For Choropleth Maps)
 
-plot_chloropleth <- function(
-    area = "State",
-    State = "All",
-    fill_var = "hom.own",
-    col_pal = "Reds",
-    title = NULL,
-    facet_var = "race",
-    group1 = "WhiteNH",
-    group2 = "None",
-    group3 = "None",
-    group4 = "None",
-    facet_ncol = NA,
-    breaks = NULL,
-    outline = TRUE,
-    color_na = "black",
-    free_scales = FALSE,
-    log_scale = FALSE
+plot_chloropleth_2 <- function(
+  area = "State",
+  State = "All",
+  fill_var = "hom.own",
+  col_pal = "Reds",
+  title = NULL,
+  facet_var = "race",
+  group1 = "WhiteNH",
+  group2 = "None",
+  group3 = "None",
+  group4 = "None",
+  facet_ncol = NA,
+  breaks = NULL,
+  outline = TRUE,
+  color_na = "black",
+  free_scales = FALSE
 ) {
-  # keep only contiguous states for plotting
-  
   groups_r <- c(group1, group2, group3, group4)
   
-  data <- 
-    if(area == "State"){data_state_ch %>%
-        filter(.,!state %in% c("Alaska", "Hawaii") & 
-        race %in% groups_r)}
-  else if(area == "County" & State == "All"){data_county_ch %>%
-      filter(., !state %in% c("Alaska", "Hawaii") &
-               race %in% groups_r)}
-    else if(area == "County" & !State == "All"){data_county_ch %>%
-        filter(., race %in% groups_r &
-                 state %in% State)}
-  
+  data <-  if(area == "State") {
+    data_state_ch %>%
+    filter(
+      !state %in% c("Alaska", "Hawaii") & 
+      race %in% groups_r
+    )
+  } else if((area == "County") & (State == "All")) {
+    data_county_ch %>%
+    filter(
+      !(state %in% c("Alaska", "Hawaii")) &
+      (race %in% groups_r)
+    )
+  } else if((area == "County") & !(State == "All")) {
+    data_county_ch %>% filter(
+      (race %in% groups_r) &
+      (state %in% State)
+    )
+  }
+
   data$linc <- log10(data$inc.inc)
   data$lpop <- log10(data$pop.tot)
-  data$edu.hs <- data$edu.hs*100
-  data$edu.bs <- data$edu.bs*100
-  data$emp.ue <- data$emp.ue*100
-  data$pop.share <- data$pop.share*100
-  data$hom.own <- data$hom.own*100
+  data$edu.hs <- data$edu.hs * 100
+  data$edu.bs <- data$edu.bs * 100
+  data$emp.ue <- data$emp.ue * 100
+  data$pop.share <- data$pop.share * 100
+  data$hom.own <- data$hom.own * 100
 
-  var.name <-
-    if(fill_var == "hom.own") "Home Ownership (%)"
-  else if(fill_var == "edu.hs") "High School Completion (%)"
-  else if(fill_var == "edu.bs") "Bachelor's Degree Completion (%)"
-  else if(fill_var == "emp.ue") "Unemployment (%)"
-  else if(fill_var == "pop.tot") "Total Population"
-  else if(fill_var == "pop.share") "Racial Population Share (%)"
-  else if(fill_var == "inc.inc") "Household Annual Income (US$)"
-  else if(fill_var == "linc") "Log10 Annual Income (US$)"
-  else if(fill_var == "lpop") "Log10 Total Population"
-
-  #if (log_scale) {
-  #  data[[fill_var]] <- log10(
-  #    replace(data[[fill_var]], data[[fill_var]] <= 0, NA)
-  #  )
-  #}
+  var.name <- c(
+    "hom.own" = "Home Ownership (%)",
+    "edu.hs" = "High School Completion (%)",
+    "edu.bs" = "Bachelor's Degree Completion (%)",
+    "emp.ue" = "Unemployment (%)",
+    "pop.tot" = "Total Population",
+    "pop.share" = "Racial Population Share (%)",
+    "inc.inc" = "Household Annual Income (US$)",
+    "linc" = "Log10 Annual Income (US$)",
+    "lpop" = "Log10 Total Population"
+  )[[fill_var]]
   
   the_plot <-
     tmap::tm_shape(data) +
     tmap::tm_fill(
       title = var.name,
-      col = 
-        fill_var,
+      col = fill_var,
       palette = col_pal,
       style = "cont",
       breaks = breaks,
@@ -534,40 +533,29 @@ plot_chloropleth <- function(
     the_plot <- the_plot + tmap::tm_borders()
   }
   if (!is.null(facet_var)) {
-    the_plot <- the_plot +
+    the_plot <- (
+      the_plot +
       tmap::tm_facets(
         facet_var,
         free.scales = free_scales,
         ncol = facet_ncol
       )
+    )
   }
-  the_plot <- the_plot +
-    #tmap::tm_layout(
-      # Note these parameters are chosen to look good at
-      # 5000 x 5000 pixel resolution
-      #main.title = if (is.null(title)) fill_var else title,
-      #main.title = NULL,
-      #main.title.size = 3,
-      #panel.label.size = 3,
-      #legend.outside = !free_scales,
-      #legend.outside.position = "bottom",
-      #legend.outside.position = c("bottom","center"),
-      #legend.outside.size = 0.2,
-      #legend.position = c("left", "bottom"),
-      #legend.title.size = 5,
-      #legend.text.size = 3
-  tmap::tm_layout(
-    panel.label.size = 5,
-    legend.outside = !free_scales,
-    legend.outside.position = "bottom",
-    legend.position = c("left", "bottom"),
-    legend.outside.size = 0.3,
-    legend.text.size = 1,
-    legend.title.size= 1.5,
-    legend.width = 0.5
+  the_plot <- (
+    the_plot +
+    tmap::tm_layout(
+      panel.label.size = 5,
+      legend.outside = !free_scales,
+      legend.outside.position = "bottom",
+      legend.position = c("left", "bottom"),
+      legend.outside.size = 0.3,
+      legend.text.size = 1,
+      legend.title.size= 1.5,
+      legend.width = 0.5
+    )
   )
-    
-  return(the_plot)
+  the_plot
 }
 
 #-----------------------------------------------------------------------------
@@ -610,11 +598,11 @@ ggsave(
   plot = bp_imd, width = 8, height = 6, units = "in", dpi = 300)
 
 #Figure 3: Choropleth Map
-chloro_greens <- plot_chloropleth(col_pal = "Greens", group1 = "Total", free_scales = TRUE)
+chloro_greens <- plot_chloropleth_2(col_pal = "Greens", group1 = "Total", free_scales = TRUE)
 tmap_save(chloro_greens, file.path(OUTPUT_EXPLORATORY_DIR, "data_exploration", "choro_greens.pdf"),
   width = 8, height = 6, units = "in", dpi = 300)
 
-chloro_greys <- plot_chloropleth(col_pal = "Greys", group1 = "Total", free_scales = TRUE)
+chloro_greys <- plot_chloropleth_2(col_pal = "Greys", group1 = "Total", free_scales = TRUE)
 tmap_save(chloro_greys, file.path(OUTPUT_EXPLORATORY_DIR, "data_exploration", "choro_greys.pdf"),
   width = 8, height = 6, units = "in", dpi = 300)
 
