@@ -72,6 +72,7 @@ COLUMNS_RENAME <- c(
   "pop.tot" = "DP05.group.pop",
   "edu.tot" = "S1501.group.total",
   "edu.hs" = "S1501.group.HSt",
+  "edu.bs" = "S1501.group.BSt",
   "inc.tot" = "S1903.group.total",
   "inc.inc" = "S1903.group.medianincome",
   "emp.tot" = "S2301.group.total",

@@ -1335,5 +1335,3 @@ do_all_exploratory_analyses <- function() {
   make_model_formula_table()
   make_size_table()
 }
-
-make_data_summary()

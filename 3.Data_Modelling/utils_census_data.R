@@ -46,14 +46,19 @@ process_census_data_2_long <- function() {
         list(annotation = "Estimate!!Total!!RACE AND HISPANIC OR LATINO ORIGIN BY EDUCATIONAL ATTAINMENT!!Hispanic or Latino Origin", variable = "S1501.group.total", race = "Hispanic"),
         list(annotation = "Estimate!!Total!!RACE AND HISPANIC OR LATINO ORIGIN BY EDUCATIONAL ATTAINMENT!!Black alone", variable = "S1501.group.total", race = "Black"),
         list(annotation = "Estimate!!Total!!RACE AND HISPANIC OR LATINO ORIGIN BY EDUCATIONAL ATTAINMENT!!Asian alone", variable = "S1501.group.total", race = "Asian"),
-        list(annotation = "Estimate!!Total!!AGE BY EDUCATIONAL ATTAINMENT!!Population 18 to 24 years!!High school graduate (includes equivalency)", variable = "S1501.group.HSt.1", race = "Total"),
-        list(annotation = "Estimate!!Total!!AGE BY EDUCATIONAL ATTAINMENT!!Population 18 to 24 years!!Some college or associate's degree", variable = "S1501.group.HSt.2", race = "Total"),
-        list(annotation = "Estimate!!Total!!AGE BY EDUCATIONAL ATTAINMENT!!Population 18 to 24 years!!Bachelor's degree or higher", variable = "S1501.group.HSt.3", race = "Total"),
-        list(annotation = "Estimate!!Total!!AGE BY EDUCATIONAL ATTAINMENT!!Population 25 years and over!!High school graduate or higher", variable = "S1501.group.HSt.4", race = "Total"),
+        list(annotation = "Estimate!!Total!!AGE BY EDUCATIONAL ATTAINMENT!!Population 18 to 24 years!!High school graduate (includes equivalency)", variable = "S1501.group.edu.1", race = "Total"),
+        list(annotation = "Estimate!!Total!!AGE BY EDUCATIONAL ATTAINMENT!!Population 18 to 24 years!!Some college or associate's degree", variable = "S1501.group.edu.2", race = "Total"),
+        list(annotation = "Estimate!!Total!!AGE BY EDUCATIONAL ATTAINMENT!!Population 18 to 24 years!!Bachelor's degree or higher", variable = "S1501.group.edu.3", race = "Total"),
+        list(annotation = "Estimate!!Total!!AGE BY EDUCATIONAL ATTAINMENT!!Population 25 years and over!!High school graduate or higher", variable = "S1501.group.edu.4", race = "Total"),
+        list(annotation = "Estimate!!Total!!AGE BY EDUCATIONAL ATTAINMENT!!Population 25 years and over!!Bachelor's degree or higher", variable = "S1501.group.edu.5", race = "Total"),
         list(annotation = "Estimate!!Total!!RACE AND HISPANIC OR LATINO ORIGIN BY EDUCATIONAL ATTAINMENT!!White alone, not Hispanic or Latino!!High school graduate or higher", variable = "S1501.group.HSt", race = "WhiteNH"),
         list(annotation = "Estimate!!Total!!RACE AND HISPANIC OR LATINO ORIGIN BY EDUCATIONAL ATTAINMENT!!Hispanic or Latino Origin!!High school graduate or higher", variable = "S1501.group.HSt", race = "Hispanic"),
         list(annotation = "Estimate!!Total!!RACE AND HISPANIC OR LATINO ORIGIN BY EDUCATIONAL ATTAINMENT!!Black alone!!High school graduate or higher", variable = "S1501.group.HSt", race = "Black"),
-        list(annotation = "Estimate!!Total!!RACE AND HISPANIC OR LATINO ORIGIN BY EDUCATIONAL ATTAINMENT!!Asian alone!!High school graduate or higher", variable = "S1501.group.HSt", race = "Asian")
+        list(annotation = "Estimate!!Total!!RACE AND HISPANIC OR LATINO ORIGIN BY EDUCATIONAL ATTAINMENT!!Asian alone!!High school graduate or higher", variable = "S1501.group.HSt", race = "Asian"),
+        list(annotation = "Estimate!!Total!!RACE AND HISPANIC OR LATINO ORIGIN BY EDUCATIONAL ATTAINMENT!!White alone, not Hispanic or Latino!!Bachelor's degree or higher", variable = "S1501.group.BSt", race = "WhiteNH"),
+        list(annotation = "Estimate!!Total!!RACE AND HISPANIC OR LATINO ORIGIN BY EDUCATIONAL ATTAINMENT!!Hispanic or Latino Origin!!Bachelor's degree or higher", variable = "S1501.group.BSt", race = "Hispanic"),
+        list(annotation = "Estimate!!Total!!RACE AND HISPANIC OR LATINO ORIGIN BY EDUCATIONAL ATTAINMENT!!Black alone!!Bachelor's degree or higher", variable = "S1501.group.BSt", race = "Black"),
+        list(annotation = "Estimate!!Total!!RACE AND HISPANIC OR LATINO ORIGIN BY EDUCATIONAL ATTAINMENT!!Asian alone!!Bachelor's degree or higher", variable = "S1501.group.BSt", race = "Asian")
       )
     ),
     list(
@@ -232,11 +237,12 @@ process_census_data_3_wide <- function() {
             dplyr::mutate(
               S1501.group.total = S1501.group.total.1 + S1501.group.total.2,
               S1501.group.HSt = (
-                S1501.group.HSt.1 +
-                  S1501.group.HSt.2 +
-                  S1501.group.HSt.3 +
-                  S1501.group.HSt.4
-              )
+                S1501.group.edu.1 +
+                  S1501.group.edu.2 +
+                  S1501.group.edu.3 +
+                  S1501.group.edu.4
+              ),
+              S1501.group.BSt = S1501.group.edu.3 + S1501.group.edu.5
             )
         )
       }
@@ -246,16 +252,17 @@ process_census_data_3_wide <- function() {
       !c(
         S1501.group.total.1,
         S1501.group.total.2,
-        S1501.group.HSt.1,
-        S1501.group.HSt.2,
-        S1501.group.HSt.3,
-        S1501.group.HSt.4
+        S1501.group.edu.1,
+        S1501.group.edu.2,
+        S1501.group.edu.3,
+        S1501.group.edu.4,
+        S1501.group.edu.5
       )
     ) |>
-    (function(x) {
+    x => {
       x |>
         dplyr::select(dplyr::all_of(sort(colnames(x))))
-    })() |>
+    } |>
     dplyr::relocate(State, County, GEO_ID, Group) |>
     dplyr::arrange(State, County, Group) |>
     save_csv(file.path(INPUT_PROCESSED_DIR, "census", "3_wide", "data.csv"))
@@ -351,6 +358,7 @@ process_census_data_4_model <- function() {
       county = stringr::str_c(state, "/", county),
       emp.ue = emp.ue / 100,
       edu.hs = edu.hs / edu.tot,
+      edu.bs = edu.bs / edu.tot,
       fin.cost = 12 * fin.cost / fin.inc,
       occ.fam = occ.fam / occ.tot,
       hom.own = hom.own / hom.tot,
