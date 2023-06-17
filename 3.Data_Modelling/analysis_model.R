@@ -30,12 +30,13 @@ plot_var_hist <- function() {
     )
 }
 
-get_model_data <- function(drop_size_0 = TRUE,
+get_model_data <- function(data = CENSUS_DATA,
+                           drop_size_0 = TRUE,
                            drop_na = TRUE,
                            race_list = RACES_MODEL,
                            column_list = MODEL_COLUMNS) {
   data <- (
-    CENSUS_DATA |>
+    data |>
       dplyr::filter(race %in% race_list) |>
       dplyr::select(dplyr::all_of(column_list)) |>
       dplyr::mutate(
@@ -627,7 +628,7 @@ plot_prediction <- function(model,
 #' @param interval_size thickness of the part showing the median and .95 interval.
 #' @param num_draws number of posterior draws to use when estimating the prediction
 
-  for (var_name in c("race", "state", "year")) {
+  for (var_name in c("race", "state")) {
     if (
       !(var_name %in% names(new_data)) ||
         (new_data[[var_name]] == "All")
@@ -636,8 +637,6 @@ plot_prediction <- function(model,
         RACES_MODEL
       } else if (var_name == "state") {
         STATES
-      } else if (var_name == "year") {
-        YEARS
       } else {
         stop("Impossible.")
       }
@@ -654,27 +653,26 @@ plot_prediction <- function(model,
         "race",
         setdiff(colnames(data), colnames(new_data))
       )],
-      by = c("year", "state", "race")
+      by = c("state", "race")
     ) |>
-      dplyr::mutate(hom.tot.log = log(hom.tot)) |>
-      prepare_model_data()
+      get_model_data()
   )
 
   pred_draws <- (
     brms::posterior_epred(model, newdata = new_data, ndraws = num_draws) |>
-      sweep(2, new_data[["hom.tot"]], `/`)
+      sweep(2, new_data[["size"]], `/`)
   )
 
   pred_draws <- purrr::map_dfr(
     unique(new_data[["race"]]),
     function(race) {
       pred_draws_race <- pred_draws[, new_data[["race"]] == race, drop = FALSE]
-      hom_tot_race <- new_data[new_data[["race"]] == race, "hom.tot", drop = TRUE]
-      pred_draws_race <- sweep(pred_draws_race, 2, hom_tot_race, `*`)
-      pred_draws_race <- rowSums(pred_draws_race) / sum(hom_tot_race)
+      size_race <- new_data[new_data[["race"]] == race, "size", drop = TRUE]
+      pred_draws_race <- sweep(pred_draws_race, 2, size_race, `*`)
+      pred_draws_race <- rowSums(pred_draws_race) / sum(size_race)
       tibble::tibble(
         value = pred_draws_race,
-        race = factor(race, levels = c("White", "Black", "Asian", "Other"))
+        race = factor(race, levels = RACES_MODEL)
       )
     }
   )
@@ -683,8 +681,8 @@ plot_prediction <- function(model,
     ggplot_out <- (
       ggplot2::ggplot(
         pred_draws,
-        aes(
-          x = value,
+        ggplote::aes(
+          x = value * 100,
           y = race,
           fill = race,
           color = race,
@@ -697,14 +695,14 @@ plot_prediction <- function(model,
     ggplot_out <- (
       ggplot2::ggplot(
         pred_draws,
-        aes(
-          x = value,
+        ggplot2::aes(
+          x = value * 100,
           fill = race,
           color = race,
           slab_color = race
         )
       ) +
-        ggplot2::ylab("density")
+        ggplot2::ylab("Density")
     )
   }
   ggplot_out <- (
@@ -716,8 +714,13 @@ plot_prediction <- function(model,
         interval_alpha = 1,
         point_alpha = 1
       ) +
-      ggplot2::xlab("hom.own") +
-      ggplot2::theme_classic(base_size = base_size)
+      ggplot2::xlab("Home ownership rate (%)") +
+      ggplot2::theme_classic(base_size = base_size) +
+      ggplot2::scale_color_manual(
+        values = RACE_COLORS,
+        name = "Group",
+        aesthetics = c("color", "fill", "slab_color")
+      )
   )
 
   if (!separate_y) {
@@ -730,13 +733,14 @@ plot_prediction <- function(model,
 
   if (show_subtitle) {
     ggplot_out <- ggplot_out + ggplot2::labs(
-      subtitle = stringr::str_c("with median point and 0.95 interval")
+      subtitle = stringr::str_c("Density, median, and 95% interval")
     )
   }
 
   if (x_lim_full) {
     ggplot_out <- ggplot_out + ggplot2::coord_cartesian(xlim = c(0, 1))
   }
+
   ggplot_out
 }
 
@@ -1320,7 +1324,7 @@ do_fitted_correlation <- function() {
   ) |>
   x => do.call(cbind, x) |>
   cor() |>
-  (function(x) {
+  x => {
     x |>
       xtable::xtable() |>
       save_tex(
@@ -1342,7 +1346,7 @@ do_fitted_correlation <- function() {
           "fitted_correlation.csv"
         )
       )
-  })()
+  }
 }
 
 do_all_model_analyses <- function() {

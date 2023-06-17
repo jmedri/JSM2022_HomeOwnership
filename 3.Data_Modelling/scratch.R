@@ -171,3 +171,13 @@ summary(mod)
 plot(xxx, par = "inc.inc.trans")
 tm_shape(xxx) + tm_fill("hom.own")
 tm_shape(xxx) + tm_fill("inc.inc.trans")
+
+
+plot_prediction
+
+xxx <- load_model("1")
+plot_prediction(
+  model = xxx,
+  data = MODEL_DATA,
+  new_data = list(inc.inc = 30000)
+)
