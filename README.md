@@ -19,7 +19,7 @@ The sociodemographic data was obtained from [data.census.gov](https://data.censu
 * DP05: ACS demographic and housing estimates.
 * B98001: Unweighted housing unit sample.
 
-The data was aggregated at the county level and comes from the American Community Survey (ACS) 5-year estimate tables for the year 2020.
+The data was aggregated at the county level and comes from the American Community Survey (ACS) 5-year estimate tables for the years 2015-2020.
 
 ## US Census Bureau Cartographic Boundary Files
 
@@ -73,7 +73,7 @@ The following files must be downloaded from the supplemental data and placed int
 * cb_2020_us_county_20m.zip
 * cb_2020_us_state_20m.zip
 
-Then run the scripts "do_process_data.R" and "do_analysis.R" in that order to reproduce all data processing and analyses.
+Then run the scripts "do_process_data.R" and "do_analysis.R" in that order to reproduce all data processing and analyses. The data processing is expected to take less than 10 minutes on a standard PC, while the analysis make take between 2 to 5 hours, since it fits several models using MCMC.
 
 ## Shiny App
 
@@ -87,4 +87,10 @@ We developed a Shiny app to allow users the ability to further explore the data 
 
 While the publication focused on data for the year 2020, the Shiny app allows users to explore data from years 2015 to 2020. Moreover, many variables not considered in the modeling are available for visualization. The app also allows visualizing data at the state level (over the whole US) or at the county level (for individual states).
 
-To run the app the data must have already been processed using the "do_process_data.R" script. Then the "run_app.R" script must be run.
+To run the app the data must have already been processed using the "do_process_data.R" script. Then the "run_app.R" script must be run. The app should start up in less than a minute after the "run_app.R" is run.
+
+## Contact
+
+The maintainers of this repository are:
+* Tejasvi Channagiri (tchannagiri@gmail.com)
+* Jhonathan Medri (jm192@usf.edu)
