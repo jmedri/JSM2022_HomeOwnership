@@ -2,7 +2,10 @@
 library(shiny)
 library(shinythemes)
 library(shinyWidgets)
-library(styler)
+
+packageVersion("shiny")
+packageVersion("shinythemes")
+packageVersion("shinyWidgets")
 
 source("3.Data_Modelling/initialize.R")
 initialize()

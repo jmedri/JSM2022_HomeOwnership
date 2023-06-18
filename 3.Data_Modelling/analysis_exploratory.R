@@ -20,10 +20,10 @@ plot_choropleth <- function(
   legend_height = 0.3,
   palette = NULL
 ) {
-#' @title Plot chloropleth
+#' @title Plot choropleth
 #' @param data The data frame with spatial geometry.
 #'        Must have a "geometry" column and have class "sf".
-#' @param fill_var The variable used to color the chloropleth.
+#' @param fill_var The variable used to color the choropleth.
 #' @param title Main title of the plot.
 #' @param facet_var The variable to use to facet the plots.
 #' @param facet_num_cols Number of columns for facets.
@@ -387,7 +387,7 @@ plot_choropleth_all <- function(
         save_tmap(
           file.path(
             dir,
-            stringr::str_c("chloro_", remove_punct(fill_var), ".pdf")
+            stringr::str_c("choro_", remove_punct(fill_var), ".pdf")
           )
         )
     }
@@ -1331,7 +1331,7 @@ do_all_exploratory_analyses <- function() {
   )
   plot_choropleth_all(
     CENSUS_DATA,
-    file.path(OUTPUT_EXPLORATORY_DIR, "chloropleth"),
+    file.path(OUTPUT_EXPLORATORY_DIR, "choropleth"),
     facet_num_cols = 2
   )
   make_var_ranges_table()

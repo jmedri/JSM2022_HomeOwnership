@@ -12,7 +12,6 @@ process_census_data_1_unzip <- function() {
     list(table = "S2507", zip = "S2507.zip", files = c("ACSST5Y2020.S2507-Data.csv", "ACSST5Y2020.S2507-Column-Metadata.csv"))
   )
   for (file_info in file_info_list) {
-    cat(file_info[["table"]], "\n")
     unzip(
       file.path(INPUT_DIR, file_info[["zip"]]),
       files = file_info[["files"]],

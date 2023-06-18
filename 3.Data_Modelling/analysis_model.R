@@ -1192,7 +1192,7 @@ make_model_effect_county <- function(county) {
   )
 }
 
-plot_model_residual_chloropleth <- function(standardize = FALSE) {
+plot_model_residual_choropleth <- function(standardize = FALSE) {
   model_data <- get_model_data(
     column_list = union(
       c("state", "county", "geoid", "race"),
@@ -1373,8 +1373,8 @@ do_all_model_analyses <- function() {
   make_mean_vs_model_table()
   make_model_effect_county("New York/New York County")
   make_model_effect_county("Florida/Hillsborough County")
-  plot_model_residual_chloropleth(FALSE)
-  plot_model_residual_chloropleth(TRUE)
+  plot_model_residual_choropleth(FALSE)
+  plot_model_residual_choropleth(TRUE)
   do_convergence_analysis()
   do_fitted_correlation()
 }

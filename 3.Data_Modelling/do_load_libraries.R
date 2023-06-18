@@ -1,7 +1,7 @@
 library(tidyverse) # For data processing/coding utils
 library(ggdist) # For certain distribution plots
 library(sf) # For reading shape files
-library(tmap) # For chloropleth maps
+library(tmap) # For choropleth maps
 library(xtable) # For making latex files
 library(rstan) # Prerequisite for brms
 library(brms) # For fitting Bayesian models
@@ -13,7 +13,7 @@ options(mc.cores = parallel::detectCores()) # For Stan MCMC simulation
 packageVersion("tidyverse") # For data processing/coding utils
 packageVersion("ggdist") # For certain distribution plots
 packageVersion("sf") # For reading shape files
-packageVersion("tmap") # For chloropleth maps
+packageVersion("tmap") # For choropleth maps
 packageVersion("xtable") # For making latex files
 packageVersion("rstan") # Prerequisite for brms
 packageVersion("brms") # For fitting Bayesian models
