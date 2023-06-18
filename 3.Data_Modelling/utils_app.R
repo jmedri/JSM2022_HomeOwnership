@@ -1041,11 +1041,9 @@ process_app_race_data <- function(Table = "S2501", Year = 2020) {
       #Total in the survey
       "S1501_C01_001E", "S1501_C01_006E",
       #Total broken by race
-      "S1501_C01_010E", "S1501_C01_003E", "S1501_C01_005E", "S1501_C01_009E",
       #Total by educational attainment (considering both age groups)
-      "S1501_C01_003E", "S1501_C01_004E", "S1501_C01_005E",
-      "S1501_C01_009E", "S1501_C01_010E", "S1501_C01_011E",
-      "S1501_C01_012E", "S1501_C01_013E",
+      "S1501_C01_003E", "S1501_C01_004E", "S1501_C01_005E", "S1501_C01_009E",
+      "S1501_C01_010E", "S1501_C01_011E", "S1501_C01_012E", "S1501_C01_013E",
       #Total by educational attainment broken by race
       #White
       "S1501_C01_028E", "S1501_C01_029E", "S1501_C01_030E",
@@ -1170,7 +1168,7 @@ process_app_race_data <- function(Table = "S2501", Year = 2020) {
   }
 
   # Call File and Create Year and Table Variables
-  data <- readr::read_csv(file_name, header = TRUE)[-1, vars_old]
+  data <- readr::read_csv(file_name)[-1, vars_old, drop = FALSE]
   data$Year <- Year
   data$Table <- Table
   data$County <- gsub(",.*$", "", data$NAME)
@@ -1178,7 +1176,7 @@ process_app_race_data <- function(Table = "S2501", Year = 2020) {
 
   # Build data set
   data <- if (Table == "S1501") {
-    data %>%
+    data |>
     dplyr::summarise(
       GEO_ID = GEO_ID,
       Year = Year,
@@ -1200,9 +1198,9 @@ process_app_race_data <- function(Table = "S2501", Year = 2020) {
         as.numeric(S1501_C01_013E)
       ),
       S1501.group.BSp = S1501.group.BSt / S1501.group.total
-    ) %>%
+    ) |>
     rbind(
-      data %>%
+      data |>
       dplyr::summarise(
         GEO_ID = GEO_ID,
         Year = Year,
@@ -1215,9 +1213,9 @@ process_app_race_data <- function(Table = "S2501", Year = 2020) {
         S1501.group.BSt = as.numeric(S1501_C01_030E),
         S1501.group.BSp = S1501.group.BSt / S1501.group.total
       )
-    ) %>%
+    ) |>
     rbind(
-      data %>%
+      data |>
       dplyr::summarise(
         GEO_ID = GEO_ID,
         Year = Year,
@@ -1230,9 +1228,9 @@ process_app_race_data <- function(Table = "S2501", Year = 2020) {
         S1501.group.BSt = as.numeric(S1501_C01_033E),
         S1501.group.BSp = S1501.group.BSt / S1501.group.total
       )
-    ) %>%
+    ) |>
     rbind(
-      data %>%
+      data |>
       dplyr::summarise(
         GEO_ID = GEO_ID,
         Year = Year,
@@ -1245,9 +1243,9 @@ process_app_race_data <- function(Table = "S2501", Year = 2020) {
         S1501.group.BSt = as.numeric(S1501_C01_036E),
         S1501.group.BSp = S1501.group.BSt / S1501.group.total
       )
-    ) %>%
+    ) |>
     rbind(
-      data %>%
+      data |>
       dplyr::summarise(
         GEO_ID = GEO_ID,
         Year = Year,
@@ -1260,9 +1258,9 @@ process_app_race_data <- function(Table = "S2501", Year = 2020) {
         S1501.group.BSt = as.numeric(S1501_C01_039E),
         S1501.group.BSp = S1501.group.BSt / S1501.group.total
       )
-    ) %>%
+    ) |>
     rbind(
-      data %>%
+      data |>
       dplyr::summarise(
         GEO_ID = GEO_ID,
         Year = Year,
@@ -1275,9 +1273,9 @@ process_app_race_data <- function(Table = "S2501", Year = 2020) {
         S1501.group.BSt = as.numeric(S1501_C01_042E),
         S1501.group.BSp = S1501.group.BSt / S1501.group.total
       )
-    ) %>%
+    ) |>
     rbind(
-      data %>%
+      data |>
       dplyr::summarise(
         GEO_ID = GEO_ID,
         Year = Year,
@@ -1290,9 +1288,9 @@ process_app_race_data <- function(Table = "S2501", Year = 2020) {
         S1501.group.BSt = as.numeric(S1501_C01_045E),
         S1501.group.BSp = S1501.group.BSt / S1501.group.total
       )
-    ) %>%
+    ) |>
     rbind(
-      data %>%
+      data |>
       dplyr::summarise(
         GEO_ID = GEO_ID,
         Year = Year,
@@ -1305,9 +1303,9 @@ process_app_race_data <- function(Table = "S2501", Year = 2020) {
         S1501.group.BSt = as.numeric(S1501_C01_048E),
         S1501.group.BSp = S1501.group.BSt / S1501.group.total
       )
-    ) %>%
+    ) |>
     rbind(
-      data %>%
+      data |>
       dplyr::summarise(
         GEO_ID = GEO_ID,
         Year = Year,
@@ -1320,9 +1318,9 @@ process_app_race_data <- function(Table = "S2501", Year = 2020) {
         S1501.group.BSt = as.numeric(S1501_C01_051E),
         S1501.group.BSp = S1501.group.BSt / S1501.group.total
       )
-    ) %>%
+    ) |>
     rbind(
-      data %>%
+      data |>
       dplyr::summarise(
         GEO_ID = GEO_ID,
         Year = Year,
@@ -1337,7 +1335,7 @@ process_app_race_data <- function(Table = "S2501", Year = 2020) {
       )
     )
   } else if (Table == "S1903") {
-    data %>%
+    data |>
     dplyr::summarise(
       GEO_ID = GEO_ID,
       Year = Year,
@@ -1346,9 +1344,9 @@ process_app_race_data <- function(Table = "S2501", Year = 2020) {
       Group = "Total",
       S1903.group.total = as.numeric(S1903_C01_001E),
       S1903.group.medianincome = ifelse(Year < 2017, S1903_C02_001E, S1903_C03_001E)
-    ) %>%
+    ) |>
     rbind(
-      data %>%
+      data |>
       dplyr::summarise(
         GEO_ID = GEO_ID,
         Year = Year,
@@ -1366,9 +1364,9 @@ process_app_race_data <- function(Table = "S2501", Year = 2020) {
           S1903_C03_002E
         )
       )
-    ) %>%
+    ) |>
     rbind(
-      data %>%
+      data |>
       dplyr::summarise(
         GEO_ID = GEO_ID,
         Year = Year,
@@ -1386,9 +1384,9 @@ process_app_race_data <- function(Table = "S2501", Year = 2020) {
           S1903_C03_003E
         )
       )
-    ) %>%
+    ) |>
     rbind(
-      data %>%
+      data |>
       dplyr::summarise(
         GEO_ID = GEO_ID,
         Year = Year,
@@ -1406,9 +1404,9 @@ process_app_race_data <- function(Table = "S2501", Year = 2020) {
           S1903_C03_004E
         )
       )
-    ) %>%
+    ) |>
     rbind(
-      data %>%
+      data |>
       dplyr::summarise(
         GEO_ID = GEO_ID,
         Year = Year,
@@ -1426,9 +1424,9 @@ process_app_race_data <- function(Table = "S2501", Year = 2020) {
           S1903_C03_005E
         )
       )
-    ) %>%
+    ) |>
     rbind(
-      data %>%
+      data |>
       dplyr::summarise(
         GEO_ID = GEO_ID,
         Year = Year,
@@ -1446,9 +1444,9 @@ process_app_race_data <- function(Table = "S2501", Year = 2020) {
           S1903_C03_006E
         )
       )
-    ) %>%
+    ) |>
     rbind(
-      data %>%
+      data |>
       dplyr::summarise(
         GEO_ID = GEO_ID,
         Year = Year,
@@ -1466,9 +1464,9 @@ process_app_race_data <- function(Table = "S2501", Year = 2020) {
           S1903_C03_007E
         )
       )
-    ) %>%
+    ) |>
     rbind(
-      data %>%
+      data |>
       dplyr::summarise(
         GEO_ID = GEO_ID,
         Year = Year,
@@ -1486,9 +1484,9 @@ process_app_race_data <- function(Table = "S2501", Year = 2020) {
           S1903_C03_008E
         )
       )
-    ) %>%
+    ) |>
     rbind(
-      data %>%
+      data |>
       dplyr::summarise(
         GEO_ID = GEO_ID,
         Year = Year,
@@ -1506,9 +1504,9 @@ process_app_race_data <- function(Table = "S2501", Year = 2020) {
           S1903_C03_009E
         )
       )
-    ) %>%
+    ) |>
     rbind(
-      data %>%
+      data |>
       dplyr::summarise(
         GEO_ID = GEO_ID,
         Year = Year,
@@ -1528,7 +1526,7 @@ process_app_race_data <- function(Table = "S2501", Year = 2020) {
       )
     )
   } else if (Table == "S2301") {
-    data %>%
+    data |>
     dplyr::summarise(
       GEO_ID = GEO_ID,
       Year = Year,
@@ -1539,9 +1537,9 @@ process_app_race_data <- function(Table = "S2501", Year = 2020) {
       S2301.group.lfpr = as.numeric(S2301_C02_001E),
       S2301.group.epr = as.numeric(S2301_C03_001E),
       S2301.group.ue = as.numeric(S2301_C04_001E)
-    ) %>%
+    ) |>
     rbind(
-      data %>%
+      data |>
       dplyr::summarise(
         GEO_ID = GEO_ID,
         Year = Year,
@@ -1553,9 +1551,9 @@ process_app_race_data <- function(Table = "S2501", Year = 2020) {
         S2301.group.epr = as.numeric(S2301_C03_012E),
         S2301.group.ue = as.numeric(S2301_C04_012E)
       )
-    ) %>%
+    ) |>
     rbind(
-      data %>%
+      data |>
       dplyr::summarise(
         GEO_ID = GEO_ID,
         Year = Year,
@@ -1567,9 +1565,9 @@ process_app_race_data <- function(Table = "S2501", Year = 2020) {
         S2301.group.epr = as.numeric(S2301_C03_013E),
         S2301.group.ue = as.numeric(S2301_C04_013E)
       )
-    ) %>%
+    ) |>
     rbind(
-      data %>%
+      data |>
       dplyr::summarise(
         GEO_ID = GEO_ID,
         Year = Year,
@@ -1581,9 +1579,9 @@ process_app_race_data <- function(Table = "S2501", Year = 2020) {
         S2301.group.epr = as.numeric(S2301_C03_014E),
         S2301.group.ue = as.numeric(S2301_C04_014E)
       )
-    ) %>%
+    ) |>
     rbind(
-      data %>%
+      data |>
       dplyr::summarise(
         GEO_ID = GEO_ID,
         Year = Year,
@@ -1595,9 +1593,9 @@ process_app_race_data <- function(Table = "S2501", Year = 2020) {
         S2301.group.epr = as.numeric(S2301_C03_015E),
         S2301.group.ue = as.numeric(S2301_C04_015E)
       )
-    ) %>%
+    ) |>
     rbind(
-      data %>%
+      data |>
       dplyr::summarise(
         GEO_ID = GEO_ID,
         Year = Year,
@@ -1609,9 +1607,9 @@ process_app_race_data <- function(Table = "S2501", Year = 2020) {
         S2301.group.epr = as.numeric(S2301_C03_016E),
         S2301.group.ue = as.numeric(S2301_C04_016E)
       )
-    ) %>%
+    ) |>
     rbind(
-      data %>%
+      data |>
       dplyr::summarise(
         GEO_ID = GEO_ID,
         Year = Year,
@@ -1623,9 +1621,9 @@ process_app_race_data <- function(Table = "S2501", Year = 2020) {
         S2301.group.epr = as.numeric(S2301_C03_017E),
         S2301.group.ue = as.numeric(S2301_C04_017E)
       )
-    ) %>%
+    ) |>
     rbind(
-      data %>%
+      data |>
       dplyr::summarise(
         GEO_ID = GEO_ID,
         Year = Year,
@@ -1637,9 +1635,9 @@ process_app_race_data <- function(Table = "S2501", Year = 2020) {
         S2301.group.epr = as.numeric(S2301_C03_018E),
         S2301.group.ue = as.numeric(S2301_C04_018E)
       )
-    ) %>%
+    ) |>
     rbind(
-      data %>%
+      data |>
       dplyr::summarise(
         GEO_ID = GEO_ID,
         Year = Year,
@@ -1651,9 +1649,9 @@ process_app_race_data <- function(Table = "S2501", Year = 2020) {
         S2301.group.epr = as.numeric(S2301_C03_019E),
         S2301.group.ue = as.numeric(S2301_C04_019E)
       )
-    ) %>%
+    ) |>
     rbind(
-      data %>%
+      data |>
       dplyr::summarise(
         GEO_ID = GEO_ID,
         Year = Year,
@@ -1667,7 +1665,7 @@ process_app_race_data <- function(Table = "S2501", Year = 2020) {
       )
     )
   } else if (Table == "S2502") {
-    data %>%
+    data |>
     dplyr::summarise(
       GEO_ID = GEO_ID,
       Year = Year,
@@ -1681,9 +1679,9 @@ process_app_race_data <- function(Table = "S2501", Year = 2020) {
         as.numeric(S2502_C03_001E)
       ),
       S2502.group.ownedp = S2502.group.owned / S2502.group.total
-    ) %>%
+    ) |>
     rbind(
-      data %>%
+      data |>
       dplyr::summarise(
         GEO_ID = GEO_ID,
         Year = Year,
@@ -1702,9 +1700,9 @@ process_app_race_data <- function(Table = "S2501", Year = 2020) {
         ),
         S2502.group.ownedp = S2502.group.owned / S2502.group.total
       )
-    ) %>%
+    ) |>
     rbind(
-      data %>%
+      data |>
       dplyr::summarise(
         GEO_ID = GEO_ID,
         Year = Year,
@@ -1723,9 +1721,9 @@ process_app_race_data <- function(Table = "S2501", Year = 2020) {
         ),
         S2502.group.ownedp = S2502.group.owned / S2502.group.total
       )
-    ) %>%
+    ) |>
     rbind(
-      data %>%
+      data |>
       dplyr::summarise(
         GEO_ID = GEO_ID,
         Year = Year,
@@ -1744,9 +1742,9 @@ process_app_race_data <- function(Table = "S2501", Year = 2020) {
         ),
         S2502.group.ownedp = S2502.group.owned / S2502.group.total
       )
-    ) %>%
+    ) |>
     rbind(
-      data %>%
+      data |>
       dplyr::summarise(
         GEO_ID = GEO_ID,
         Year = Year,
@@ -1765,9 +1763,9 @@ process_app_race_data <- function(Table = "S2501", Year = 2020) {
         ),
         S2502.group.ownedp = S2502.group.owned / S2502.group.total
       )
-    ) %>%
+    ) |>
     rbind(
-      data %>%
+      data |>
       dplyr::summarise(
         GEO_ID = GEO_ID,
         Year = Year,
@@ -1786,9 +1784,9 @@ process_app_race_data <- function(Table = "S2501", Year = 2020) {
         ),
         S2502.group.ownedp = S2502.group.owned / S2502.group.total
       )
-    ) %>%
+    ) |>
     rbind(
-      data %>%
+      data |>
       dplyr::summarise(
         GEO_ID = GEO_ID,
         Year = Year,
@@ -1806,9 +1804,9 @@ process_app_race_data <- function(Table = "S2501", Year = 2020) {
         ),
         S2502.group.ownedp = S2502.group.owned / S2502.group.total
       )
-    ) %>%
+    ) |>
     rbind(
-      data %>%
+      data |>
       dplyr::summarise(
         GEO_ID = GEO_ID,
         Year = Year,
@@ -1827,9 +1825,9 @@ process_app_race_data <- function(Table = "S2501", Year = 2020) {
         ),
         S2502.group.ownedp = S2502.group.owned / S2502.group.total
       )
-    ) %>%
+    ) |>
     rbind(
-      data %>%
+      data |>
       dplyr::summarise(
         GEO_ID = GEO_ID,
         Year = Year,
@@ -1848,9 +1846,9 @@ process_app_race_data <- function(Table = "S2501", Year = 2020) {
         ),
         S2502.group.ownedp = S2502.group.owned / S2502.group.total
       )
-    ) %>%
+    ) |>
     rbind(
-      data %>%
+      data |>
       dplyr::summarise(
         GEO_ID = GEO_ID,
         Year = Year,
@@ -1871,7 +1869,7 @@ process_app_race_data <- function(Table = "S2501", Year = 2020) {
       )
     )
   } else if (Table == "DP05") {
-    data %>%
+    data |>
     dplyr::summarise(
       GEO_ID = GEO_ID,
       Year = Year,
@@ -1884,9 +1882,9 @@ process_app_race_data <- function(Table = "S2501", Year = 2020) {
         DP05.group.pop / as.numeric(DP05_0028E),
         DP05.group.pop / as.numeric(DP05_0033E)
       )
-    ) %>%
+    ) |>
     rbind(
-      data %>%
+      data |>
       dplyr::summarise(
         GEO_ID = GEO_ID,
         Year = Year,
@@ -1904,9 +1902,9 @@ process_app_race_data <- function(Table = "S2501", Year = 2020) {
           DP05.group.pop / as.numeric(DP05_0033E)
         )
       )
-    ) %>%
+    ) |>
     rbind(
-      data %>%
+      data |>
       dplyr::summarise(
         GEO_ID = GEO_ID,
         Year = Year,
@@ -1920,9 +1918,9 @@ process_app_race_data <- function(Table = "S2501", Year = 2020) {
           DP05.group.pop / as.numeric(DP05_0033E)
         )
       )
-    ) %>%
+    ) |>
     rbind(
-      data %>%
+      data |>
       dplyr::summarise(
         GEO_ID = GEO_ID,
         Year = Year,
@@ -1936,9 +1934,9 @@ process_app_race_data <- function(Table = "S2501", Year = 2020) {
           DP05.group.pop / as.numeric(DP05_0033E)
         )
       )
-    ) %>%
+    ) |>
     rbind(
-      data %>%
+      data |>
       dplyr::summarise(
         GEO_ID = GEO_ID,
         Year = Year,
@@ -1952,9 +1950,9 @@ process_app_race_data <- function(Table = "S2501", Year = 2020) {
           DP05.group.pop / as.numeric(DP05_0033E)
         )
       )
-    ) %>%
+    ) |>
     rbind(
-      data %>%
+      data |>
       dplyr::summarise(
         GEO_ID = GEO_ID,
         Year = Year,
@@ -1968,9 +1966,9 @@ process_app_race_data <- function(Table = "S2501", Year = 2020) {
           DP05.group.pop / as.numeric(DP05_0033E)
         )
       )
-    ) %>%
+    ) |>
     rbind(
-      data %>%
+      data |>
       dplyr::summarise(
         GEO_ID = GEO_ID,
         Year = Year,
@@ -1984,9 +1982,9 @@ process_app_race_data <- function(Table = "S2501", Year = 2020) {
           DP05.group.pop / as.numeric(DP05_0033E)
         )
       )
-    ) %>%
+    ) |>
     rbind(
-      data %>%
+      data |>
       dplyr::summarise(
         GEO_ID = GEO_ID,
         Year = Year,
@@ -2004,9 +2002,9 @@ process_app_race_data <- function(Table = "S2501", Year = 2020) {
           DP05.group.pop / as.numeric(DP05_0033E)
         )
       )
-    ) %>%
+    ) |>
     rbind(
-      data %>%
+      data |>
       dplyr::summarise(
         GEO_ID = GEO_ID,
         Year = Year,
@@ -2020,9 +2018,9 @@ process_app_race_data <- function(Table = "S2501", Year = 2020) {
           DP05.group.pop / as.numeric(DP05_0033E)
         )
       )
-    ) %>%
+    ) |>
     rbind(
-      data %>%
+      data |>
       dplyr::summarise(
         GEO_ID = GEO_ID,
         Year = Year,
@@ -2201,7 +2199,7 @@ plot_app <- function(
   }
 
   data.plot <- if ((Plot == "BP") || (Plot == "SC")) {
-    data.plot %>%
+    data.plot |>
     dplyr::filter(
       (Group %in% Groups_r) &
       (Year == Yearp) &
@@ -2212,7 +2210,7 @@ plot_app <- function(
       }
     )
   } else if (Plot == "TS") {
-    data.plot %>%
+    data.plot |>
     dplyr::filter(
       (Group %in% Groups_r) &
       (
@@ -2457,21 +2455,21 @@ plot_choropleth_app <- function(
   }
 
   data <- if (area == "State") {
-    DATA_STATE_SHAPE_APP %>%
+    DATA_STATE_SHAPE_APP |>
     dplyr::filter(
       (State %in% STATES_MAINLAND) &
       (Year == Yearp) &
       (Group %in% Groups_r)
     )
   } else if ((area == "County") & (Stated == "All")) {
-    DATA_COUNTY_SHAPE_APP %>%
+    DATA_COUNTY_SHAPE_APP |>
     dplyr::filter(
       (State %in% STATES_MAINLAND) &
       (Year == Yearp) &
       (Group %in% Groups_r)
     )
   } else if ((area == "County") & !(Stated == "All")) {
-    DATA_COUNTY_SHAPE_APP %>% dplyr::filter(
+    DATA_COUNTY_SHAPE_APP |> dplyr::filter(
       (Group %in% Groups_r) &
       (Year == Yearp) &
       (State == Stated)
@@ -2530,8 +2528,8 @@ plot_choropleth_app <- function(
 load_app_data <- function() {
   # Read county data
   DATA_COUNTY_FULL_APP <<- (
-    readr::read_csv("3.Data_Modelling_Output/input_processed/census_app/data.csv") %>%
-    dplyr::filter(State %in% STATES) %>%
+    readr::read_csv("3.Data_Modelling_Output/input_processed/census_app/data.csv") |>
+    dplyr::filter(State %in% STATES) |>
     dplyr::mutate(
       S2502.group.ownedp = S2502.group.owned / S2502.group.total,
       S1501.group.HSp = S1501.group.HSt / S1501.group.total,
@@ -2541,8 +2539,8 @@ load_app_data <- function() {
 
   # Aggregate data by state
   DATA_STATE_APP <<- (
-    DATA_COUNTY_FULL_APP %>%
-    dplyr::group_by(Year, Group, State) %>%
+    DATA_COUNTY_FULL_APP |>
+    dplyr::group_by(Year, Group, State) |>
     dplyr::summarise(
       Owned_T = sum(as.numeric(S2502.group.total)),
       Owned_P = sum(as.numeric(S2502.group.owned) / Owned_T),
@@ -2562,10 +2560,10 @@ load_app_data <- function() {
         na.rm = TRUE
       ),
       .groups = "drop"
-    ) %>%
+    ) |>
     rbind(
-      DATA_COUNTY_FULL_APP %>%
-      dplyr::group_by(Year, Group) %>%
+      DATA_COUNTY_FULL_APP |>
+      dplyr::group_by(Year, Group) |>
       dplyr::summarise(
         State = "All",
         Owned_T = sum(as.numeric(S2502.group.total)),
@@ -2587,14 +2585,14 @@ load_app_data <- function() {
         ),
         .groups = "drop"
       )
-    ) %>%
-    dplyr::group_by(Year, State) %>%
-    dplyr::mutate(Pop_P = Pop_T / sum(Pop_T[Group == "Total"])) %>%
+    ) |>
+    dplyr::group_by(Year, State) |>
+    dplyr::mutate(Pop_P = Pop_T / sum(Pop_T[Group == "Total"])) |>
     dplyr::ungroup()
   )
   # County data
   DATA_COUNTY_APP <<- (
-    DATA_COUNTY_FULL_APP %>%
+    DATA_COUNTY_FULL_APP |>
     dplyr::transmute(
       GEO_ID = GEO_ID,
       Year = Year,
@@ -2610,10 +2608,10 @@ load_app_data <- function() {
       Inc_Med = as.numeric(S1903.group.medianincome),
       Pop_T = as.numeric(DP05.group.pop),
       UE_P = as.numeric(S2301.group.ue)
-    ) %>%
+    ) |>
     rbind(
-      DATA_COUNTY_FULL_APP %>%
-      dplyr::group_by(Year, Group) %>%
+      DATA_COUNTY_FULL_APP |>
+      dplyr::group_by(Year, Group) |>
       dplyr::summarise(
         GEO_ID = NA,
         State = "All",
@@ -2637,9 +2635,9 @@ load_app_data <- function() {
         ),
         .groups = "drop"
       )
-    ) %>%
-    dplyr::group_by(Year, State, County, GEO_ID) %>%
-    dplyr::mutate(Pop_P = Pop_T / Pop_T[Group == "Total"]) %>%
+    ) |>
+    dplyr::group_by(Year, State, County, GEO_ID) |>
+    dplyr::mutate(Pop_P = Pop_T / Pop_T[Group == "Total"]) |>
     dplyr::ungroup()
   )
 
@@ -2656,7 +2654,7 @@ join_with_shape_app <- function(data, area = "county", year = 2020) {
     data <- (
       data |>
       dplyr::mutate(
-        GEO_ID = stringr::str_remove(GEO_ID, "0500000US") %>% as.integer()
+        GEO_ID = stringr::str_remove(GEO_ID, "0500000US") |> as.integer()
       ) |>
       dplyr::rename(county = County, geoid = GEO_ID)
     )
