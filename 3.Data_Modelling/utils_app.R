@@ -116,11 +116,11 @@ process_app_housing_data <- function(Table = "S2501", Year = 2020) {
       "GEO_ID", "NAME",
       "S2504_C02_001E",
       #Units
-      "S2504_C02_002E", "S2504_C02_003E", "S2504_C02_004E", "S2504_C02_005E", 
+      "S2504_C02_002E", "S2504_C02_003E", "S2504_C02_004E", "S2504_C02_005E",
       "S2504_C02_006E", "S2504_C02_007E", "S2504_C02_008E",
       #Year Built
       "S2504_C02_009E", "S2504_C02_010E", "S2504_C02_011E", "S2504_C02_012E",
-      "S2504_C02_013E", "S2504_C02_014E", "S2504_C02_015E", 
+      "S2504_C02_013E", "S2504_C02_014E", "S2504_C02_015E",
       #Rooms
       "S2504_C02_016E", "S2504_C02_017E", "S2504_C02_018E", "S2504_C02_019E",
       "S2504_C02_020E",
@@ -141,11 +141,11 @@ process_app_housing_data <- function(Table = "S2501", Year = 2020) {
       "GEO_ID", "NAME",
       "S2504_C04_001E",
       #Units
-      "S2504_C04_002E", "S2504_C04_003E", "S2504_C04_004E", "S2504_C04_005E", 
+      "S2504_C04_002E", "S2504_C04_003E", "S2504_C04_004E", "S2504_C04_005E",
       "S2504_C04_006E", "S2504_C04_007E", "S2504_C04_008E",
       #Year Built
       "S2504_C04_009E", "S2504_C04_010E", "S2504_C04_011E", "S2504_C04_012E",
-      "S2504_C04_013E", "S2504_C04_014E", "S2504_C04_015E", 
+      "S2504_C04_013E", "S2504_C04_014E", "S2504_C04_015E",
       #Rooms
       "S2504_C04_016E", "S2504_C04_017E", "S2504_C04_018E", "S2504_C04_019E",
       "S2504_C04_020E",
@@ -166,14 +166,14 @@ process_app_housing_data <- function(Table = "S2501", Year = 2020) {
       "GEO_ID", "NAME",
       "S2506_C01_001E",
       #Value
-      "S2506_C01_002E", "S2506_C01_003E", "S2506_C01_004E", 
+      "S2506_C01_002E", "S2506_C01_003E", "S2506_C01_004E",
       "S2506_C01_005E", "S2506_C01_006E", "S2506_C01_007E",
       "S2506_C01_008E", "S2506_C01_009E",
       #Status
-      "S2506_C01_011E", "S2506_C01_012E", 
+      "S2506_C01_011E", "S2506_C01_012E",
       "S2506_C01_013E", "S2506_C01_014E",
       #Income (12 months)
-      "S2506_C01_015E", "S2506_C01_016E", "S2506_C01_017E", 
+      "S2506_C01_015E", "S2506_C01_016E", "S2506_C01_017E",
       "S2506_C01_018E", "S2506_C01_019E", "S2506_C01_020E",
       "S2506_C01_021E", "S2506_C01_022E", "S2506_C01_023E",
       #Ratio
@@ -182,7 +182,7 @@ process_app_housing_data <- function(Table = "S2501", Year = 2020) {
       #Housing Costs
       "S2506_C01_029E", "S2506_C01_030E", "S2506_C01_031E", "S2506_C01_032E",
       "S2506_C01_033E", "S2506_C01_034E", "S2506_C01_035E", "S2506_C01_036E",
-      "S2506_C01_037E", "S2506_C01_038E", "S2506_C01_039E", 
+      "S2506_C01_037E", "S2506_C01_038E", "S2506_C01_039E",
       #Housing Costs percentage
       "S2506_C01_041E", "S2506_C01_042E", "S2506_C01_043E",
       "S2506_C01_045E", "S2506_C01_046E", "S2506_C01_047E",
@@ -198,14 +198,14 @@ process_app_housing_data <- function(Table = "S2501", Year = 2020) {
       "GEO_ID", "NAME",
       "S2506_C02_001E",
       #Value
-      "S2506_C02_002E", "S2506_C02_003E", "S2506_C02_004E", 
+      "S2506_C02_002E", "S2506_C02_003E", "S2506_C02_004E",
       "S2506_C02_005E", "S2506_C02_006E", "S2506_C02_007E",
       "S2506_C02_008E", "S2506_C02_009E",
       #Status
-      "S2506_C02_011E", "S2506_C02_012E", 
+      "S2506_C02_011E", "S2506_C02_012E",
       "S2506_C02_013E", "S2506_C02_014E",
       #Income (12 months)
-      "S2506_C02_015E", "S2506_C02_016E", "S2506_C02_017E", 
+      "S2506_C02_015E", "S2506_C02_016E", "S2506_C02_017E",
       "S2506_C02_018E", "S2506_C02_019E", "S2506_C02_020E",
       "S2506_C02_021E", "S2506_C02_022E", "S2506_C02_023E",
       #Ratio
@@ -214,7 +214,7 @@ process_app_housing_data <- function(Table = "S2501", Year = 2020) {
       #Housing Costs
       "S2506_C02_029E", "S2506_C02_030E", "S2506_C02_031E", "S2506_C02_032E",
       "S2506_C02_033E", "S2506_C02_034E", "S2506_C02_035E", "S2506_C02_036E",
-      "S2506_C02_037E", "S2506_C02_038E", "S2506_C02_039E", 
+      "S2506_C02_037E", "S2506_C02_038E", "S2506_C02_039E",
       #Housing Costs percentage
       "S2506_C02_041E", "S2506_C02_042E", "S2506_C02_043E",
       "S2506_C02_045E", "S2506_C02_046E", "S2506_C02_047E",
@@ -230,14 +230,14 @@ process_app_housing_data <- function(Table = "S2501", Year = 2020) {
       "GEO_ID", "NAME",
       "S2506_C02_001E",
       #Value
-      "S2506_C02_002E", "S2506_C02_003E", "S2506_C02_004E", 
+      "S2506_C02_002E", "S2506_C02_003E", "S2506_C02_004E",
       "S2506_C02_005E", "S2506_C02_006E", "S2506_C02_007E",
       "S2506_C02_008E", "S2506_C02_009E",
       #Status
-      "S2506_C02_011E", "S2506_C02_012E", 
+      "S2506_C02_011E", "S2506_C02_012E",
       "S2506_C02_013E", "S2506_C02_014E",
       #Income (12 months)
-      "S2506_C02_016E", "S2506_C02_017E", "S2506_C02_018E", 
+      "S2506_C02_016E", "S2506_C02_017E", "S2506_C02_018E",
       "S2506_C02_019E", "S2506_C02_020E", "S2506_C02_021E",
       "S2506_C02_022E", "S2506_C02_023E", "S2506_C02_024E",
       #Ratio
@@ -246,7 +246,7 @@ process_app_housing_data <- function(Table = "S2501", Year = 2020) {
       #Housing Costs
       "S2506_C02_030E", "S2506_C02_031E", "S2506_C02_032E", "S2506_C02_033E",
       "S2506_C02_034E", "S2506_C02_035E", "S2506_C02_036E", "S2506_C02_037E",
-      "S2506_C02_038E", "S2506_C02_039E", "S2506_C02_040E", 
+      "S2506_C02_038E", "S2506_C02_039E", "S2506_C02_040E",
       #Housing Costs percentage
       "S2506_C02_042E", "S2506_C02_043E", "S2506_C02_044E",
       "S2506_C02_046E", "S2506_C02_047E", "S2506_C02_048E",
@@ -262,11 +262,11 @@ process_app_housing_data <- function(Table = "S2501", Year = 2020) {
       "GEO_ID", "NAME",
       "S2507_C01_001E",
       #Value
-      "S2507_C01_002E", "S2507_C01_003E", "S2507_C01_004E", 
+      "S2507_C01_002E", "S2507_C01_003E", "S2507_C01_004E",
       "S2507_C01_005E", "S2507_C01_006E", "S2507_C01_007E",
       "S2507_C01_008E", "S2507_C01_009E", "S2507_C01_010E",
       #Income (12 months)
-      "S2507_C01_011E", "S2507_C01_012E", "S2507_C01_013E", 
+      "S2507_C01_011E", "S2507_C01_012E", "S2507_C01_013E",
       "S2507_C01_014E", "S2507_C01_015E", "S2507_C01_016E",
       "S2507_C01_017E", "S2507_C01_018E", "S2507_C01_019E",
       #Ratio
@@ -290,11 +290,11 @@ process_app_housing_data <- function(Table = "S2501", Year = 2020) {
       "GEO_ID", "NAME",
       "S2507_C02_001E",
       #Value
-      "S2507_C02_002E", "S2507_C02_003E", "S2507_C02_004E", 
+      "S2507_C02_002E", "S2507_C02_003E", "S2507_C02_004E",
       "S2507_C02_005E", "S2507_C02_006E", "S2507_C02_007E",
       "S2507_C02_008E", "S2507_C02_009E", "S2507_C02_010E",
       #Income (12 months)
-      "S2507_C02_011E", "S2507_C02_012E", "S2507_C02_013E", 
+      "S2507_C02_011E", "S2507_C02_012E", "S2507_C02_013E",
       "S2507_C02_014E", "S2507_C02_015E", "S2507_C02_016E",
       "S2507_C02_017E", "S2507_C02_018E", "S2507_C02_019E",
       #Ratio
@@ -316,7 +316,7 @@ process_app_housing_data <- function(Table = "S2501", Year = 2020) {
   } else {
     stop("Invalid Table or Year")
   }
-  
+
   vars_new <- if (Table == "B98001") {
     c(
       "GEO_ID", "NAME",
@@ -370,28 +370,28 @@ process_app_housing_data <- function(Table = "S2501", Year = 2020) {
       "GEO_ID", "NAME",
       "S2504.totalowned",
       #Units
-      "S2504.unit.1det", "S2504.unit.1att", "S2504.unit.2", "S2504.unit.3-4", 
+      "S2504.unit.1det", "S2504.unit.1att", "S2504.unit.2", "S2504.unit.3-4",
       "S2504.unit.5-9", "S2504.unit.10+", "S2504.unit.other",
       #Year Built
-      "S2504.ybuilt.2014+", "S2504.ybuilt.2010-2013", 
+      "S2504.ybuilt.2014+", "S2504.ybuilt.2010-2013",
       "S2504.ybuilt.2000-2009", "S2504.ybuilt.1980-1999",
-      "S2504.ybuilt.1960-1979", "S2504.ybuilt.1940-1959", 
-      "S2504.ybuilt.1939-", 
+      "S2504.ybuilt.1960-1979", "S2504.ybuilt.1940-1959",
+      "S2504.ybuilt.1939-",
       #Rooms
-      "S2504.rooms.1", "S2504.rooms.2-3", "S2504.rooms.4-5", 
+      "S2504.rooms.1", "S2504.rooms.2-3", "S2504.rooms.4-5",
       "S2504.rooms.6-7", "S2504.rooms.8+",
       #Bedrooms
-      "S2504.bedrooms.0", "S2504.bedrooms.1", 
+      "S2504.bedrooms.0", "S2504.bedrooms.1",
       "S2504.bedrooms.2-3", "S2504.bedrooms.4+",
       #Facilities
       "S2504.facilities.plumbingok", "S2504.facilities.kitchenok",
       #Vehicle
-      "S2504.vehicles.0", "S2504.vehicles.1", 
+      "S2504.vehicles.0", "S2504.vehicles.1",
       "S2504.vehicles.2", "S2504.vehicles.3+",
       #Telephone
       "S2504.telephone.service",
       #Fuel
-      "S2504.fuel.utgas", "S2504.fuel.btLPgas", "S2504.fuel.elect", 
+      "S2504.fuel.utgas", "S2504.fuel.btLPgas", "S2504.fuel.elect",
       "S2504.fuel.oilkeros", "S2504.fuel.coalcoke", "S2504.fuel.other",
       "S2504.fuel.nofuel",
       "Year", "Table"
@@ -401,24 +401,24 @@ process_app_housing_data <- function(Table = "S2501", Year = 2020) {
       "GEO_ID", "NAME",
       "S2506.totalmort",
       #Value
-      "S2506.value.50k-", "S2506.value.50-100k", "S2506.value.100-300k", 
+      "S2506.value.50k-", "S2506.value.50-100k", "S2506.value.100-300k",
       "S2506.value.300-500k", "S2506.value.500-750k", "S2506.value.750-1M",
       "S2506.value.1M+", "S2506.value.median",
       #Status
-      "S2506.status.2ndmort", "S2506.status.homeequity", 
+      "S2506.status.2ndmort", "S2506.status.homeequity",
       "S2506.status.both", "S2506.status.none",
       #Income (12 months)
-      "S2506.income.10k-", "S2506.income.10-25k", "S2506.income.25-35k", 
+      "S2506.income.10k-", "S2506.income.10-25k", "S2506.income.25-35k",
       "S2506.income.35-50k", "S2506.income.50-75k", "S2506.income.75-100k",
       "S2506.income.100-150k", "S2506.income.150k+", "S2506.income.median",
       #Ratio
       "S2506.ratio.2-", "S2506.ratio.2-3",
       "S2506.ratio.3-4", "S2506.ratio.4+",
       #Housing Costs
-      "S2506.cost.200-", "S2506.cost.200-400", "S2506.cost.400-600", 
-      "S2506.cost.600-800", "S2506.cost.800-1k", "S2506.cost.1-1.5k", 
-      "S2506.cost.1.5-2k", "S2506.cost.2-2.5k", "S2506.cost.2.5-3k", 
-      "S2506.cost.3k+", "S2506.cost.median", 
+      "S2506.cost.200-", "S2506.cost.200-400", "S2506.cost.400-600",
+      "S2506.cost.600-800", "S2506.cost.800-1k", "S2506.cost.1-1.5k",
+      "S2506.cost.1.5-2k", "S2506.cost.2-2.5k", "S2506.cost.2.5-3k",
+      "S2506.cost.3k+", "S2506.cost.median",
       #Real State Taxes
       "S2506.tax.800-", "S2506.tax.800-1.5k", "S2506.tax.1.5k+",
       "S2506.tax.No", "S2506.tax.median",
@@ -432,20 +432,20 @@ process_app_housing_data <- function(Table = "S2501", Year = 2020) {
       "GEO_ID", "NAME",
       "S2507.totalmort",
       #Value
-      "S2507.value.50k-", "S2507.value.50-100k", "S2507.value.100-199k", 
-      "S2507.value.200-299k", "S2507.value.300-500k", "S2507.value.500-750k", 
+      "S2507.value.50k-", "S2507.value.50-100k", "S2507.value.100-199k",
+      "S2507.value.200-299k", "S2507.value.300-500k", "S2507.value.500-750k",
       "S2507.value.750-1M", "S2507.value.1M+", "S2507.value.median",
       #Income (12 months)
-      "S2507.income.10k-", "S2507.income.10-25k", "S2507.income.25-35k", 
+      "S2507.income.10k-", "S2507.income.10-25k", "S2507.income.25-35k",
       "S2507.income.35-50k", "S2507.income.50-75k", "S2507.income.75-100k",
       "S2507.income.100-150k", "S2507.income.150k+", "S2507.income.median",
       #Ratio
       "S2507.ratio.2-", "S2507.ratio.2-3",
       "S2507.ratio.3-4", "S2507.ratio.4+",
       #Housing Costs
-      "S2507.cost.200-", "S2507.cost.200-399", "S2507.cost.400-599", 
-      "S2507.cost.600-999", "S2507.cost.1-1.3k", "S2507.cost.1.3-1.5k", 
-      "S2507.cost.1.5k+", "S2507.cost.median", 
+      "S2507.cost.200-", "S2507.cost.200-399", "S2507.cost.400-599",
+      "S2507.cost.600-999", "S2507.cost.1-1.3k", "S2507.cost.1.3-1.5k",
+      "S2507.cost.1.5k+", "S2507.cost.median",
       #Real State Taxes
       "S2507.tax.800-", "S2507.tax.800-1.5k", "S2507.tax.1.5k+",
       "S2507.tax.No", "S2507.tax.median",
@@ -487,7 +487,7 @@ process_app_housing_data <- function(Table = "S2501", Year = 2020) {
     as.numeric(data$S2502_C02_024E),
     ifelse(
       (data$Table == "S2502") & (data$Year == 2017),
-      as.numeric(data$S2502_C04_024E),      
+      as.numeric(data$S2502_C04_024E),
       ifelse(
         (data$Table == "S2502") & (data$Year > 2017),
         as.numeric(data$S2502_C04_025E),
@@ -588,7 +588,7 @@ process_app_housing_data <- function(Table = "S2501", Year = 2020) {
       "S2503_C024_044E"
     )
   )
-    
+
   data$S2503_C024_046E <- ifelse(
     (data$Table == "S2503") & (data$Year <= 2016),
     (
@@ -610,7 +610,7 @@ process_app_housing_data <- function(Table = "S2501", Year = 2020) {
       "S2503_C024_045E"
     )
   )
-    
+
   data$S2503_C024_047E <- ifelse(
     (data$Table == "S2503") & (data$Year <= 2016),
     (
@@ -632,7 +632,7 @@ process_app_housing_data <- function(Table = "S2501", Year = 2020) {
       "S2503_C024_046E"
     )
   )
-  
+
   data$S2503_C024_048E <- ifelse(
     (data$Table == "S2503") & (data$Year <= 2016),
     (
@@ -648,7 +648,7 @@ process_app_housing_data <- function(Table = "S2501", Year = 2020) {
       "S2503_C024_047E"
     )
   )
-  
+
   data <- if ((Table == "S2503") & (Year <= 2016)) {
     data[,
       !(
@@ -697,7 +697,7 @@ process_app_housing_data <- function(Table = "S2501", Year = 2020) {
     ]
   }
 
-  
+
   # Some Extra Processing for Table S2506
   data$S2506_C012_067E <- ifelse(
     (data$Table == "S2506") & (data$Year <= 2016),
@@ -730,7 +730,7 @@ process_app_housing_data <- function(Table = "S2501", Year = 2020) {
       )
     )
   )
-  
+
   data$S2506_C012_068E <- ifelse(
     (data$Table == "S2506") & (data$Year <= 2016),
     (
@@ -741,7 +741,7 @@ process_app_housing_data <- function(Table = "S2501", Year = 2020) {
       as.numeric(data$S2506_C01_058E)
     ),
     ifelse(
-      (data$Table == "S2506") & 
+      (data$Table == "S2506") &
       (data$Year >= 2017) & (data$Year < 2020),
       (
         as.numeric(data$S2506_C02_042E) +
@@ -763,7 +763,7 @@ process_app_housing_data <- function(Table = "S2501", Year = 2020) {
       )
     )
   )
-  
+
   data$S2506_C012_069E <- ifelse(
     (data$Table == "S2506") & (data$Year <= 2016),
     (
@@ -795,10 +795,10 @@ process_app_housing_data <- function(Table = "S2501", Year = 2020) {
       )
     )
   )
-  
+
   data$S2506_C012_070E <- ifelse(
     (data$Table == "S2506") & (data$Year <= 2016),
-    (           
+    (
       as.numeric(data$S2506_C01_039E) * 12 /
       as.numeric(data$S2506_C01_023E)
     ),
@@ -818,7 +818,7 @@ process_app_housing_data <- function(Table = "S2501", Year = 2020) {
       )
     )
   )
-  
+
   data <- if ((Table == "S2506") & (Year <= 2016)) {
     data[,
       !(
@@ -884,7 +884,7 @@ process_app_housing_data <- function(Table = "S2501", Year = 2020) {
       )
     ]
   }
-  
+
   # Some Extra Processing for Table S2507
   data$S2507_C012_059E <- ifelse(
     (data$Table == "S2507") & (data$Year <= 2016),
@@ -907,7 +907,7 @@ process_app_housing_data <- function(Table = "S2501", Year = 2020) {
       "S2507_C012_059E"
     )
   )
-  
+
   data$S2507_C012_060E <- ifelse(
     (data$Table == "S2507") & (data$Year <= 2016),
     (
@@ -929,7 +929,7 @@ process_app_housing_data <- function(Table = "S2501", Year = 2020) {
       "S2507_C012_060E"
     )
   )
-  
+
   data$S2507_C012_061E <- ifelse(
     (data$Table == "S2507") & (data$Year <= 2016),
     as.numeric(data$S2507_C01_036E) +
@@ -949,7 +949,7 @@ process_app_housing_data <- function(Table = "S2501", Year = 2020) {
       "S2507_C012_061E"
     )
   )
-  
+
   data$S2507_C012_062E <- ifelse(
     (data$Table == "S2507") & (data$Year <= 2016),
     (
@@ -965,7 +965,7 @@ process_app_housing_data <- function(Table = "S2501", Year = 2020) {
       "S2507_C012_062E"
     )
   )
-  
+
   data <- if ((Table == "S2507") & (Year <= 2016)) {
     data[,
       !(
@@ -1013,14 +1013,14 @@ process_app_housing_data <- function(Table = "S2501", Year = 2020) {
       )
     ]
   }
-  
+
   # Final steps: Rename variables, and create County, State variables
   colnames(data) <- vars_new
   data$County <- gsub(",.*$", "", data$NAME)
   data$State <- gsub(".*, ", "", data$NAME)
   data$NAME <- NULL
   data$Table <- NULL
-  
+
   data
 }
 
@@ -1032,7 +1032,7 @@ process_app_race_data <- function(Table = "S2501", Year = 2020) {
     "unzip",
     stringr::str_replace(CENSUS_TABLE_FILE_APP[[Table]], "XXXX", as.character(Year))
   )
-  
+
   # Define and name working variables
   vars_old <- if (Table == "S1501") {
     c(
@@ -1078,7 +1078,7 @@ process_app_race_data <- function(Table = "S2501", Year = 2020) {
       "S1903_C01_010E",
       #Median Income broken by Race
       "S1903_C02_002E", "S1903_C02_003E", "S1903_C02_004E", "S1903_C02_005E",
-      "S1903_C02_006E", "S1903_C02_007E", "S1903_C02_008E", "S1903_C02_009E", 
+      "S1903_C02_006E", "S1903_C02_007E", "S1903_C02_008E", "S1903_C02_009E",
       "S1903_C02_010E"
     )
   } else if ((Table == "S1903") & (Year >= 2017)) {
@@ -1109,7 +1109,7 @@ process_app_race_data <- function(Table = "S2501", Year = 2020) {
       #Labor Force Part Rate, Employment / Pop Rate, Unemployment Rate Totals
       "S2301_C02_001E", "S2301_C03_001E", "S2301_C04_001E",
       #Same as above but broken by race / ethnicity
-      "S2301_C02_012E", "S2301_C03_012E", "S2301_C04_012E", 
+      "S2301_C02_012E", "S2301_C03_012E", "S2301_C04_012E",
       "S2301_C02_013E", "S2301_C03_013E", "S2301_C04_013E",
       "S2301_C02_014E", "S2301_C03_014E", "S2301_C04_014E",
       "S2301_C02_015E", "S2301_C03_015E", "S2301_C04_015E",
@@ -1152,8 +1152,8 @@ process_app_race_data <- function(Table = "S2501", Year = 2020) {
   } else if ((Table == "DP05") & (Year <= 2016)) {
     c(
       "GEO_ID", "NAME",
-       "DP05_0028E", 
-       "DP05_0032E", "DP05_0033E", "DP05_0034E", "DP05_0039E", 
+       "DP05_0028E",
+       "DP05_0032E", "DP05_0033E", "DP05_0034E", "DP05_0039E",
        "DP05_0047E", "DP05_0052E", "DP05_0053E", "DP05_0066E",
        "DP05_0072E"
     )
@@ -1168,14 +1168,14 @@ process_app_race_data <- function(Table = "S2501", Year = 2020) {
   } else {
     stop("Table or year not found")
   }
-  
+
   # Call File and Create Year and Table Variables
   data <- readr::read_csv(file_name, header = TRUE)[-1, vars_old]
   data$Year <- Year
   data$Table <- Table
   data$County <- gsub(",.*$", "", data$NAME)
   data$State <- gsub(".*, ", "", data$NAME)
-  
+
   # Build data set
   data <- if (Table == "S1501") {
     data %>%
@@ -1187,7 +1187,7 @@ process_app_race_data <- function(Table = "S2501", Year = 2020) {
       Group = "Total",
       S1501.group.total = as.numeric(S1501_C01_001E) + as.numeric(S1501_C01_006E),
       S1501.group.HSt = (
-        as.numeric(S1501_C01_003E) + 
+        as.numeric(S1501_C01_003E) +
         as.numeric(S1501_C01_004E) + as.numeric(S1501_C01_005E) +
         as.numeric(S1501_C01_009E)+ as.numeric(S1501_C01_010E)+
         as.numeric(S1501_C01_011E)+ as.numeric(S1501_C01_012E)+
@@ -1355,12 +1355,11 @@ process_app_race_data <- function(Table = "S2501", Year = 2020) {
         County = County,
         State = State,
         Group = "White",
-        S1903.group.total = 
-          ifelse(
-            Year < 2017,
-            round(as.numeric(S1903_C01_002E) * as.numeric(S1903_C01_001E) / 100),
-            as.numeric(S1903_C01_002E)
-          ),
+        S1903.group.total =ifelse(
+          Year < 2017,
+          round(as.numeric(S1903_C01_002E) * as.numeric(S1903_C01_001E) / 100),
+          as.numeric(S1903_C01_002E)
+        ),
         S1903.group.medianincome = ifelse(
           Year < 2017,
           S1903_C02_002E,
@@ -1539,7 +1538,7 @@ process_app_race_data <- function(Table = "S2501", Year = 2020) {
       S2301.group.total = as.numeric(S2301_C01_001E),
       S2301.group.lfpr = as.numeric(S2301_C02_001E),
       S2301.group.epr = as.numeric(S2301_C03_001E),
-      S2301.group.ue = as.numeric(S2301_C04_001E) 
+      S2301.group.ue = as.numeric(S2301_C04_001E)
     ) %>%
     rbind(
       data %>%
@@ -1681,7 +1680,7 @@ process_app_race_data <- function(Table = "S2501", Year = 2020) {
         as.numeric(S2502_C02_001E),
         as.numeric(S2502_C03_001E)
       ),
-      S2502.group.ownedp = S2502.group.owned / S2502.group.total   
+      S2502.group.ownedp = S2502.group.owned / S2502.group.total
     ) %>%
     rbind(
       data %>%
@@ -1849,7 +1848,7 @@ process_app_race_data <- function(Table = "S2501", Year = 2020) {
         ),
         S2502.group.ownedp = S2502.group.owned / S2502.group.total
       )
-    ) %>% 
+    ) %>%
     rbind(
       data %>%
       dplyr::summarise(
@@ -1885,7 +1884,7 @@ process_app_race_data <- function(Table = "S2501", Year = 2020) {
         DP05.group.pop / as.numeric(DP05_0028E),
         DP05.group.pop / as.numeric(DP05_0033E)
       )
-    ) %>% 
+    ) %>%
     rbind(
       data %>%
       dplyr::summarise(
@@ -1895,7 +1894,7 @@ process_app_race_data <- function(Table = "S2501", Year = 2020) {
         State = State,
         Group = "White",
         DP05.group.pop = ifelse(
-          Year < 2017, 
+          Year < 2017,
           as.numeric(DP05_0032E),
           as.numeric(DP05_0037E)
         ),
@@ -1995,7 +1994,7 @@ process_app_race_data <- function(Table = "S2501", Year = 2020) {
         State = State,
         Group = "Two+",
         DP05.group.pop = ifelse(
-          Year < 2017, 
+          Year < 2017,
           as.numeric(DP05_0053E),
           as.numeric(DP05_0058E)
         ),
@@ -2122,6 +2121,11 @@ process_app_data_all <- function() {
   save_csv(data, file.path(INPUT_PROCESSED_DIR, "census_app", "data.csv"))
 }
 
+make_blank_plot <- function() {
+  ggplot2::ggplot() +
+  ggplot2::theme_void()
+}
+
 get_data_plot_app <- function(data) {
   dplyr::bind_cols(
     dplyr::select(
@@ -2149,9 +2153,9 @@ get_var_name_app <- function(var) {
   if (var == "Own") {
     "Home Ownership Rate (%)"
   } else if (var == "HS") {
-    "High School Completion Rate (%)"
+    "High School Completion (%)"
   } else if (var == "Col") {
-    "Bachelor Degree Completion Rate (%)"
+    "Bachelor Degree Completion (%)"
   } else if (var == "Inc") {
     "Household Annual\nIncome (Current US$)"
   } else if (var == "LInc") {
@@ -2175,23 +2179,31 @@ plot_app <- function(
   Group1 = "White",
   Group2 = "Black",
   Group3 = "Asian",
-  Group4 = "Hispanic", 
+  Group4 = "Hispanic",
   Vary = "Own",
   Varx = "Inc",
   Plot = "BP",
   BP.Violin = "F",
   SC.Smoother = "loess"
 ) {
+  Groups_r <- c(Group1, Group2, Group3, Group4)
+
+  if (all(Groups_r == "None")) {
+    return(make_blank_plot())
+  }
+
   data.plot <- if (area == "State") {
     DATA_STATE_APP
   } else if (area == "County") {
     DATA_COUNTY_APP
+  } else {
+    stop("Invalid area")
   }
 
-  data.plot <- if ((Plot == "BP") | (Plot == "SC")) {
+  data.plot <- if ((Plot == "BP") || (Plot == "SC")) {
     data.plot %>%
     dplyr::filter(
-      (Group %in% c(Group1, Group2, Group3, Group4)) &
+      (Group %in% Groups_r) &
       (Year == Yearp) &
       if (area == "State") {
         (State != "All")
@@ -2202,24 +2214,26 @@ plot_app <- function(
   } else if (Plot == "TS") {
     data.plot %>%
     dplyr::filter(
-      (Group %in% c(Group1, Group2, Group3, Group4)) &
+      (Group %in% Groups_r) &
       (
         if (area == "County") {
-          State %in% Stated
+          (State %in% Stated)
         } else if (area == "State") {
           State == "All"
         }
       )
     )
+  } else {
+    stop("Invalid plot type")
   }
-  
+
   # Variables Definitions
   data.plot <- get_data_plot_app(data.plot)
 
   # Variables Names
   y.name <- get_var_name_app(Vary)
   x.name <- get_var_name_app(Varx)
-  
+
   Rename <- function(GroupN) {
     ifelse(GroupN == "Total", "All", GroupN)
   }
@@ -2282,7 +2296,7 @@ plot_app <- function(
       na.rm = TRUE
     )
   )
-    
+
   box.plot <- (
     ggplot2::ggplot(
       data = data.plot,
@@ -2317,18 +2331,19 @@ plot_app <- function(
       axis.text = ggplot2::element_text(size = 20)
     )
   )
-  
+
   ts.plot <- (
-    ggplot(
+    ggplot2::ggplot(
       data = data.plot,
       ggplot2::aes(
-        x = Year, 
+        x = Year,
         y = .data[[Vary]],
-        color = factor(Group, levels = FGroups))
+        color = factor(Group, levels = FGroups)
+      )
     ) +
     (
       if (area == "State") {
-        ggplot2::geom_line(linwwidth = 1.5)
+        ggplot2::geom_line(linewidth = 1.5)
       } else if (area == "County") {
         ggplot2::stat_summary(geom = "line", fun = median, linewidth = 1.5)
       }
@@ -2416,108 +2431,11 @@ plot_prediction_app <- function(
   )
 }
 
-# Plots Function (For Choropleth Maps)
-# plot_choropleth_app <- function(
-#   area = "State",
-#   State = "All",
-#   fill_var = "hom.own",
-#   col_pal = "Reds",
-#   title = NULL,
-#   facet_var = "race",
-#   group1 = "WhiteNH",
-#   group2 = "None",
-#   group3 = "None",
-#   group4 = "None",
-#   facet_ncol = NA,
-#   breaks = NULL,
-#   outline = TRUE,
-#   color_na = "black",
-#   free_scales = FALSE
-# ) {
-#   groups_r <- c(group1, group2, group3, group4)
-  
-#   data <-  if(area == "State") {
-#     DATA_STATE_SHAPE_APP %>%
-#     dplyr::filter(
-#       !state %in% c("Alaska", "Hawaii") & 
-#       race %in% groups_r
-#     )
-#   } else if((area == "County") & (State == "All")) {
-#     DATA_COUNTY_SHAPE_APP %>%
-#     dplyr::filter(
-#       !(state %in% c("Alaska", "Hawaii")) &
-#       (race %in% groups_r)
-#     )
-#   } else if((area == "County") & !(State == "All")) {
-#     dplyr::DATA_COUNTY_SHAPE_APP %>% filter(
-#       (race %in% groups_r) &
-#       (state %in% State)
-#     )
-#   }
-
-#   data$linc <- log10(data$inc.inc)
-#   data$lpop <- log10(data$pop.tot)
-#   data$edu.hs <- data$edu.hs * 100
-#   data$edu.bs <- data$edu.bs * 100
-#   data$emp.ue <- data$emp.ue * 100
-#   data$pop.share <- data$pop.share * 100
-#   data$hom.own <- data$hom.own * 100
-
-#   var.name <- c(
-#     "hom.own" = "Home Ownership (%)",
-#     "edu.hs" = "High School Completion (%)",
-#     "edu.bs" = "Bachelor's Degree Completion (%)",
-#     "emp.ue" = "Unemployment (%)",
-#     "pop.tot" = "Total Population",
-#     "pop.share" = "Racial Population Share (%)",
-#     "inc.inc" = "Household Annual Income (US$)",
-#     "linc" = "Log10 Annual Income (US$)",
-#     "lpop" = "Log10 Total Population"
-#   )[[fill_var]]
-  
-#   tmap_out <-
-#     tmap::tm_shape(data) +
-#     tmap::tm_fill(
-#       title = var.name,
-#       col = fill_var,
-#       palette = col_pal,
-#       style = "cont",
-#       breaks = breaks,
-#       colorNA = color_na,
-#       legend.is.portrait = FALSE
-#     )
-#   if (outline) {
-#     tmap_out <- tmap_out + tmap::tm_borders()
-#   }
-#   if (!is.null(facet_var)) {
-#     tmap_out <- (
-#       tmap_out +
-#       tmap::tm_facets(
-#         facet_var,
-#         free.scales = free_scales,
-#         ncol = facet_ncol
-#       )
-#     )
-#   }
-#   tmap_out <- (
-#     tmap_out +
-#     tmap::tm_layout(
-#       panel.label.size = 5,
-#       legend.outside = !free_scales,
-#       legend.outside.position = "bottom",
-#       legend.position = c("left", "bottom"),
-#       legend.outside.size = 0.3,
-#       legend.text.size = 1,
-#       legend.title.size= 1.5,
-#       legend.width = 0.5
-#     )
-#   )
-#   tmap_out
-# }
+# Plots function (for choropleth maps)
 plot_choropleth_app <- function(
   area = "State",
   Stated = "All",
-  yearch = 2020,
+  Yearp = 2020,
   fill_var = "Own",
   col_pal = "Reds",
   title = NULL,
@@ -2533,37 +2451,41 @@ plot_choropleth_app <- function(
   free_scales = FALSE
 ) {
   Groups_r <- c(Group1, Group2, Group3, Group4)
-  
+
+  if (all(Groups_r == "None")) {
+    return(make_blank_plot())
+  }
+
   data <- if (area == "State") {
     DATA_STATE_SHAPE_APP %>%
     dplyr::filter(
-      (State %in% STATES_MAINLAND) & 
-      (Year == yearch) &
+      (State %in% STATES_MAINLAND) &
+      (Year == Yearp) &
       (Group %in% Groups_r)
     )
   } else if ((area == "County") & (Stated == "All")) {
     DATA_COUNTY_SHAPE_APP %>%
     dplyr::filter(
       (State %in% STATES_MAINLAND) &
-      (Year == yearch) &
+      (Year == Yearp) &
       (Group %in% Groups_r)
     )
   } else if ((area == "County") & !(Stated == "All")) {
     DATA_COUNTY_SHAPE_APP %>% dplyr::filter(
       (Group %in% Groups_r) &
-      (Year == yearch) &
+      (Year == Yearp) &
       (State == Stated)
     )
   }
 
   data <- (
     get_data_plot_app(data) |>
-    join_with_shape_app(area, yearch) |>
+    join_with_shape_app(area, Yearp) |>
     # filter again because join adds Alaska and Hawaii
     dplyr::filter(State %in% STATES_MAINLAND)
   )
   var.name <- get_var_name_app(fill_var)
-  
+
   tmap_out <-
     tmap::tm_shape(data) +
     tmap::tm_fill(
@@ -2670,76 +2592,6 @@ load_app_data <- function() {
     dplyr::mutate(Pop_P = Pop_T / sum(Pop_T[Group == "Total"])) %>%
     dplyr::ungroup()
   )
-
-  # DATA_STATE_SHAPE_APP <<- (
-  #   DATA_STATE_APP %>%
-  #   dplyr::rename(state = State, race = Group) %>%
-  #   join_with_shape("state") %>%
-  #   dplyr::rename(State = state, Group = race)
-  # )
-
-  # Make the shape data for choropleths
-  # DATA_STATE_SHAPE_APP <<- (
-  #   DATA_COUNTY_FULL_APP |>
-  #   dplyr::transmute(
-  #     year = Year,
-  #     race = Group,
-  #     state = State,
-  #     county = County,
-  #     geoid = (
-  #       geoid |>
-  #       stringr::str_replace(stringr::fixed("0500000US"), "") |>
-  #       as.integer()
-  #     ),
-  #     edu.bs = as.numeric(S1501.group.BSp),
-  #     edu.hs = as.numeric(S1501.group.HSp),
-  #     emp.ue = as.numeric(S2301.group.ue),
-  #     hom.own = as.numeric(S2502.group.ownedp),
-  #     inc.inc = as.numeric(S1903.group.medianincome),
-  #     pop.tot = as.numeric(DP05.group.pop)
-  #   ) |>
-  #   dplyr::group_by(race, state) |>
-  #   dplyr::summarise(
-  #     edu.bs = weighted.mean(edu.bs, edu.tot, na.rm = TRUE),
-  #     edu.hs = weighted.mean(edu.hs, edu.tot, na.rm = TRUE),
-  #     emp.ue = weighted.mean(emp.ue, emp.tot, na.rm = TRUE),
-  #     # fin.cost = weighted.mean(fin.cost, fin.tot, na.rm = TRUE),
-  #     # fin.inc = weighted.mean(fin.inc, fin.tot, na.rm = TRUE),
-  #     hom.own = weighted.mean(hom.own, hom.tot, na.rm = TRUE),
-  #     inc.inc = weighted.mean(inc.inc, inc.tot, na.rm = TRUE),
-  #     # occ.fam = weighted.mean(occ.fam, occ.tot, na.rm = TRUE),
-  #     # val.hom = weighted.mean(val.hom, val.tot, na.rm = TRUE),
-  #     # val.mort = weighted.mean(val.mort, val.tot, na.rm = TRUE),
-  #     # val.tax = weighted.mean(val.tax, val.tot, na.rm = TRUE),
-  #     edu.tot = sum(edu.tot, na.rm = TRUE),
-  #     emp.tot = sum(emp.tot, na.rm = TRUE),
-  #     # fin.tot = sum(fin.tot, na.rm = TRUE),
-  #     hom.tot = sum(hom.tot, na.rm = TRUE),
-  #     inc.tot = sum(inc.tot, na.rm = TRUE),
-  #     # occ.tot = sum(occ.tot, na.rm = TRUE),
-  #     pop.tot = sum(pop.tot, na.rm = TRUE),
-  #     size = sum(size, na.rm = TRUE),
-  #     val.tot = sum(val.tot, na.rm = TRUE),
-  #     .groups = "drop"
-  #   ) |>
-  #   dplyr::group_by(race) |>
-  #   dplyr::mutate(pop.tot.nation = sum(pop.tot)) |>
-  #   dplyr::ungroup() |>
-  #   dplyr::group_by(state) |>
-  #   dplyr::mutate(
-  #     pop.tot.nation.all = pop.tot.nation[race == "Total"],
-  #     pop.share.nation = pop.tot.nation / pop.tot.nation.all,
-  #     pop.tot.all = pop.tot[race == "Total"],
-  #     pop.share = pop.tot / pop.tot.all,
-  #     pop.share.ratio = pop.share / pop.share.nation,
-  #     size = round(pop.share * size[race == "Total"])
-  #   ) |>
-  #   dplyr::ungroup() |>
-  #   join_with_shape("state")
-  # )
-
-  # DATA_COUNTY_SHAPE_APP <- join_with_shape(CENSUS_DATA, "county")
-  
   # County data
   DATA_COUNTY_APP <<- (
     DATA_COUNTY_FULL_APP %>%
@@ -2791,66 +2643,37 @@ load_app_data <- function() {
     dplyr::ungroup()
   )
 
-  # County shape data
-  # DATA_COUNTY_SHAPE_APP <<- (
-  #   DATA_COUNTY_APP |>
-  #   dplyr::filter(State != "All") |>
-  #   dplyr::nest_by(Year, .keep = TRUE) |>
-  #   purrr::pmap(
-  #     function(Year, data) {
-  #       data %>%
-  #       dplyr::mutate(
-  #         GEO_ID = stringr::str_remove(GEO_ID, "0500000US") %>% as.integer()
-  #       ) %>%
-  #       dplyr::rename(
-  #         geoid = GEO_ID,
-  #         state = State,
-  #         county = County,
-  #         race = Group
-  #       ) %>%
-  #       join_with_shape("county", Year) %>%
-  #       dplyr::rename(
-  #         GEO_ID = geoid,
-  #         State = state,
-  #         County = county,
-  #         Group = race
-  #       ) |>
-  #       dplyr::mutate(GEO_ID = paste0("0500000US", sprintf("%05d", GEO_ID)))
-  #     }
-  #   ) |>
-  #   purrr::list_rbind()
-  # )
-
-  MODEL_APP <- readRDS("3.Data_Modelling_Output/output_1_posterior/model_rds/model_4.rds")
+  # Load the final model for the app's predictive plots
+  MODEL_APP <<- readRDS("3.Data_Modelling_Output/output_1_posterior/model_rds/model_4.rds")
 }
 
-join_with_shape_app <- function(data, area = "County", year = 2020) {
+join_with_shape_app <- function(data, area = "county", year = 2020) {
   area <- stringr::str_to_lower(area)
 
   data <- data |> dplyr::filter(State != "All")
 
-  if (area == "County") {
+  if (area == "county") {
     data <- (
       data |>
       dplyr::mutate(
         GEO_ID = stringr::str_remove(GEO_ID, "0500000US") %>% as.integer()
       ) |>
-      dplyr::rename(county = County, GEO_ID = GEO_ID)
+      dplyr::rename(county = County, geoid = GEO_ID)
     )
   }
 
   data <- data |> dplyr::rename(state = State, race = Group)
-  
+
   data <- (
     data |>
     join_with_shape(area, year) |>
     dplyr::rename(State = state, Group = race)
   )
 
-  if (area == "County") {
+  if (area == "county") {
     data <- (
       data |>
-      dplyr::rename(County = county, GEO_ID = GEO_ID) |>
+      dplyr::rename(County = county, GEO_ID = geoid) |>
       dplyr::mutate(GEO_ID = paste0("0500000US", sprintf("%05d", GEO_ID)))
     )
   }

@@ -687,7 +687,7 @@ plot_prediction <- function(
     ggplot_out <- (
       ggplot2::ggplot(
         pred_draws,
-        ggplote::aes(
+        ggplot2::aes(
           x = value * 100,
           y = race,
           fill = race,

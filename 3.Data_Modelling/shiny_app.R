@@ -4,9 +4,8 @@ library(shinythemes)
 library(shinyWidgets)
 library(styler)
 
-
 #Define UI
-ui <- shiny::bootstrapPage(
+APP_UI <- shiny::bootstrapPage(
   #Define Theme
   shiny::navbarPage(
     theme = shinythemes::shinytheme("flatly"),
@@ -27,9 +26,16 @@ ui <- shiny::bootstrapPage(
           ),
           shiny::conditionalPanel(
             condition = "input.bp_area == 'County'",
-            shiny::textInput(
+            # shiny::textInput(
+            #   "bp_st",
+            #   "Input State Name (i.e. Florida):",
+            #   value = "All"
+            # )
+            shinyWidgets::pickerInput(
               "bp_st",
-              "Input State Name (i.e. Florida):"
+              "Input State Name:",
+              selected = "All",
+              choices = STATES_APP
             )
           ),
           # 1.1.2 Specify year            
@@ -37,7 +43,8 @@ ui <- shiny::bootstrapPage(
             "bp_y",
             "Years",
             choices = YEARS,
-            inline = T
+            inline = TRUE,
+            selected = 2020
           ),
           # 1.1.3 Specify type of Box Plot
           shiny::radioButtons(
@@ -51,13 +58,14 @@ ui <- shiny::bootstrapPage(
           shinyWidgets::pickerInput(
             "bp_var",
             "Variable:",
-            choices = VARS_APP
+            choices = VARS_APP,
+            selected = "Own"
           ),
           shinyWidgets::pickerInput(
             "bp.gr_1",
             "Racial/Ethnic Group 1:",
             choices = RACES_APP,
-            selected = "All Races and Ethnicities"
+            selected = "Total"
           ),
           shinyWidgets::pickerInput(
             "bp.gr_2",
@@ -105,13 +113,21 @@ ui <- shiny::bootstrapPage(
             "sc_area",
             "Data Type:",
             choices = c("State", "County"),
+            selected = "State",
             inline = TRUE
           ),
           shiny::conditionalPanel(
             condition = "input.sc_area == 'County'",
-            shiny::textInput(
+            # shiny::textInput(
+            #   "sc_st",
+            #   "Input State Name (i.e. Florida):",
+            #   value = "All"
+            # )
+            shinyWidgets::pickerInput(
               "sc_st",
-              "Input State Name (i.e., Florida):"
+              "Input State Name:",
+              selected = "All",
+              choices = STATES_APP
             )
           ),
           # 2.1.2 Specify year            
@@ -119,41 +135,36 @@ ui <- shiny::bootstrapPage(
             "sc_y",
             "Years",
             choices = YEARS,
-            inline = TRUE
+            inline = TRUE,
+            selected = 2020
           ),
           # 2.1.3 Specify Smoother
           shiny::radioButtons(
             "sc_sm",
             "Smoother",
-            choices = c(
-              "Linear Model",
-              "Generalized Linear Model",
-              "Generalized Additive Model",
-              "Locally Estimated Scatterplot"
-            ),
-            selected = "Locally Estimated Scatterplot",
-            inline = TRUE
+            choices = SMOOTHERS_APP,
+            selected = "loess"
           ),
           #2.1.4 Specify Variable y
           shinyWidgets::pickerInput(
             "sc_vary",
             "Variable y:",
             choices = VARS_APP,
-            selected = "Home Ownership Rate (%)"
+            selected = "Own"
           ),
           #2.1.5 Specify Variable x
           shinyWidgets::pickerInput(
             "sc_varx",
             "Variable x:",
             choices = VARS_APP,
-            selected = "Household Annual Income (Current US$)"
+            selected = "Inc"
           ),
           #2.1.6.1 Conditional Groups
           shinyWidgets::pickerInput(
             "sc.gr_1",
             "Racial/Ethnic Group 1:",
             choices = RACES_APP,
-            selected = "All Races and Ethnicities"
+            selected = "Total"
           ),
           shinyWidgets::pickerInput(
             "sc.gr_2",
@@ -206,9 +217,16 @@ ui <- shiny::bootstrapPage(
           ),
           shiny::conditionalPanel(
             condition = "input.ts_area == 'County'",
-            shiny::textInput(
+            # shiny::textInput(
+            #   "ts_st",
+            #   "Input State Name (i.e. Florida):",
+            #   value = "All"
+            # )
+            shinyWidgets::pickerInput(
               "ts_st",
-              "Input State Name (i.e. Florida):"
+              "Input State Name:",
+              selected = "All",
+              choices = STATES_APP
             )
           ),      
           #3.1.2 Specify Variable
@@ -216,14 +234,14 @@ ui <- shiny::bootstrapPage(
             "ts_var",
             "Variable:",
             choices = VARS_APP,
-            selected = "Home Ownership (%)"
+            selected = "Own"
           ),
           #3.1.3.1 Conditional Groups
           shinyWidgets::pickerInput(
             "ts.gr_1",
             "Racial/Ethnic Group 1:",
             choices = RACES_APP,
-            selected = "All Races and Ethnicities"
+            selected = "Total"
           ),
           shinyWidgets::pickerInput(
             "ts.gr_2",
@@ -276,9 +294,16 @@ ui <- shiny::bootstrapPage(
           ),
           shiny::conditionalPanel(
             condition = "input.ch_area == 'County'",
-            shiny::textInput(
+            # shiny::textInput(
+            #   "ch_st",
+            #   "Input State Name (i.e. Florida):",
+            #   value = "All"
+            # )
+            shinyWidgets::pickerInput(
               "ch_st",
-              "Input State Name (i.e. Florida):"
+              "Input State Name:",
+              selected = "All",
+              choices = STATES_APP
             )
           ),
           # 4.1.2 Specify year            
@@ -292,30 +317,14 @@ ui <- shiny::bootstrapPage(
           shinyWidgets::pickerInput(
             "ch_var",
             "Variable:",
-            choices = c(
-              "Home Ownership (%)",
-              "High School Completion (%)",
-              "Bachelor Degree Completion (%)",
-              "Household Annual Income (Current US$)",
-              "Log10 Annual Income (Current US$)",
-              "Population Size",
-              "Log10 Population Size",
-              "Population Share (%)",
-              "Unemployment (%)"
-            )
+            choices = VARS_APP,
+            selected = "Own"
           ),
           # 4.1.5 Specify color of choropleth
           shiny::radioButtons(
             "ch_col",
             "Color",
-            choices = c(
-              "Blue",
-              "Gray",
-              "Green",
-              "Orange",
-              "Purple",
-              "Red"
-            ),
+            choices = COLOR_PALETTES_APP,
             selected = "Blue",
             inline = TRUE
           ),
@@ -323,7 +332,7 @@ ui <- shiny::bootstrapPage(
             "ch.gr_1",
             "Racial/Ethnic Group 1:",
             choices = RACES_APP,
-            selected = "All Races and Ethnicities"
+            selected = "Total"
           ),
           shinyWidgets::pickerInput(
             "ch.gr_2",
@@ -368,50 +377,50 @@ ui <- shiny::bootstrapPage(
         shiny::sidebarPanel(
           #5.1.2 Select Race
           shiny::checkboxGroupInput(
-            "pm_races",
-            "Select race(s):",
-            choices = c(
-              "White",
-              "Black",
-              "Asian",
-              "Other"
-            ),
-            selected = c("White", "Black", "Asian"),
-            inline = TRUE
+            "pm_groups",
+            "Select Racial/Ethnic Group(s):",
+            choices = RACES_MODEL_APP,
+            selected = RACES_MODEL_APP
           ),
           #5.1.3 Input State
           shiny::tags$div(
-            shiny::textInput(
+            # shiny::textInput(
+            #   "pm_st",
+            #   "Input State:",
+            #   value = "All"
+            # ),
+            shinyWidgets::pickerInput(
               "pm_st",
-              "State:",
-              value = "Florida"
+              "Input State Name:",
+              selected = "All",
+              choices = STATES_APP
             ),
             style = "display:inline-block"
           ),
-          #5.1.5 Input High School
-          shiny::numericInput(
-            "pm_hs",
-            "Input High School Completion % in State:",
-            value = 90
-          ),
-          #5.1.6 Input Unemployment
-          shiny::numericInput(
-            "pm_ue",
-            "Input Unemployment % in State:",
-            value = 5
-          ),
+          # #5.1.5 Input High School
+          # shiny::numericInput(
+          #   "pm_hs",
+          #   "Input High School Completion % in State:",
+          #   value = 90
+          # ),
+          # #5.1.6 Input Unemployment
+          # shiny::numericInput(
+          #   "pm_ue",
+          #   "Input Unemployment % in State:",
+          #   value = 5
+          # ),
           #5.1.7 Input Income
           shiny::numericInput(
             "pm_inc",
             "Input Household Annual Income US$:",
             value = 60000
           ),
-          #5.1.8 Input Home Value
-          shiny::numericInput(
-            "pm_val",
-            "Input Home Value US$:",
-            value = 200000
-          ),
+          # #5.1.8 Input Home Value
+          # shiny::numericInput(
+          #   "pm_val",
+          #   "Input Home Value US$:",
+          #   value = 200000
+          # ),
           #5.1.10 Not Overlaid
           shiny::radioButtons(
             "pm_sp",
@@ -442,70 +451,27 @@ ui <- shiny::bootstrapPage(
 )
 #Close UI
 
-
 #Define Server
-server <- function(input, output) {
+APP_SERVER <- function(input, output) {
   #2.1 Box Plot Output
   output$boxplot <- renderPlot({
     if (input$bpgo == 0) return ("")
     isolate(
       plot_app(
-        Plot = 'BP',
+        Plot = "BP",
         area = input$bp_area,
         Stated = input$bp_st,
-        BP.Violin = switch (
+        BP.Violin = switch(
           input$bp_v,
           "Box Plot" = "F",
           "Violin Plot" = "T"
         ),
         Yearp = input$bp_y,
-        Vary = switch(
-          input$bp_var,
-          "Home Ownership (%)" = "Own",
-          "High School Completion (%)" = "HS",
-          "Bachelor Degree Completion (%)" = "Col",
-          "Household Annual Income (Current US$)" = "Inc",
-          "Log10 Annual Income (Current US$)" = "LInc",
-          "Population Size" = "Pop",
-          "Log10 Population Inhabitants" = "LPop",
-          "Unemployment (%)" = "UE"
-        ),
-        Group1 = switch(
-          input$bp.gr_1,
-          "All Races and Ethnicities" = "Total",
-          "White (non-Hispanic)" = "WhiteNH",
-          "Black" = "Black",
-          "Asian" = "Asian",
-          "None" = "None",
-          "Hispanic" = "Hispanic",
-        ),
-        Group2 = switch(
-          input$bp.gr_2,
-          "All Races and Ethnicities" = "Total",
-          "White (non-Hispanic)" = "WhiteNH",
-          "Black" = "Black",
-          "Asian" = "Asian",
-          "None" = "None",
-          "Hispanic" = "Hispanic"
-        ),
-        Group3 = switch(
-          input$bp.gr_3,
-          "All Races and Ethnicities"= "Total",
-          "White (non-Hispanic)" = "WhiteNH",
-          "Black" = "Black",
-          "Asian" = "Asian",
-          "None" = "None",
-          "Hispanic" = "Hispanic",
-        ),
-        Group4 = switch(
-          input$bp.gr_4,
-          "All Races and Ethnicities"= "Total",
-          "White (non-Hispanic)" = "WhiteNH",
-          "Black" = "Black",
-          "Asian" = "Asian",
-          "None" = "None",
-          "Hispanic" = "Hispanic"
-        )
+        Vary = input$bp_var,
+        Group1 = input$bp.gr_1,
+        Group2 = input$bp.gr_2,
+        Group3 = input$bp.gr_3,
+        Group4 = input$bp.gr_4
       )
     )
   })
@@ -514,75 +480,17 @@ server <- function(input, output) {
     if (input$scgo == 0) return("")
     isolate(
       plot_app(
-        Plot = 'SC',
+        Plot = "SC",
         area = input$sc_area,
         Stated = input$sc_st,
-        SC.Smoother = switch(
-          input$sc_sm,
-          "Linear Model" = "lm",
-          "Generalized Linear Model" = "glm",
-          "Generalized Additive Model" = "gam",
-          "Locally Estimated Scatterplot" = "loess"
-        ),
+        SC.Smoother = input$sc_sm,
         Yearp = input$sc_y,
-        Vary = switch(
-          input$sc_vary,
-          "Home Ownership (%)" = "Own",
-          "High School Completion (%)" = "HS",
-          "Bachelor Degree Completion (%)" = "Col",
-          "Household Annual Income (Current US$)" = "Inc",
-          "Log10 Annual Income (Current US$)" = "LInc",
-          "Population Size" = "Pop",
-          "Log10 Population Inhabitants" = "LPop",
-          "Unemployment (%)" = "UE"
-        ),
-        Varx = switch(
-          input$sc_varx,
-          "Home Ownership (%)" = "Own",
-          "High School Completion (%)" = "HS",
-          "Bachelor Degree Completion (%)" = "Col",
-          "Household Annual Income (Current US$)" = "Inc",
-          "Log10 Annual Income (Current US$)" = "LInc",
-          "Population Size" = "Pop",
-          "Log10 Population Inhabitants" = "LPop",
-          "Unemployment (%)" = "UE"
-        ),
-        Group1 = switch(
-          input$sc.gr_1,
-          "All Races and Ethnicities"= "Total",
-          "White (non-Hispanic)" = "WhiteNH",
-          "Black" = "Black",
-          "Asian" = "Asian",
-          "None" = "None",
-          "Hispanic" = "Hispanic"
-        ),
-        Group2 = switch(
-          input$sc.gr_2,
-          "All Races and Ethnicities"= "Total",
-          "White (non-Hispanic)" = "WhiteNH",
-          "Black" = "Black",
-          "Asian" = "Asian",
-          "None" = "None",
-          "Hispanic" = "Hispanic"
-        ),
-        Group3 = switch(
-          input$sc.gr_3,
-          "All Races and Ethnicities"= "Total",
-          "White (non-Hispanic)" = "WhiteNH",
-          "Black" = "Black",
-          "Asian" = "Asian",
-          "None" = "None",
-          "Hispanic" = "Hispanic"
-        ),
-        Group4 = switch(
-          input$sc.gr_4,
-          "All Races and Ethnicities"= "Total",
-          "White (non-Hispanic)" = "WhiteNH",
-          "Black" = "Black",
-          "Asian" = "Asian",
-          "None" = "None",
-          "Hispanic" = "Hispanic"
-        )
+        Vary = input$sc_vary,
+        Varx = input$sc_varx,
+        Group1 = input$sc.gr_1,
+        Group2 = input$sc.gr_2,
+        Group3 = input$sc.gr_3,
+        Group4 = input$sc.gr_4
       )
     )
   })
@@ -591,56 +499,14 @@ server <- function(input, output) {
     if (input$tsgo == 0) return("")
     isolate(
       plot_app(
-        Plot = 'TS',
+        Plot = "TS",
         Stated = input$ts_st,
         area = input$ts_area,
-        Vary = switch(
-          input$ts_var,
-          "Home Ownership (%)" = "Own",
-          "High School Completion (%)" = "HS",
-          "Bachelor Degree Completion (%)" = "Col",
-          "Household Annual Income (Current US$)" = "Inc",
-          "Log10 Annual Income (Current US$)" = "LInc",
-          "Population Size" = "Pop",
-          "Log10 Population Inhabitants" = "LPop",
-          "Unemployment (%)" = "UE"
-        ),
-        Group1 =  switch(
-          input$ts.gr_1,
-          "All Races and Ethnicities"= "Total",
-          "White (non-Hispanic)" = "WhiteNH",
-          "Black" = "Black",
-          "Asian" = "Asian",
-          "None" = "None",
-          "Hispanic" = "Hispanic"
-        ),
-        Group2 = switch(
-          input$ts.gr_2,
-          "All Races and Ethnicities"= "Total",
-          "White (non-Hispanic)" = "WhiteNH",
-          "Black" = "Black",
-          "Asian" = "Asian",
-          "None" = "None",
-          "Hispanic" = "Hispanic"
-        ),
-        Group3 = switch(
-          input$ts.gr_3,
-          "All Races and Ethnicities"= "Total",
-          "White (non-Hispanic)" = "WhiteNH",
-          "Black" = "Black",
-          "Asian" = "Asian",
-          "None" = "None",
-          "Hispanic" = "Hispanic"
-        ),
-        Group4 = switch(
-          input$ts.gr_4,
-          "All Races and Ethnicities"= "Total",
-          "White (non-Hispanic)" = "WhiteNH",
-          "Black" = "Black",
-          "Asian" = "Asian",
-          "None" = "None",
-          "Hispanic" = "Hispanic"
-        )
+        Vary = input$ts_var,
+        Group1 = input$ts.gr_1,
+        Group2 = input$ts.gr_2,
+        Group3 = input$ts.gr_3,
+        Group4 = input$ts.gr_4
       )
     )
   })
@@ -650,66 +516,15 @@ server <- function(input, output) {
     isolate(
       plot_choropleth_app(
         area = input$ch_area,
-        State = input$ch_st,
-        yearch = input$ch_y,
+        Stated = input$ch_st,
+        Yearp = input$ch_y,
         free_scales = FALSE,
-        fill_var = switch(
-          input$ch_var,
-          "Home Ownership (%)" = "hom.own",
-          "High School Completion (%)" = "edu.hs",
-          "Bachelor Degree Completion (%)" = "edu.bs",
-          "Household Annual Income (Current US$)" = "inc.inc",
-          "Log10 Annual Income (Current US$)" = "linc",
-          "Population Size" = "pop.tot",
-          "Log10 Population Size" = "lpop",
-          "Population Share (%)" = "pop.share",
-          "Unemployment (%)" = "emp.ue"
-        ),
-        col_pal = switch(
-          input$ch_col,
-          "Red" = "Reds",
-          "Purple" = "Purples",
-          "Orange" = "Oranges",
-          "Green" = "Greens",
-          "Blue" = "Blues",
-          "Gray" = "Greys"
-        ),
-        group1 = switch(
-          input$ch.gr_1,
-          "All Races and Ethnicities"= "Total",
-          "White (non-Hispanic)" = "WhiteNH",
-          "Black" = "Black",
-          "Asian" = "Asian",
-          "None" = "None",
-          "Hispanic" = "Hispanic"
-        ),
-        group2 = switch(
-          input$ch.gr_2,
-          "All Races and Ethnicities"= "Total",
-          "White (non-Hispanic)" = "WhiteNH",
-          "Black" = "Black",
-          "Asian" = "Asian",
-          "None" = "None",
-          "Hispanic" = "Hispanic"
-        ),
-        group3 = switch(
-          input$ch.gr_3,
-          "All Races and Ethnicities"= "Total",
-          "White (non-Hispanic)" = "WhiteNH",
-          "Black" = "Black",
-          "Asian" = "Asian",
-          "None" = "None",
-          "Hispanic" = "Hispanic"
-        ),
-        group4 = switch(
-          input$ch.gr_4,
-          "All Races and Ethnicities"= "Total",
-          "White (non-Hispanic)" = "WhiteNH",
-          "Black" = "Black",
-          "Asian" = "Asian",
-          "None" = "None",
-          "Hispanic" = "Hispanic"
-        )
+        fill_var = input$ch_var,
+        col_pal = input$ch_col,
+        Group1 = input$ch.gr_1,
+        Group2 = input$ch.gr_2,
+        Group3 = input$ch.gr_3,
+        Group4 = input$ch.gr_4
       )
     )
   })
@@ -718,13 +533,13 @@ server <- function(input, output) {
     if (input$pmgo == 0) return("")
     isolate(
       plot_prediction_app(
-        model = model,
-        race = input$pm_races,
+        model = MODEL_APP,
+        race = input$pm_groups,
         state = input$pm_st,
-        edu.hs = input$pm_hs,
-        emp.ue = input$pm_ue,
+        # edu.hs = input$pm_hs,
+        # emp.ue = input$pm_ue,
         inc.inc = input$pm_inc,
-        val.hom = input$pm_val,
+        # val.hom = input$pm_val,
         separate_y = switch(
           input$pm_sp,
           "Yes" = TRUE,
@@ -738,4 +553,4 @@ server <- function(input, output) {
 }
 
 #Launch App
-shiny::shinyApp(ui, server)
+shiny::shinyApp(APP_UI, APP_SERVER)

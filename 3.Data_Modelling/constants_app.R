@@ -44,21 +44,42 @@ CENSUS_TABLE_FILE_APP <- c(
 )
 
 RACES_APP <- c(
-  "All Races and Ethnicities",
-  "White (non-Hispanic)",
-  "Black",
-  "Hispanic",
-  "Asian",
-  "None"
+  "All Races and Ethnicities" = "Total",
+  "White (non-Hispanic)" = "WhiteNH",
+  "Black" = "Black",
+  "Hispanic" = "Hispanic",
+  "Asian" = "Asian",
+  "None" = "None"
 )
 
+RACES_MODEL_APP <- RACES_APP[RACES_APP %in% RACES_MODEL]
+
 VARS_APP <- c(
-  "Home Ownership (%)",
-  "High School Completion (%)",
-  "Bachelor Degree Completion (%)",
-  "Household Annual Income (Current US$)",
-  "Log10 Annual Income (Current US$)",
-  "Population Size",
-  "Log10 Population Inhabitants",
-  "Unemployment (%)"
+  "Home Ownership Rate (%)" = "Own",
+  "High School Completion (%)" = "HS",
+  "Bachelor Degree Completion (%)" = "BS",
+  "Household Annual Income (Current US$)" = "Inc",
+  "Log10 Annual Income (Current US$)" = "LInc",
+  "Population Size" = "Pop",
+  "Log10 Population Size" = "LPop",
+  "Population Share (%)" = "Pop_Share",
+  "Unemployment (%)" = "UE"
 )
+
+COLOR_PALETTES_APP <- c(
+  "Red" = "Reds",
+  "Purple" = "Purples",
+  "Orange" = "Oranges",
+  "Green" = "Greens",
+  "Blue" = "Blues",
+  "Gray" = "Greys"
+)
+
+SMOOTHERS_APP <- c(
+  "Linear Model" = "lm",
+  "Generalized Linear Model" = "glm",
+  "Generalized Additive Model" = "gam",
+  "Locally Estimated Scatterplot" = "loess"
+)
+
+STATES_APP <- c("All", STATES)
