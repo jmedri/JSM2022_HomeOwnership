@@ -2,44 +2,58 @@
 # depends on library(sf)
 # depends on constants.R
 
+get_name_shape_data <- function(area, year) {
+  paste0("cb_", year, "_us_", area, "_20m")
+}
+
 process_shape_data_unzip <- function() {
-  unzip(
-    file.path(INPUT_DIR, "cb_2020_us_county_20m.zip"),
-    exdir = file.path(
-      INPUT_PROCESSED_DIR,
-      "census_shape",
-      "cb_2020_us_county_20m"
+  for (year in YEARS) {
+    county_name <- get_name_shape_data("county", year)
+    state_name <- get_name_shape_data("state", year)
+    unzip(
+      file.path(INPUT_DIR, paste0(county_name, ".zip")),
+      exdir = file.path(
+        INPUT_PROCESSED_DIR,
+        "census_shape",
+        county_name
+      )
     )
-  )
-  unzip(
-    file.path(INPUT_DIR, "cb_2020_us_state_20m.zip"),
-    exdir = file.path(
-      INPUT_PROCESSED_DIR,
-      "census_shape",
-      "cb_2020_us_state_20m"
+    unzip(
+      file.path(INPUT_DIR, paste0(state_name, ".zip")),
+      exdir = file.path(
+        INPUT_PROCESSED_DIR,
+        "census_shape",
+        state_name
+      )
     )
-  )
+  }
 }
 
 process_shape_data_county <- function() {
-  us_county <- sf::st_read(file.path(
-    INPUT_PROCESSED_DIR,
-    "census_shape",
-    "cb_2020_us_county_20m",
-    "cb_2020_us_county_20m.shx"
-  ))
-  us_state <- (
-    sf::st_read(
+  for (year in YEARS) {
+    name_county <- get_name_shape_data("county", year)
+    name_state <- get_name_shape_data("state", year)
+    us_county <- sf::st_read(
       file.path(
         INPUT_PROCESSED_DIR,
         "census_shape",
-        "cb_2020_us_state_20m",
-        "cb_2020_us_state_20m.shx"
+        name_county,
+        paste0(name_county, ".shx")
       )
-    ) |>
+    )
+    us_state <- (
+      sf::st_read(
+        file.path(
+          INPUT_PROCESSED_DIR,
+          "census_shape",
+          name_state,
+          paste0(name_state, ".shx")
+        )
+      ) |>
       remove_spatial()
-  )
-  us_county |>
+    )
+
+    us_county |>
     dplyr::left_join(
       us_state |> dplyr::select(STATEFP, NAME),
       by = "STATEFP",
@@ -48,7 +62,7 @@ process_shape_data_county <- function() {
     dplyr::rename(state = NAME_state, county = NAME, geoid = GEOID) |>
     dplyr::filter(state %in% STATES) |>
     dplyr::mutate(
-      county = stringr::str_c(state, county, sep = "/"),
+      county = paste(state, county, sep = "/"),
       geoid = as.integer(geoid)
     ) |>
     dplyr::select(state, county, geoid, geometry) |>
@@ -56,28 +70,40 @@ process_shape_data_county <- function() {
     save_st(
       driver = "ESRI Shapefile",
       append = FALSE,
-      file_name = file.path(INPUT_PROCESSED_DIR, "census_shape", "county_processed")
+      file_name = file.path(
+        INPUT_PROCESSED_DIR,
+        "census_shape",
+        paste0("county_processed_", as.character(year))
+      )
     )
+  }
 }
 
 process_shape_data_state <- function() {
-  sf::st_read(
-    file.path(
-      INPUT_PROCESSED_DIR,
-      "census_shape",
-      "cb_2020_us_state_20m",
-      "cb_2020_us_state_20m.shx"
-    )
-  ) |>
+  for (year in YEARS) {
+    name_state <- get_name_shape_data("state", year)
+    sf::st_read(
+      file.path(
+        INPUT_PROCESSED_DIR,
+        "census_shape",
+        name_state,
+        paste0(name_state, ".shx")
+      )
+    ) |>
     dplyr::rename(state = NAME) |>
     dplyr::filter(state %in% STATES) |>
     dplyr::select(state, geometry) |>
     dplyr::arrange(state) |>
     save_st(
-      file_name = file.path(INPUT_PROCESSED_DIR, "census_shape", "state_processed"),
+      file_name = file.path(
+        INPUT_PROCESSED_DIR,
+        "census_shape",
+        paste0("state_processed_", as.character(year))
+      ),
       driver = "ESRI Shapefile",
       append = FALSE
     )
+  }
 }
 
 process_shape_data_all <- function() {
@@ -86,43 +112,47 @@ process_shape_data_all <- function() {
   process_shape_data_state()
 }
 
-load_shape_data <- function(recompute = FALSE) {
-  STATE_SHAPE_DATA <<- sf::st_read(file.path(
-    INPUT_PROCESSED_DIR,
-    "census_shape",
-    "state_processed"
-  ))
-  COUNTY_SHAPE_DATA <<- sf::st_read(file.path(
-    INPUT_PROCESSED_DIR,
-    "census_shape",
-    "county_processed"
-  ))
+load_processed_shape_data <- function(area, year) {
+  sf::st_read(
+    file.path(
+      INPUT_PROCESSED_DIR,
+      "census_shape",
+      paste0(area, "_processed_", year)
+    )
+  )
 }
 
-join_with_shape <- function(data, spatial_unit = "county") {
+load_shape_data <- function() {
+  STATE_SHAPE_DATA <<- load_processed_shape_data("state", 2020)
+  COUNTY_SHAPE_DATA <<- load_processed_shape_data("county", 2020)
+}
+
+join_with_shape <- function(data, area = "county", year = 2020) {
   #' @title join_with_shape()
   #' @description Joins the data frame with shape data.
   #' For this function to work the global variables COUNTY_SHAPE_DATA and
   #' STATE_SHAPE_DATA must have the corresponding shape data.
-  #' @param data Data frame with data to plot. If spatial_unit == "county"
+  #' @param data Data frame with data to plot. If area == "county"
   #' data must contain a "geoid" data must contain a "geoid" column
-  #' that corresponds with the geoid's in US_COUNTY[[x]]. If spatial_unit == "state",
+  #' that corresponds with the geoid's in US_COUNTY[[x]]. If area == "state",
   #' data must contain a "state" column with the names of states.
-  #' @param spatial_unit Either "county" or "state" depending on whether county or state
+  #' @param area Either "county" or "state" depending on whether county or state
   #' data should be joined with data.
   (
-    if (spatial_unit == "county") {
+    if (area == "county") {
+      shape_data <- load_processed_shape_data("county", year)
       dplyr::full_join(
-        COUNTY_SHAPE_DATA |> dplyr::select(geoid, geometry),
+        shape_data |> dplyr::select(geoid, geometry),
         data,
         by = "geoid"
       ) |>
       dplyr::arrange(state, county, geoid, race)
-    } else if (spatial_unit == "state") {
-      dplyr::full_join(STATE_SHAPE_DATA, data, by = "state") |>
+    } else if (area == "state") {
+      shape_data <- load_processed_shape_data("state", year)
+      dplyr::full_join(shape_data, data, by = "state") |>
       dplyr::arrange(state, race)
     } else {
-      stop(stringr::str_c("Unknown spatial unit: ", spatial_unit))
+      stop(stringr::str_c("Unknown area: ", area))
     }
   ) |>
   sf::st_as_sf()

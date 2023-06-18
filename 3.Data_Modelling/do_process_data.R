@@ -6,4 +6,6 @@ source("3.Data_Modelling/utils_app.R")
 source("3.Data_Modelling/utils_shape_data.R")
 source("3.Data_Modelling/utils_census_data.R")
 
-process_census_data_app()
+process_shape_data_all()
+process_census_data_all()
+process_app_data_all()

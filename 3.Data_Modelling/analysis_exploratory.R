@@ -1,6 +1,6 @@
 #################### Functions ##################
 
-plot_chloropleth <- function(
+plot_choropleth <- function(
   data,
   fill_var,
   title = NULL,
@@ -352,19 +352,21 @@ plot_pair_all <- function(data, dir, facet_num_cols) {
   )
 }
 
-plot_chloropleth_all <- function(data,
-                                 dir,
-                                 spatial_unit = "county",
-                                 facet_num_cols = 3) {
+plot_choropleth_all <- function(
+  data,
+  dir,
+  area = "county",
+  facet_num_cols = 3
+) {
   data <- (
     data |>
       dplyr::filter(state %in% CONTIGUOUS_STATES) |>
-      join_with_shape(spatial_unit = spatial_unit)
+      join_with_shape(area = area)
   )
   purrr::walk(
     VALUE_COLUMNS,
     function(fill_var) {
-      plot_chloropleth(
+      plot_choropleth(
         data,
         fill_var,
         title = fill_var,
@@ -1327,7 +1329,7 @@ do_all_exploratory_analyses <- function() {
     CENSUS_DATA,
     file.path(OUTPUT_EXPLORATORY_DIR, "histogram")
   )
-  plot_chloropleth_all(
+  plot_choropleth_all(
     CENSUS_DATA,
     file.path(OUTPUT_EXPLORATORY_DIR, "chloropleth"),
     facet_num_cols = 2

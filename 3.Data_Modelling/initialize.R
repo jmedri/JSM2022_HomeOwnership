@@ -35,4 +35,6 @@ initialize <- function(
   load_census_data()
   load_model_data()
   load_app_data()
+
+  options(scipen = 999) # Turn off scientific notation
 }

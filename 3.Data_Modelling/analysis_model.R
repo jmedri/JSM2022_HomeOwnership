@@ -1232,7 +1232,7 @@ plot_model_residual_chloropleth <- function(standardize = FALSE) {
           by = c("state", "county", "geoid", "race")
         ) |>
         join_with_shape() |>
-        plot_chloropleth(
+        plot_choropleth(
           "residual",
           outline = TRUE,
           breaks = if (standardize) {

@@ -60,6 +60,8 @@ STATES <- c(
   "Wyoming"
 )
 
+STATES_MAINLAND <- STATES[!(STATES %in% c("Alaska", "Hawaii"))]
+
 YEARS <- c(2015, 2016, 2017, 2018, 2019, 2020)
 
 # 48 contiguous US states

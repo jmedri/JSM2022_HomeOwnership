@@ -15,7 +15,7 @@ unzip_census_tables <- function() {
   }
 }
 
-process_housing_data_app <- function(Table = "S2501", Year = 2020) {
+process_app_housing_data <- function(Table = "S2501", Year = 2020) {
   # Define Location of the File
   file_name <- file.path(
     INPUT_PROCESSED_DIR,
@@ -459,7 +459,7 @@ process_housing_data_app <- function(Table = "S2501", Year = 2020) {
   }
 
   # Call File and Create Year and Table Variables
-  data <- read.csv(file_name)[-1, vars_old, drop = FALSE]
+  data <- readr::read_csv(file_name)[-1, vars_old, drop = FALSE]
   data$Year <- Year
   data$Table <- Table
 
@@ -1024,7 +1024,7 @@ process_housing_data_app <- function(Table = "S2501", Year = 2020) {
   data
 }
 
-process_race_data_app <- function(Table = "S2501", Year = 2020) {
+process_app_race_data <- function(Table = "S2501", Year = 2020) {
   # Define Location of the File
   file_name <- file.path(
     INPUT_PROCESSED_DIR,
@@ -1170,7 +1170,7 @@ process_race_data_app <- function(Table = "S2501", Year = 2020) {
   }
   
   # Call File and Create Year and Table Variables
-  data <- read.csv(file_name, header = TRUE)[-1, vars_old]
+  data <- readr::read_csv(file_name, header = TRUE)[-1, vars_old]
   data$Year <- Year
   data$Table <- Table
   data$County <- gsub(",.*$", "", data$NAME)
@@ -2046,7 +2046,7 @@ process_race_data_app <- function(Table = "S2501", Year = 2020) {
   data
 }
 
-process_census_data_app <- function() {
+process_app_data_all <- function() {
   unzip_census_tables()
 
   housing_data <- (
@@ -2057,7 +2057,7 @@ process_census_data_app <- function() {
           YEARS,
           function(Year) {
             log_msg("Processing housing table", Table, "for year", Year)
-            process_housing_data_app(Table, Year)
+            process_app_housing_data(Table, Year)
           }
         ) |>
         purrr::list_rbind()
@@ -2076,7 +2076,7 @@ process_census_data_app <- function() {
           YEARS,
           function(Year) {
             log_msg("Processing race table", Table, "for year", Year)
-            process_race_data_app(Table, Year)
+            process_app_race_data(Table, Year)
           }
         ) |>
         purrr::list_rbind()
@@ -2122,6 +2122,51 @@ process_census_data_app <- function() {
   save_csv(data, file.path(INPUT_PROCESSED_DIR, "census_app", "data.csv"))
 }
 
+get_data_plot_app <- function(data) {
+  dplyr::bind_cols(
+    dplyr::select(
+      data,
+      dplyr::any_of(c("Year", "Group", "State","County", "GEO_ID"))
+    ),
+    (
+      data |>
+      dplyr::transmute(
+        Own = Owned_P * 100,
+        HS = HS_P * 100,
+        Col = Col_P * 100,
+        Inc = Inc_Med,
+        LInc = log10(Inc_Med),
+        Pop = Pop_T / 1000000,
+        Pop_Share = Pop_P * 100,
+        LPop = log10(Pop_T),
+        UE = UE_P
+      )
+    )
+  )
+}
+
+get_var_name_app <- function(var) {
+  if (var == "Own") {
+    "Home Ownership Rate (%)"
+  } else if (var == "HS") {
+    "High School Completion Rate (%)"
+  } else if (var == "Col") {
+    "Bachelor Degree Completion Rate (%)"
+  } else if (var == "Inc") {
+    "Household Annual\nIncome (Current US$)"
+  } else if (var == "LInc") {
+    expression(paste(Log[10], " Annual Income (Current US$)"))
+  } else if (var == "Pop") {
+    "Population (Million Inhabitants)"
+  } else if (var == "Pop_Share") {
+    "Population Share (%)"
+  } else if (var == "LPop") {
+    expression(paste(Log[10], " Population (Million Inhabitants)"))
+  } else if (var == "UE") {
+    "Unemployment Rate (%)"
+  }
+}
+
 # Plots Function (For Box Plots, Scatter Plots, and Time Series)
 plot_app <- function(
   area = "State",
@@ -2149,7 +2194,7 @@ plot_app <- function(
       (Group %in% c(Group1, Group2, Group3, Group4)) &
       (Year == Yearp) &
       if (area == "State") {
-        !(State == "All")
+        (State != "All")
       } else if (area == "County") {
         (State %in% Stated) | (Stated == "All")
       }
@@ -2169,81 +2214,14 @@ plot_app <- function(
   }
   
   # Variables Definitions
-  y.var <- if (Vary == "Own") {
-    data.plot$Owned_P * 100
-  } else if (Vary == "HS") {
-    data.plot$HS_P * 100
-  } else if (Vary == "Col") {
-    data.plot$Col_P * 100
-  } else if (Vary == "Inc") {
-    data.plot$Inc_Med
-  } else if (Vary == "LInc") {
-    log10(data.plot$Inc_Med)
-  } else if (Vary == "Pop") {
-    data.plot$Pop_T / 1000000
-  } else if (Vary == "LPop") {
-    log10(data.plot$Pop_T)
-  } else if (Vary == "UE") {
-    data.plot$UE_P
-  }
-
-  x.var <- if (Varx == "Own") {
-    data.plot$Owned_P * 100
-  } else if (Varx == "HS") {
-    data.plot$HS_P * 100
-  } else if (Varx == "Col") {
-    data.plot$Col_P * 100
-  } else if (Varx == "Inc") {
-    data.plot$Inc_Med
-  } else if (Varx == "LInc") {
-    log10(data.plot$Inc_Med)
-  } else if (Varx == "Pop") {
-    data.plot$Pop_T / 1000000
-  } else if (Varx == "LPop") {
-    log10(data.plot$Pop_T)
-  } else if (Varx == "UE") {
-    data.plot$UE_P
-  }
+  data.plot <- get_data_plot_app(data.plot)
 
   # Variables Names
-  y.name <- if (Vary == "Own") {
-    "Home Ownership Rate (%)"
-  } else if (Vary == "HS") {
-    "High School Completion Rate (%)"
-  } else if (Vary == "Col") {
-    "Bachelor Degree Completion Rate (%)"
-  } else if (Vary == "Inc") {
-    "Household Annual\nIncome (Current US$)"
-  } else if (Vary == "LInc") {
-    expression(paste(Log[10], " Annual Income (Current US$)"))
-  } else if (Vary == "Pop") {
-    "Population (Million Inhabitants)"
-  } else if (Vary == "LPop") {
-    expression(paste(Log[10], " Population (Million Inhabitants)"))
-  } else if (Vary == "UE") {
-    "Unemployment Rate (%)"
-  }
-
-  x.name <- if (Varx == "Own") {
-    "Home Ownership Rate (%)"
-  } else if (Varx == "HS") {
-    "High School Completion Rate (%)"
-  } else if (Varx == "Col") {
-    "Bachelor Degree\nCompletion Rate (%)"
-  } else if (Varx == "Inc") {
-    "Household Annual Income (Current US$)"
-  } else if (Varx == "LInc") {
-    expression(paste(Log[10], " Monthly Income (Current US$)"))
-  } else if (Varx == "Pop") {
-    "Population (Million Inhabitants)"
-  } else if (Varx == "LPop") {
-    expression(paste(Log[10], " Population (Million Inhabitants)"))
-  } else if (Varx == "UE") {
-    "Unemployment Rate (%)"
-  }
+  y.name <- get_var_name_app(Vary)
+  x.name <- get_var_name_app(Varx)
   
   Rename <- function(GroupN) {
-    ifelse(GroupN == "Tota", "All", GroupN)
+    ifelse(GroupN == "Total", "All", GroupN)
   }
   data.plot$Group <- Rename(data.plot$Group)
   FGroups <- Rename(RACES)
@@ -2255,8 +2233,8 @@ plot_app <- function(
     ggplot2::ggplot(
       data = data.plot,
       ggplot2::aes(
-        x = x.var,
-        y = y.var,
+        x = .data[[Varx]],
+        y = .data[[Vary]],
         color = factor(Group, levels = FGroups)
       ),
       na.rm = TRUE
@@ -2268,6 +2246,7 @@ plot_app <- function(
       na.translate = F
     ) +
     ggplot2::labs(x = x.name, y = y.name) +
+    ggplot2::theme_classic() +
     ggplot2::theme(
       axis.text = ggplot2::element_text(size = 20),
       axis.title.y = element_text(
@@ -2290,12 +2269,7 @@ plot_app <- function(
       ),
       legend.title = ggplot2::element_blank(),
       legend.text = ggplot2::element_text(size = 15),
-      legend.position = "bottom",
-      panel.border = ggplot2::element_blank(),
-      panel.grid.major = ggplot2::element_blank(),
-      panel.grid.minor = ggplot2::element_blank(),
-      axis.line = element_line(colour = "black"),
-      panel.background = ggplot2::element_blank()
+      legend.position = "bottom"
     ) +
     ggplot2::geom_smooth(
       ggplot2::aes(
@@ -2314,7 +2288,7 @@ plot_app <- function(
       data = data.plot,
       ggplot2::aes(
         x = factor(Group, levels = FGroups),
-        y = y.var,
+        y = .data[[Vary]],
         fill = factor(Group, levels = FGroups)
       )
     ) +
@@ -2329,22 +2303,18 @@ plot_app <- function(
       if (BP.Violin == "F") {
         ggplot2::geom_blank()
       } else if (BP.Violin == "T") {
-        geom_jitter()
+        ggplot2::geom_jitter()
       }
     ) +
     ggplot2::ylab(y.name) +
     ggplot2::scale_fill_manual(values = colors) +
+    ggplot2::theme_classic() +
     ggplot2::theme(
       axis.title.x = ggplot2::element_blank(),
       legend.position = "none",
       axis.title.y = ggplot2::element_text(size = 22, face = "bold"),
       axis.text.x = ggplot2::element_text(size = 16, face = "bold"),
-      axis.text = ggplot2::element_text(size = 20),
-      panel.border = ggplot2::element_blank(),
-      panel.grid.major = ggplot2::element_blank(),
-      panel.grid.minor = ggplot2::element_blank(),
-      axis.line = element_line(colour = "black"),
-      panel.background = ggplot2::element_blank()
+      axis.text = ggplot2::element_text(size = 20)
     )
   )
   
@@ -2353,7 +2323,7 @@ plot_app <- function(
       data = data.plot,
       ggplot2::aes(
         x = Year, 
-        y = y.var,
+        y = .data[[Vary]],
         color = factor(Group, levels = FGroups))
     ) +
     (
@@ -2369,10 +2339,11 @@ plot_app <- function(
       na.translate = F
     ) +
     ggplot2::ylab(y.name) +
+    ggplot2::theme_classic() +
     ggplot2::theme(
       axis.text = ggplot2::element_text(size = 20),
       axis.title.y = ggplot2::element_text(
-        margin = margin(
+        margin = ggplot2::margin(
           t = 0,
           r = 5,
           b = 0,
@@ -2383,12 +2354,7 @@ plot_app <- function(
       axis.title.x = ggplot2::element_blank(),
       legend.title = ggplot2::element_blank(),
       legend.text = ggplot2::element_text(size = 15),
-      legend.position = "bottom",
-      panel.border = ggplot2::element_blank(),
-      panel.grid.major = ggplot2::element_blank(),
-      panel.grid.minor = ggplot2::element_blank(),
-      axis.line = element_line(colour = "black"),
-      panel.background = ggplot2::element_blank()
+      legend.position = "bottom"
     )
   )
 
@@ -2451,63 +2417,152 @@ plot_prediction_app <- function(
 }
 
 # Plots Function (For Choropleth Maps)
-plot_chloropleth_app <- function(
+# plot_choropleth_app <- function(
+#   area = "State",
+#   State = "All",
+#   fill_var = "hom.own",
+#   col_pal = "Reds",
+#   title = NULL,
+#   facet_var = "race",
+#   group1 = "WhiteNH",
+#   group2 = "None",
+#   group3 = "None",
+#   group4 = "None",
+#   facet_ncol = NA,
+#   breaks = NULL,
+#   outline = TRUE,
+#   color_na = "black",
+#   free_scales = FALSE
+# ) {
+#   groups_r <- c(group1, group2, group3, group4)
+  
+#   data <-  if(area == "State") {
+#     DATA_STATE_SHAPE_APP %>%
+#     dplyr::filter(
+#       !state %in% c("Alaska", "Hawaii") & 
+#       race %in% groups_r
+#     )
+#   } else if((area == "County") & (State == "All")) {
+#     DATA_COUNTY_SHAPE_APP %>%
+#     dplyr::filter(
+#       !(state %in% c("Alaska", "Hawaii")) &
+#       (race %in% groups_r)
+#     )
+#   } else if((area == "County") & !(State == "All")) {
+#     dplyr::DATA_COUNTY_SHAPE_APP %>% filter(
+#       (race %in% groups_r) &
+#       (state %in% State)
+#     )
+#   }
+
+#   data$linc <- log10(data$inc.inc)
+#   data$lpop <- log10(data$pop.tot)
+#   data$edu.hs <- data$edu.hs * 100
+#   data$edu.bs <- data$edu.bs * 100
+#   data$emp.ue <- data$emp.ue * 100
+#   data$pop.share <- data$pop.share * 100
+#   data$hom.own <- data$hom.own * 100
+
+#   var.name <- c(
+#     "hom.own" = "Home Ownership (%)",
+#     "edu.hs" = "High School Completion (%)",
+#     "edu.bs" = "Bachelor's Degree Completion (%)",
+#     "emp.ue" = "Unemployment (%)",
+#     "pop.tot" = "Total Population",
+#     "pop.share" = "Racial Population Share (%)",
+#     "inc.inc" = "Household Annual Income (US$)",
+#     "linc" = "Log10 Annual Income (US$)",
+#     "lpop" = "Log10 Total Population"
+#   )[[fill_var]]
+  
+#   tmap_out <-
+#     tmap::tm_shape(data) +
+#     tmap::tm_fill(
+#       title = var.name,
+#       col = fill_var,
+#       palette = col_pal,
+#       style = "cont",
+#       breaks = breaks,
+#       colorNA = color_na,
+#       legend.is.portrait = FALSE
+#     )
+#   if (outline) {
+#     tmap_out <- tmap_out + tmap::tm_borders()
+#   }
+#   if (!is.null(facet_var)) {
+#     tmap_out <- (
+#       tmap_out +
+#       tmap::tm_facets(
+#         facet_var,
+#         free.scales = free_scales,
+#         ncol = facet_ncol
+#       )
+#     )
+#   }
+#   tmap_out <- (
+#     tmap_out +
+#     tmap::tm_layout(
+#       panel.label.size = 5,
+#       legend.outside = !free_scales,
+#       legend.outside.position = "bottom",
+#       legend.position = c("left", "bottom"),
+#       legend.outside.size = 0.3,
+#       legend.text.size = 1,
+#       legend.title.size= 1.5,
+#       legend.width = 0.5
+#     )
+#   )
+#   tmap_out
+# }
+plot_choropleth_app <- function(
   area = "State",
-  State = "All",
-  fill_var = "hom.own",
+  Stated = "All",
+  yearch = 2020,
+  fill_var = "Own",
   col_pal = "Reds",
   title = NULL,
-  facet_var = "race",
-  group1 = "WhiteNH",
-  group2 = "None",
-  group3 = "None",
-  group4 = "None",
+  facet_var = "Group",
+  Group1 = "WhiteNH",
+  Group2 = "None",
+  Group3 = "None",
+  Group4 = "None",
   facet_ncol = NA,
   breaks = NULL,
   outline = TRUE,
   color_na = "black",
   free_scales = FALSE
 ) {
-  groups_r <- c(group1, group2, group3, group4)
+  Groups_r <- c(Group1, Group2, Group3, Group4)
   
-  data <-  if(area == "State") {
+  data <- if (area == "State") {
     DATA_STATE_SHAPE_APP %>%
     dplyr::filter(
-      !state %in% c("Alaska", "Hawaii") & 
-      race %in% groups_r
+      (State %in% STATES_MAINLAND) & 
+      (Year == yearch) &
+      (Group %in% Groups_r)
     )
-  } else if((area == "County") & (State == "All")) {
+  } else if ((area == "County") & (Stated == "All")) {
     DATA_COUNTY_SHAPE_APP %>%
     dplyr::filter(
-      !(state %in% c("Alaska", "Hawaii")) &
-      (race %in% groups_r)
+      (State %in% STATES_MAINLAND) &
+      (Year == yearch) &
+      (Group %in% Groups_r)
     )
-  } else if((area == "County") & !(State == "All")) {
-    dplyr::DATA_COUNTY_SHAPE_APP %>% filter(
-      (race %in% groups_r) &
-      (state %in% State)
+  } else if ((area == "County") & !(Stated == "All")) {
+    DATA_COUNTY_SHAPE_APP %>% dplyr::filter(
+      (Group %in% Groups_r) &
+      (Year == yearch) &
+      (State == Stated)
     )
   }
 
-  data$linc <- log10(data$inc.inc)
-  data$lpop <- log10(data$pop.tot)
-  data$edu.hs <- data$edu.hs * 100
-  data$edu.bs <- data$edu.bs * 100
-  data$emp.ue <- data$emp.ue * 100
-  data$pop.share <- data$pop.share * 100
-  data$hom.own <- data$hom.own * 100
-
-  var.name <- c(
-    "hom.own" = "Home Ownership (%)",
-    "edu.hs" = "High School Completion (%)",
-    "edu.bs" = "Bachelor's Degree Completion (%)",
-    "emp.ue" = "Unemployment (%)",
-    "pop.tot" = "Total Population",
-    "pop.share" = "Racial Population Share (%)",
-    "inc.inc" = "Household Annual Income (US$)",
-    "linc" = "Log10 Annual Income (US$)",
-    "lpop" = "Log10 Total Population"
-  )[[fill_var]]
+  data <- (
+    get_data_plot_app(data) |>
+    join_with_shape_app(area, yearch) |>
+    # filter again because join adds Alaska and Hawaii
+    dplyr::filter(State %in% STATES_MAINLAND)
+  )
+  var.name <- get_var_name_app(fill_var)
   
   tmap_out <-
     tmap::tm_shape(data) +
@@ -2553,7 +2608,7 @@ plot_chloropleth_app <- function(
 load_app_data <- function() {
   # Read county data
   DATA_COUNTY_FULL_APP <<- (
-    read.csv("3.Data_Modelling_Output/input_processed/census_app/data.csv") %>%
+    readr::read_csv("3.Data_Modelling_Output/input_processed/census_app/data.csv") %>%
     dplyr::filter(State %in% STATES) %>%
     dplyr::mutate(
       S2502.group.ownedp = S2502.group.owned / S2502.group.total,
@@ -2610,15 +2665,18 @@ load_app_data <- function() {
         ),
         .groups = "drop"
       )
-    )
+    ) %>%
+    dplyr::group_by(Year, State) %>%
+    dplyr::mutate(Pop_P = Pop_T / sum(Pop_T[Group == "Total"])) %>%
+    dplyr::ungroup()
   )
 
-  DATA_STATE_SHAPE_APP <<- (
-    DATA_STATE_APP %>%
-    dplyr::rename(state = State, race = Group) %>%
-    join_with_shape("state") %>%
-    dplyr::rename(State = state, Group = race)
-  )
+  # DATA_STATE_SHAPE_APP <<- (
+  #   DATA_STATE_APP %>%
+  #   dplyr::rename(state = State, race = Group) %>%
+  #   join_with_shape("state") %>%
+  #   dplyr::rename(State = state, Group = race)
+  # )
 
   # Make the shape data for choropleths
   # DATA_STATE_SHAPE_APP <<- (
@@ -2727,33 +2785,75 @@ load_app_data <- function() {
         ),
         .groups = "drop"
       )
-    )
+    ) %>%
+    dplyr::group_by(Year, State, County, GEO_ID) %>%
+    dplyr::mutate(Pop_P = Pop_T / Pop_T[Group == "Total"]) %>%
+    dplyr::ungroup()
   )
 
   # County shape data
-  DATA_COUNTY_SHAPE_APP <<- (
-    DATA_COUNTY_APP %>%
-    dplyr::mutate(
-      GEO_ID = stringr::str_remove(GEO_ID, "0500000US") %>% as.integer()
-    ) %>%
-    dplyr::rename(
-      geoid = GEO_ID,
-      state = State,
-      county = County,
-      race = Group
-    ) %>%
-    join_with_shape("county") %>%
-    dplyr::rename(
-      GEO_ID = geoid,
-      State = state,
-      County = county,
-      Group = race
-    ) |>
-    dplyr::mutate(GEO_ID = paste0("0500000US", sprintf("%05d", GEO_ID)))
+  # DATA_COUNTY_SHAPE_APP <<- (
+  #   DATA_COUNTY_APP |>
+  #   dplyr::filter(State != "All") |>
+  #   dplyr::nest_by(Year, .keep = TRUE) |>
+  #   purrr::pmap(
+  #     function(Year, data) {
+  #       data %>%
+  #       dplyr::mutate(
+  #         GEO_ID = stringr::str_remove(GEO_ID, "0500000US") %>% as.integer()
+  #       ) %>%
+  #       dplyr::rename(
+  #         geoid = GEO_ID,
+  #         state = State,
+  #         county = County,
+  #         race = Group
+  #       ) %>%
+  #       join_with_shape("county", Year) %>%
+  #       dplyr::rename(
+  #         GEO_ID = geoid,
+  #         State = state,
+  #         County = county,
+  #         Group = race
+  #       ) |>
+  #       dplyr::mutate(GEO_ID = paste0("0500000US", sprintf("%05d", GEO_ID)))
+  #     }
+  #   ) |>
+  #   purrr::list_rbind()
+  # )
+
+  MODEL_APP <- readRDS("3.Data_Modelling_Output/output_1_posterior/model_rds/model_4.rds")
+}
+
+join_with_shape_app <- function(data, area = "County", year = 2020) {
+  area <- stringr::str_to_lower(area)
+
+  data <- data |> dplyr::filter(State != "All")
+
+  if (area == "County") {
+    data <- (
+      data |>
+      dplyr::mutate(
+        GEO_ID = stringr::str_remove(GEO_ID, "0500000US") %>% as.integer()
+      ) |>
+      dplyr::rename(county = County, GEO_ID = GEO_ID)
+    )
+  }
+
+  data <- data |> dplyr::rename(state = State, race = Group)
+  
+  data <- (
+    data |>
+    join_with_shape(area, year) |>
+    dplyr::rename(State = state, Group = race)
   )
 
-  initialize("1", FALSE)
-  MODEL_APP <- load_model("4")
+  if (area == "County") {
+    data <- (
+      data |>
+      dplyr::rename(County = county, GEO_ID = GEO_ID) |>
+      dplyr::mutate(GEO_ID = paste0("0500000US", sprintf("%05d", GEO_ID)))
+    )
+  }
 
-  options(scipen = 999)
+  data
 }

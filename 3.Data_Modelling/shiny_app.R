@@ -648,7 +648,7 @@ server <- function(input, output) {
   output$choropleths <- renderPlot({
     if (input$chgo == 0) return("")
     isolate(
-      plot_chloropleth_app(
+      plot_choropleth_app(
         area = input$ch_area,
         State = input$ch_st,
         yearch = input$ch_y,
