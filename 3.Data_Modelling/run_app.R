@@ -4,6 +4,9 @@ library(shinythemes)
 library(shinyWidgets)
 library(styler)
 
+source("3.Data_Modelling/initialize.R")
+initialize()
+
 #Define UI
 APP_UI <- shiny::bootstrapPage(
   #Define Theme
