@@ -1,7 +1,7 @@
 source("3.Data_Modelling/initialize.R")
 
 initialize()
-# do_all_exploratory_analyses()
+do_all_exploratory_analyses()
 
 for (prior_type in PRIOR_TYPE_LIST) {
   for (sample_prior in c(TRUE, FALSE)) {

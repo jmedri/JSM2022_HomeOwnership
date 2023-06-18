@@ -2,8 +2,10 @@
 # depends on tmap
 # depends on constants.R
 
-log_msg <- function(obj) {
-  cat(as.character(obj), "\n")
+log_msg <- function(..., sep = " ", end = "\n") {
+  args <- list(...) |> purrr::map_chr(as.character)
+  do.call(cat, c(args, list("\n", sep = sep)))
+  flush.console()
 }
 
 create_parent_dir <- function(path) {

@@ -99,17 +99,17 @@ load_shape_data <- function(recompute = FALSE) {
   ))
 }
 
-# join_with_shape: Joins the data frame with shape data.
-#     For this function to work the global variables COUNTY_SHAPE_DATA and
-#     STATE_SHAPE_DATA must have the corresponding shape data.
-# Parameters:
-# data: data frame with data to plot. If spatial_unit == "county"
-#       data must contain a "geoid" data must contain a "geoid" column
-#       that corresponds with the geoid's in US_COUNTY[[x]]. If spatial_unit == "state",
-#       data must contain a "state" column with the names of states.
-# spatial_unit: either "county" or "state" depending on whether county or state
-#               data should be joined with data.
 join_with_shape <- function(data, spatial_unit = "county") {
+  #' @title join_with_shape()
+  #' @description Joins the data frame with shape data.
+  #' For this function to work the global variables COUNTY_SHAPE_DATA and
+  #' STATE_SHAPE_DATA must have the corresponding shape data.
+  #' @param data Data frame with data to plot. If spatial_unit == "county"
+  #' data must contain a "geoid" data must contain a "geoid" column
+  #' that corresponds with the geoid's in US_COUNTY[[x]]. If spatial_unit == "state",
+  #' data must contain a "state" column with the names of states.
+  #' @param spatial_unit Either "county" or "state" depending on whether county or state
+  #' data should be joined with data.
   (
     if (spatial_unit == "county") {
       dplyr::full_join(
@@ -117,12 +117,13 @@ join_with_shape <- function(data, spatial_unit = "county") {
         data,
         by = "geoid"
       ) |>
-        dplyr::arrange(state, county, geoid, race)
+      dplyr::arrange(state, county, geoid, race)
     } else if (spatial_unit == "state") {
       dplyr::full_join(STATE_SHAPE_DATA, data, by = "state") |>
-        dplyr::arrange(state, race)
+      dplyr::arrange(state, race)
     } else {
       stop(stringr::str_c("Unknown spatial unit: ", spatial_unit))
-    }) |>
-    sf::st_as_sf()
+    }
+  ) |>
+  sf::st_as_sf()
 }

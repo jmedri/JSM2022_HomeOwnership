@@ -60,6 +60,8 @@ STATES <- c(
   "Wyoming"
 )
 
+YEARS <- c(2015, 2016, 2017, 2018, 2019, 2020)
+
 # 48 contiguous US states
 CONTIGUOUS_STATES <- STATES[!(STATES %in% c("Alaska", "Hawaii"))]
 
@@ -149,6 +151,7 @@ GGPLOT_BASE_SIZE_BIG <- 20
 GGPLOT_BASE_SIZE_SMALL <- 16
 
 RACE_COLORS <- c(
+  Total = "#000000",
   WhiteNH = "#e41a1c",
   Hispanic = "#984ea3",
   Black = "#377eb8",

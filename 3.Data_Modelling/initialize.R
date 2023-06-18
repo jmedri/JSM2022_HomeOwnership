@@ -21,9 +21,11 @@ initialize <- function(
   source("3.Data_Modelling/directories.R")
   source("3.Data_Modelling/constants_common.R")
   source("3.Data_Modelling/constants_model.R")
+  source("3.Data_Modelling/constants_app.R")
   source("3.Data_Modelling/utils_common.R")
   source("3.Data_Modelling/utils_shape_data.R")
   source("3.Data_Modelling/utils_census_data.R")
+  source("3.Data_Modelling/utils_app.R")
   source("3.Data_Modelling/analysis_exploratory.R")
   source("3.Data_Modelling/analysis_model.R")
   source("3.Data_Modelling/analysis_sensitivity.R")
@@ -32,4 +34,5 @@ initialize <- function(
   load_shape_data()
   load_census_data()
   load_model_data()
+  load_app_data()
 }

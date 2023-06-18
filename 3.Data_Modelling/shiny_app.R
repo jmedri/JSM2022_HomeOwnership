@@ -4,166 +4,43 @@ library(shinythemes)
 library(shinyWidgets)
 library(styler)
 
-# Initialize data and models
-source("3.Data_Modelling/initialize.R")
-initialize("1", FALSE)
-model_g <- load_model("4") # model global variable
-
-data.county <- (
-  read.csv("3.Data_Modelling_Output/input_processed/census/3_wide/data.csv") %>%
-  filter(!State %in% c("Puerto Rico", "District of Columbia")) %>%
-  mutate(
-    S2502.group.ownedp = S2502.group.owned / S2502.group.total,
-    S1501.group.HSp = S1501.group.HSt / S1501.group.total,
-    S1501.group.BSp = S1501.group.BSt / S1501.group.total
-  )
-)
-
-data_state_ch <- (
-  CENSUS_DATA |>
-  dplyr::group_by(race, state) |>
-  dplyr::summarise(
-    edu.bs = weighted.mean(edu.bs, edu.tot, na.rm = TRUE),
-    edu.hs = weighted.mean(edu.hs, edu.tot, na.rm = TRUE),
-    emp.ue = weighted.mean(emp.ue, emp.tot, na.rm = TRUE),
-    fin.cost = weighted.mean(fin.cost, fin.tot, na.rm = TRUE),
-    fin.inc = weighted.mean(fin.inc, fin.tot, na.rm = TRUE),
-    hom.own = weighted.mean(hom.own, hom.tot, na.rm = TRUE),
-    inc.inc = weighted.mean(inc.inc, inc.tot, na.rm = TRUE),
-    occ.fam = weighted.mean(occ.fam, occ.tot, na.rm = TRUE),
-    val.hom = weighted.mean(val.hom, val.tot, na.rm = TRUE),
-    val.mort = weighted.mean(val.mort, val.tot, na.rm = TRUE),
-    val.tax = weighted.mean(val.tax, val.tot, na.rm = TRUE),
-    edu.tot = sum(edu.tot, na.rm = TRUE),
-    emp.tot = sum(emp.tot, na.rm = TRUE),
-    fin.tot = sum(fin.tot, na.rm = TRUE),
-    hom.tot = sum(hom.tot, na.rm = TRUE),
-    inc.tot = sum(inc.tot, na.rm = TRUE),
-    occ.tot = sum(occ.tot, na.rm = TRUE),
-    pop.tot = sum(pop.tot, na.rm = TRUE),
-    size = sum(size, na.rm = TRUE),
-    val.tot = sum(val.tot, na.rm = TRUE),
-    .groups = "drop"
-  ) |>
-  dplyr::group_by(race) |>
-  dplyr::mutate(pop.tot.nation = sum(pop.tot)) |>
-  dplyr::ungroup() |>
-  dplyr::group_by(state) |>
-  dplyr::mutate(
-    pop.tot.nation.all = pop.tot.nation[race == "Total"],
-    pop.share.nation = pop.tot.nation / pop.tot.nation.all,
-    pop.tot.all = pop.tot[race == "Total"],
-    pop.share = pop.tot / pop.tot.all,
-    pop.share.ratio = pop.share / pop.share.nation,
-    size = round(pop.share * size[race == "Total"])
-  ) |>
-  dplyr::ungroup() |>
-  join_with_shape("state")
-)
-
-data_county_ch <- join_with_shape(CENSUS_DATA, "county")
-
-# plot_prediction_app: helper function for app interface to plot predictions
-# Parameters:
-#     model: model to use for prediction (brms::brm() output).
-#     race: races to predict and plot. If "All" plots all races, else must be a subset
-#           of RACES_MODEL.
-#     state: which state to predict. If "All" will show the predicition for whole US.
-#     inc.inc: covariate value. If NULL gets default value from data.
-#     separate_y: refer to plot_prediction() documentation.
-#     x_lim_full: refer to plot_prediction() documentation.
-#     fill_alpha: refer to plot_prediction() documentation.
-#     title: refer to plot_prediction() documentation.
-#     show_subtitle: refer to plot_prediction() documentation.
-#     interval_size: refer to plot_prediction() documentation.
-plot_prediction_app <- function(
-  model,
-  race = RACES_MODEL,
-  state = "All",
-  inc.inc = NULL,
-  separate_y = FALSE,
-  x_lim_full = FALSE,
-  fill_alpha = 0.3,
-  title = NULL,
-  show_subtitle = TRUE,
-  base_size = 20
-) {
-  new_data <- (
-    list(
-      race = race,
-      state = state,
-      inc.inc = inc.inc
-    ) |>
-    purrr::discard(is.null)
-  )
-
-  plot_prediction(
-    model = model,
-    data = MODEL_DATA,
-    new_data = new_data,
-    separate_y = separate_y,
-    x_lim_full = x_lim_full,
-    fill_alpha = fill_alpha,
-    title = title,
-    show_subtitle = show_subtitle,
-    base_size = base_size
-  )
-}
-
-#------------------------------------------------------------------------------
-
-#Define Helpful Variables
-
-shiny.raceth <- c(
-  "All Races and Ethnicities",
-  "WhiteNH",
-  "Black",
-  "Hispanic",
-  "Asian",
-  "None"
-)
-shiny.var <- c(
-  "Home Ownership (%)",
-  "High School Completion (%)",
-  "Bachelor Degree Completion (%)",
-  "Household Annual Income (Current US$)",
-  "Log10 Annual Income (Current US$)",
-  "Population Size",
-  "Log10 Population Inhabitants",
-  "Unemployment (%)"
-)
-
-#------------------------------------------------------------------------------
 
 #Define UI
-
-ui <- bootstrapPage(
+ui <- shiny::bootstrapPage(
   #Define Theme
-  navbarPage(
-    theme = shinytheme("flatly"),
+  shiny::navbarPage(
+    theme = shinythemes::shinytheme("flatly"),
     "U.S. Home Ownership Visualizations",
     id = "nav",
-
     # 1. Define Box Plot Interface
-    tabPanel(
+    shiny::tabPanel(
       "Box Plots",
-      sidebarLayout(
-        sidebarPanel(
+      shiny::sidebarLayout(
+        shiny::sidebarPanel(
           # 1.1.1 Specify whether State or County Approach
-          radioButtons("bp_area", "Data Type:",
-                      choices = c("State", "County"),
-                      inline = TRUE,
-                      selected = "State"
+          shiny::radioButtons(
+            "bp_area",
+            "Data Type:",
+            choices = c("State", "County"),
+            inline = TRUE,
+            selected = "State"
           ),
-          conditionalPanel(
+          shiny::conditionalPanel(
             condition = "input.bp_area == 'County'",
-            textInput(
+            shiny::textInput(
               "bp_st",
               "Input State Name (i.e. Florida):"
             )
           ),
+          # 1.1.2 Specify year            
+          shiny::radioButtons(
+            "bp_y",
+            "Years",
+            choices = YEARS,
+            inline = T
+          ),
           # 1.1.3 Specify type of Box Plot
-          radioButtons(
+          shiny::radioButtons(
             "bp_v",
             "Type of Plot",
             choices = c("Box Plot", "Violin Plot"),
@@ -171,44 +48,46 @@ ui <- bootstrapPage(
             inline = TRUE
           ),
           #1.1.4 Specify Variable y
-          pickerInput(
+          shinyWidgets::pickerInput(
             "bp_var",
             "Variable:",
-            choices = shiny.var
+            choices = VARS_APP
           ),
-          pickerInput(
+          shinyWidgets::pickerInput(
             "bp.gr_1",
             "Racial/Ethnic Group 1:",
-            choices = shiny.raceth,
+            choices = RACES_APP,
             selected = "All Races and Ethnicities"
           ),
-          pickerInput(
+          shinyWidgets::pickerInput(
             "bp.gr_2",
             "Racial/Ethnic Group 2:",
-            choices = shiny.raceth,
+            choices = RACES_APP,
             selected = "None"
           ),
-          pickerInput(
+          shinyWidgets::pickerInput(
             "bp.gr_3",
             "Racial/Ethnic Group 3:",
-            choices = shiny.raceth,
+            choices = RACES_APP,
             selected = "None"
           ),
-          pickerInput(
+          shinyWidgets::pickerInput(
             "bp.gr_4",
             "Racial/Ethnic Group 4:",
-            choices = shiny.raceth,
+            choices = RACES_APP,
             selected = "None"
           ),
           #1.1.6 Include Action Button
-          actionButton("bpgo", "Click here to Plot",
-                      style = "background-color: #2d3e50"
+          shiny::actionButton(
+            "bpgo",
+            "Click here to Plot",
+            style = "background-color: #2d3e50"
           ),
         ),
         # 1.2 Plot Panel
-        mainPanel(
-          fluidRow(
-            plotOutput(
+        shiny::mainPanel(
+          shiny::fluidRow(
+            shiny::plotOutput(
               outputId = "boxplot",
               height = 600
             )
@@ -217,26 +96,33 @@ ui <- bootstrapPage(
       )
     ),
     # 2. Define ScatterPlot Interface
-    tabPanel(
+    shiny::tabPanel(
       "Scatter Plots",
-      sidebarLayout(
-        sidebarPanel(
+      shiny::sidebarLayout(
+        shiny::sidebarPanel(
           # 2.1.1 Specify whether State or County Approach
-          radioButtons(
+          shiny::radioButtons(
             "sc_area",
             "Data Type:",
             choices = c("State", "County"),
             inline = TRUE
           ),
-          conditionalPanel(
+          shiny::conditionalPanel(
             condition = "input.sc_area == 'County'",
-            textInput(
+            shiny::textInput(
               "sc_st",
-              "Input State Name (i.e. Florida):"
+              "Input State Name (i.e., Florida):"
             )
           ),
+          # 2.1.2 Specify year            
+          shiny::radioButtons(
+            "sc_y",
+            "Years",
+            choices = YEARS,
+            inline = TRUE
+          ),
           # 2.1.3 Specify Smoother
-          radioButtons(
+          shiny::radioButtons(
             "sc_sm",
             "Smoother",
             choices = c(
@@ -249,55 +135,55 @@ ui <- bootstrapPage(
             inline = TRUE
           ),
           #2.1.4 Specify Variable y
-          pickerInput(
+          shinyWidgets::pickerInput(
             "sc_vary",
             "Variable y:",
-            choices = shiny.var,
+            choices = VARS_APP,
             selected = "Home Ownership Rate (%)"
           ),
           #2.1.5 Specify Variable x
-          pickerInput(
+          shinyWidgets::pickerInput(
             "sc_varx",
             "Variable x:",
-            choices = shiny.var,
+            choices = VARS_APP,
             selected = "Household Annual Income (Current US$)"
           ),
           #2.1.6.1 Conditional Groups
-          pickerInput(
+          shinyWidgets::pickerInput(
             "sc.gr_1",
             "Racial/Ethnic Group 1:",
-            choices = shiny.raceth,
+            choices = RACES_APP,
             selected = "All Races and Ethnicities"
           ),
-          pickerInput(
+          shinyWidgets::pickerInput(
             "sc.gr_2",
             "Racial/Ethnic Group 2:",
-            choices = shiny.raceth,
+            choices = RACES_APP,
             selected = "None"
           ),
-          pickerInput(
+          shinyWidgets::pickerInput(
             "sc.gr_3",
             "Racial/Ethnic Group 3:",
-            choices = shiny.raceth,
+            choices = RACES_APP,
             selected = "None"
           ),
-          pickerInput(
+          shinyWidgets::pickerInput(
             "sc.gr_4",
             "Racial/Ethnic Group 4:",
-            choices = shiny.raceth,
+            choices = RACES_APP,
             selected = "None"
           ),
           #2.1.7 Include Action Button
-          actionButton(
+          shiny::actionButton(
             "scgo",
             "Click here to Plot",
             style = "background-color: #2d3e50"
           ),
         ),
         # 2.2 Plot Panel
-        mainPanel(
-          fluidRow(
-            plotOutput(
+        shiny::mainPanel(
+          shiny::fluidRow(
+            shiny::plotOutput(
               outputId = "scatterplot",
               height = 600
             )
@@ -305,28 +191,105 @@ ui <- bootstrapPage(
         )
       )
     ),
+    # 3. Define Time Series Interface
+    shiny::tabPanel(
+      "Time Series",
+      shiny::sidebarLayout(
+        shiny::sidebarPanel(
+          # 3.1.1 Specify whether State or County Approach
+          shiny::radioButtons(
+            "ts_area",
+            "Data Type:",
+            choices = c("State", "County"),
+            inline = TRUE,
+            selected = "State"
+          ),
+          shiny::conditionalPanel(
+            condition = "input.ts_area == 'County'",
+            shiny::textInput(
+              "ts_st",
+              "Input State Name (i.e. Florida):"
+            )
+          ),      
+          #3.1.2 Specify Variable
+          shinyWidgets::pickerInput(
+            "ts_var",
+            "Variable:",
+            choices = VARS_APP,
+            selected = "Home Ownership (%)"
+          ),
+          #3.1.3.1 Conditional Groups
+          shinyWidgets::pickerInput(
+            "ts.gr_1",
+            "Racial/Ethnic Group 1:",
+            choices = RACES_APP,
+            selected = "All Races and Ethnicities"
+          ),
+          shinyWidgets::pickerInput(
+            "ts.gr_2",
+            "Racial/Ethnic Group 2:",
+            choices = RACES_APP,
+            selected = "None"
+          ),
+          shinyWidgets::pickerInput(
+            "ts.gr_3",
+            "Racial/Ethnic Group 3:",
+            choices = RACES_APP,
+            selected = "None"
+          ),
+          shinyWidgets::pickerInput(
+            "ts.gr_4",
+            "Racial/Ethnic Group 4:",
+            choices = RACES_APP,
+            selected = "None"
+          ),
+          #3.1.4 Include Action Button
+          shiny::actionButton(
+            "tsgo",
+            "Click here to Plot",
+            style = "background-color: #2d3e50"
+          ),
+        ),
+        # 3.2 Plot Panel
+        shiny::mainPanel(
+          shiny::fluidRow(
+            shiny::plotOutput(
+              outputId = "tseries",
+              height = 600
+            )
+          )
+        )
+      )
+    ),
     # 4. Define Choropleth Map Interface
-    tabPanel(
+    shiny::tabPanel(
       "Choropleth Maps",
-      sidebarLayout(
-        sidebarPanel(
+      shiny::sidebarLayout(
+        shiny::sidebarPanel(
           # 4.1.1 Specify whether State or County Approach
-          radioButtons(
+          shiny::radioButtons(
             "ch_area",
             "Data Type:",
             choices = c("State", "County"),
             inline = TRUE,
             selected = "State"
           ),
-          conditionalPanel(
+          shiny::conditionalPanel(
             condition = "input.ch_area == 'County'",
-            textInput(
+            shiny::textInput(
               "ch_st",
               "Input State Name (i.e. Florida):"
             )
           ),
+          # 4.1.2 Specify year            
+          shiny::radioButtons(
+            "ch_y",
+            "Years",
+            choices = YEARS,
+            inline = TRUE
+          ),
           #4.1.3 Specify Variable
-          pickerInput(
+          shinyWidgets::pickerInput(
             "ch_var",
             "Variable:",
             choices = c(
@@ -342,7 +305,7 @@ ui <- bootstrapPage(
             )
           ),
           # 4.1.5 Specify color of choropleth
-          radioButtons(
+          shiny::radioButtons(
             "ch_col",
             "Color",
             choices = c(
@@ -356,41 +319,41 @@ ui <- bootstrapPage(
             selected = "Blue",
             inline = TRUE
           ),
-          pickerInput(
+          shinyWidgets::pickerInput(
             "ch.gr_1",
             "Racial/Ethnic Group 1:",
-            choices = shiny.raceth,
+            choices = RACES_APP,
             selected = "All Races and Ethnicities"
           ),
-          pickerInput(
+          shinyWidgets::pickerInput(
             "ch.gr_2",
             "Racial/Ethnic Group 2:",
-            choices = shiny.raceth,
+            choices = RACES_APP,
             selected = "None"
           ),
-          pickerInput(
+          shinyWidgets::pickerInput(
             "ch.gr_3",
             "Racial/Ethnic Group 3:",
-            choices = shiny.raceth,
+            choices = RACES_APP,
             selected = "None"
           ),
-          pickerInput(
+          shinyWidgets::pickerInput(
             "ch.gr_4",
             "Racial/Ethnic Group 4:",
-            choices = shiny.raceth,
+            choices = RACES_APP,
             selected = "None"
           ),
           #1.1.6 Include Action Button
-          actionButton(
+          shiny::actionButton(
             "chgo",
             "Click here to Plot",
             style = "background-color: #2d3e50"
           ),
         ),
         # 1.2 Plot Panel
-        mainPanel(
-          fluidRow(
-            plotOutput(
+        shiny::mainPanel(
+          shiny::fluidRow(
+            shiny::plotOutput(
               outputId = "choropleths",
               height = 600
             )
@@ -399,12 +362,12 @@ ui <- bootstrapPage(
       )
     ),
     # 5. Define Model Interface
-    tabPanel(
+    shiny::tabPanel(
       "Predictive Models",
-      sidebarLayout(
-        sidebarPanel(
+      shiny::sidebarLayout(
+        shiny::sidebarPanel(
           #5.1.2 Select Race
-          checkboxGroupInput(
+          shiny::checkboxGroupInput(
             "pm_races",
             "Select race(s):",
             choices = c(
@@ -417,40 +380,40 @@ ui <- bootstrapPage(
             inline = TRUE
           ),
           #5.1.3 Input State
-          tags$div(
-            textInput(
+          shiny::tags$div(
+            shiny::textInput(
               "pm_st",
               "State:",
               value = "Florida"
             ),
-            style="display:inline-block"
+            style = "display:inline-block"
           ),
           #5.1.5 Input High School
-          numericInput(
+          shiny::numericInput(
             "pm_hs",
             "Input High School Completion % in State:",
             value = 90
           ),
           #5.1.6 Input Unemployment
-          numericInput(
+          shiny::numericInput(
             "pm_ue",
             "Input Unemployment % in State:",
             value = 5
           ),
           #5.1.7 Input Income
-          numericInput(
+          shiny::numericInput(
             "pm_inc",
             "Input Household Annual Income US$:",
             value = 60000
           ),
           #5.1.8 Input Home Value
-          numericInput(
+          shiny::numericInput(
             "pm_val",
             "Input Home Value US$:",
             value = 200000
           ),
           #5.1.10 Not Overlaid
-          radioButtons(
+          shiny::radioButtons(
             "pm_sp",
             "Separate Plots?",
             choices = c("Yes", "No"),
@@ -458,16 +421,16 @@ ui <- bootstrapPage(
             inline = TRUE
           ),
           #5.1.10 Include Action Button
-          actionButton(
+          shiny::actionButton(
             "pmgo",
             "Click here to Plot",
             style = "background-color: #2d3e50"
           )
         ),
         #5.2 Plot
-        mainPanel(
-          fluidRow(
-            plotOutput(
+        shiny::mainPanel(
+          shiny::fluidRow(
+            shiny::plotOutput(
               outputId = "pmplot",
               height = 600
             )
@@ -480,15 +443,13 @@ ui <- bootstrapPage(
 #Close UI
 
 
-#------------------------------------------------------------------------------
-
 #Define Server
 server <- function(input, output) {
   #2.1 Box Plot Output
   output$boxplot <- renderPlot({
     if (input$bpgo == 0) return ("")
     isolate(
-      plots(
+      plot_app(
         Plot = 'BP',
         area = input$bp_area,
         Stated = input$bp_st,
@@ -497,6 +458,7 @@ server <- function(input, output) {
           "Box Plot" = "F",
           "Violin Plot" = "T"
         ),
+        Yearp = input$bp_y,
         Vary = switch(
           input$bp_var,
           "Home Ownership (%)" = "Own",
@@ -547,12 +509,11 @@ server <- function(input, output) {
       )
     )
   })
-
   #2.2 Scatter Plot Output
   output$scatterplot <- renderPlot({
     if (input$scgo == 0) return("")
     isolate(
-      plots(
+      plot_app(
         Plot = 'SC',
         area = input$sc_area,
         Stated = input$sc_st,
@@ -563,6 +524,7 @@ server <- function(input, output) {
           "Generalized Additive Model" = "gam",
           "Locally Estimated Scatterplot" = "loess"
         ),
+        Yearp = input$sc_y,
         Vary = switch(
           input$sc_vary,
           "Home Ownership (%)" = "Own",
@@ -628,7 +590,7 @@ server <- function(input, output) {
   output$tseries <- renderPlot({
     if (input$tsgo == 0) return("")
     isolate(
-      plots(
+      plot_app(
         Plot = 'TS',
         Stated = input$ts_st,
         area = input$ts_area,
@@ -686,9 +648,10 @@ server <- function(input, output) {
   output$choropleths <- renderPlot({
     if (input$chgo == 0) return("")
     isolate(
-      plot_chloropleth_2(
+      plot_chloropleth_app(
         area = input$ch_area,
         State = input$ch_st,
+        yearch = input$ch_y,
         free_scales = FALSE,
         fill_var = switch(
           input$ch_var,
@@ -774,7 +737,5 @@ server <- function(input, output) {
   #Close Server Bracket
 }
 
-#------------------------------------------------------------------------------
-
 #Launch App
-shinyApp(ui, server)
+shiny::shinyApp(ui, server)

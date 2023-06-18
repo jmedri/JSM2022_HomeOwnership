@@ -1,5 +1,7 @@
 # JSM2022_HomeOwnership
 
+# R Shiny
+
 Code for the data processing the model fitting for the article titled "Exploring Racial and Ethnic Trends in US Home Ownership with
 Bayesian Beta-Binomial Regression" (Jhonathan Medri, Tejasvi Channagiri, and Lu Lu, 2023) to the [Journal of Data Science](https://jds-online.org/journal/JDS) (JDS). This is a follow-up to a presentation at the Joint Statistical Meeting (JSM) 2022 Data Expo Challenge administered by the Sections on Statistical Computing, Statistical Graphics, and Government Statistics of the American Statistical Association (ASA).
 
