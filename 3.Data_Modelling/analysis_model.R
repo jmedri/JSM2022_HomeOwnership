@@ -770,7 +770,7 @@ make_outlier_tables <- function() {
     save_csv(file.path(OUTPUT_DIR, "outliers", "black_homown_0.55_0.7.csv"))
 }
 
-get_model_draws <- function(model_name, with_state) {
+get_model_draws <- function(model_name, with_state, do_exp) {
   load_model(model_name) |>
   posterior::as_draws_df() |>
   dplyr::select(dplyr::starts_with("b_")) |>
@@ -825,17 +825,19 @@ get_model_draws <- function(model_name, with_state) {
       name_base,
       stringr::str_c(name_base, ":", name_race)
     )
-  )
+  ) |>
+  dplyr::mutate(value = if (do_exp) exp(value) else value)
 }
 
 make_model_coef_table <- function() {
   purrr::pwalk(
     tidyr::expand_grid(
       model_name = MODEL_NAMES,
-      with_state = c(FALSE, TRUE)
+      with_state = c(FALSE, TRUE),
+      do_exp = c(FALSE, TRUE)
     ),
-    function(model_name, with_state) {
-      data_draws <- get_model_draws(model_name, with_state)
+    function(model_name, with_state, do_exp) {
+      data_draws <- get_model_draws(model_name, with_state, do_exp)
 
       data_coef <- (
         data_draws |>
@@ -863,10 +865,7 @@ make_model_coef_table <- function() {
             Mean,
             SD,
             `2.5%`,
-            `97.5%`,
-            `Mean*` = exp(Mean),
-            `2.5%*` = exp(`2.5%`),
-            `97.5%*` = exp(`97.5%`)
+            `97.5%`
           )
       )
 
@@ -879,6 +878,7 @@ make_model_coef_table <- function() {
               "model_coef_",
               model_name,
               if (with_state) "_state" else "",
+              if (do_exp) "_exp" else "",
               ".csv"
             )
           )
@@ -890,10 +890,17 @@ make_model_coef_table <- function() {
             Component = forcats::fct_relabel(
               Component,
               function(x) {
-                c(
-                  Response = "$\\mathrm{logit}(\\theta)$",
-                  Precision = "$\\log(\\phi)$"
-                )[x]
+                if (do_exp) {
+                  c(
+                    Response = "$\\theta / (1-\\theta)$",
+                    Precision = "$\\phi$"
+                  )[x]
+                } else {
+                  c(
+                    Response = "$\\mathrm{logit}(\\theta)$",
+                    Precision = "$\\log(\\phi)$"
+                  )[x]
+                }
               }
             ),
             Name = stringr::str_replace_all(
@@ -904,15 +911,12 @@ make_model_coef_table <- function() {
             Mean = sprintf("$%.2f$", Mean),
             SD = sprintf("$%.2f$", SD),
             `2.5%` = sprintf("$%.2f$", `2.5%`),
-            `97.5%` = sprintf("$%.2f$", `97.5%`),
-            `Mean*` = sprintf("$%.2f$", `Mean*`),
-            `2.5%*` = sprintf("$%.2f$", `2.5%*`),
-            `97.5%*` = sprintf("$%.2f$", `97.5%*`)
+            `97.5%` = sprintf("$%.2f$", `97.5%`)
           )
       )
 
       data_coef_tex |>
-        xtable::xtable(align = "rll|rrrr|rrr") |>
+        xtable::xtable(align = "rll|rrrr") |>
         save_tex_formatted(
           file.path(
             OUTPUT_DIR,
@@ -921,6 +925,7 @@ make_model_coef_table <- function() {
               "model_coef_",
               model_name,
               if (with_state) "_state" else "",
+              if (do_exp) "_exp" else "",
               ".tex"
             )
           ),
@@ -947,7 +952,6 @@ make_model_coef_table <- function() {
                 Hispanic = list(unit_value = 1, Unit = "N/A"),
                 Black = list(unit_value = 1, Unit = "N/A"),
                 Asian = list(unit_value = 1, Unit = "N/A"),
-                popshareratio = list(unit_value = 0.1, Unit = "0.1"),
                 income = list(unit_value = 0.1, Unit = "$10,000"),
                 hsedu = list(unit_value = 0.1, Unit = "10%"),
                 unemp = list(unit_value = 0.1, Unit = "10%")

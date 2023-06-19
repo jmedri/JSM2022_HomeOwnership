@@ -87,11 +87,12 @@ cor(xxx, yyy)
 
 sss$fixed
 
-for (prior_type in c("1")) {
-  for (sample_prior in c(TRUE, FALSE)) {
+for (prior_type in PRIOR_TYPE_LIST) {
+  for (sample_prior in c(FALSE, TRUE)) {
     initialize(prior_type, sample_prior)
-    do_all_compute_models()
-    do_all_model_analyses()
+    # do_all_compute_models()
+    # do_all_model_analyses()
+    make_model_coef_table()
   }
 }
 
