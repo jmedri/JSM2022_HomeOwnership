@@ -30,10 +30,4 @@ sensitivity_analysis <- function() {
   ) |>
   purrr::list_rbind() |>
   save_csv(file.path(OUTPUT_SENSITIVITY_DIR, "sensitivity_analysis.csv"))
-
-  # Make the point-interval comparison plots
-  # TODO!!
 }
-
-# TODO: ADD THE PLOT OF POSTERIR VS POSTERIOR FOR PARAMS
-# TODO: ADD THE PLOT OF POSTERIR VS PRIORS FOR PARAMS
