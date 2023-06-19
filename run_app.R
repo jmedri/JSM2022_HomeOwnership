@@ -451,7 +451,7 @@ APP_UI <- shiny::bootstrapPage(
       )
     ),
     shiny::tabPanel(
-      "Predictive Models 2",
+      "Predictive Models (JSM 2022)",
       shiny::sidebarLayout(
         shiny::sidebarPanel(
           #5.1.1 Model Type
@@ -468,7 +468,7 @@ APP_UI <- shiny::bootstrapPage(
           #5.1.2 Select Race
           shiny::checkboxGroupInput(
             "pm2_races",
-            "Select Racial/Ethic Group(s):",
+            "Select Racial/Ethnic Group(s):",
             choices = c("White", "Black", "Asian", "Other"),
             selected = c("White", "Black", "Asian"),
             inline = TRUE

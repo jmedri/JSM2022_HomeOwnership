@@ -2243,9 +2243,9 @@ plot_app <- function(
     ifelse(GroupN == "Total", "All", GroupN)
   }
   data.plot$Group <- Rename(data.plot$Group)
-  FGroups <- Rename(RACES)
+  FGroups <- Rename(RACES_APP)
   FGroups <- FGroups[FGroups %in% data.plot$Group]
-  colors <- setNames(RACE_COLORS, Rename(names(RACE_COLORS)))
+  colors <- setNames(RACE_COLORS_APP, Rename(names(RACE_COLORS_APP)))
   colors <- colors[FGroups]
 
   sc.plot <- (
@@ -2470,21 +2470,21 @@ plot_choropleth_app <- function(
   }
 
   data <- if (area == "State") {
-    DATA_STATE_SHAPE_APP |>
+    DATA_STATE_APP |>
     dplyr::filter(
       (State %in% STATES_MAINLAND) &
       (Year == Yearp) &
       (Group %in% Groups_r)
     )
   } else if ((area == "County") & (Stated == "All")) {
-    DATA_COUNTY_SHAPE_APP |>
+    DATA_COUNTY_APP |>
     dplyr::filter(
       (State %in% STATES_MAINLAND) &
       (Year == Yearp) &
       (Group %in% Groups_r)
     )
   } else if ((area == "County") & !(Stated == "All")) {
-    DATA_COUNTY_SHAPE_APP |> dplyr::filter(
+    DATA_COUNTY_APP |> dplyr::filter(
       (Group %in% Groups_r) &
       (Year == Yearp) &
       (State == Stated)

@@ -726,7 +726,7 @@ plot_prediction <- function(
           slab_color = race
         )
       ) +
-        ggplot2::ylab("race")
+      ggplot2::ylab("Race")
     )
   } else {
     ggplot_out <- (
@@ -739,7 +739,7 @@ plot_prediction <- function(
           slab_color = race
         )
       ) +
-        ggplot2::ylab("Density")
+      ggplot2::ylab("Density")
     )
   }
   ggplot_out <- (
@@ -751,7 +751,7 @@ plot_prediction <- function(
         interval_alpha = 1,
         point_alpha = 1
       ) +
-      ggplot2::xlab("Home ownership rate (%)") +
+      ggplot2::xlab("Home Ownership Rate (%)") +
       ggplot2::theme_classic(base_size = base_size) +
       ggplot2::scale_color_manual(
         values = RACE_COLORS,

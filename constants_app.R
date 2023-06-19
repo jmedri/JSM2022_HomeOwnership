@@ -45,11 +45,31 @@ CENSUS_TABLE_FILE_APP <- c(
 
 RACES_APP <- c(
   "All Races and Ethnicities" = "Total",
-  "White (non-Hispanic)" = "WhiteNH",
-  "Black" = "Black",
+  "White" = "White", 
+  "White Non-Hispanic" = "WhiteNH",
   "Hispanic" = "Hispanic",
+  "Black" = "Black",
   "Asian" = "Asian",
+  "American Indian or Alaska Native" = "AIoAN", 
+  "Native Hawaiian or Other Pacific Islander" = "NHoOPI",
+  "Other" = "Other",
+  "Two or more" = "Two+",
   "None" = "None"
+)
+
+
+RACE_COLORS_APP = c(
+  "Total" = "#808080",
+  "White" = "#e60049",
+  "WhiteNH" = "#dc0ab4",
+  "Hispanic" = "#9b19f5",
+  "Black" = "#0bb4ff",
+  "Asian" = "#00bfa0",
+  "AIoAN" =  "#ffa300",
+  "NHoOPI" = "#e6d800",
+  "Other" = "#b3d4ff",
+  "Two+" = "#50e991",
+  "None" = "#000000"
 )
 
 RACES_MODEL_APP <- RACES_APP[RACES_APP %in% RACES_MODEL]
@@ -86,12 +106,16 @@ SMOOTHERS_APP <- c(
 
 STATES_APP <- c("All", STATES)
 
-MODEL_NAMES_APP <- (
-  c("0", MODEL_NAMES) |>
-  x => setNames(
-    x,
-    ifelse(x == FINAL_MODEL, paste(x, " (final model)"), x)
-  )
+MODEL_NAMES_APP <- c(
+  "0 (binomial)" = "0",
+  "1 (beta-binomial)" = "1",
+  "2 (beta-binomial)" = "2",
+  "3 (beta-binomial)" = "3",
+  "4 (beta-binomial, final model)" = "4",
+  "5 (beta-binomial)" = "5",
+  "6 (beta-binomial)" = "6",
+  "7 (beta-binomial)" = "7",
+  "8 (beta-binomial)" = "8"
 )
 
 MODEL_VARS_JS_APP <- (
@@ -109,20 +133,14 @@ MODEL_VARS_JS_APP <- (
   stringr::str_remove_all(stringr::fixed("\n"))
 )
 
-MODEL_FILES_APP <- (
-  c(
-    file.path(
-      "data",
-      "output_exploratory",
-      "model_rds",
-      paste0("model_0.rds")
-    ),
-    file.path(
-      "data",
-      "output_1_posterior",
-      "model_rds",
-      paste0("model_", MODEL_NAMES_APP[2:length(MODEL_NAMES_APP)], ".rds")
-    )
-   ) |>
-  setNames(MODEL_NAMES_APP)
+MODEL_FILES_APP <- c(
+  "0" = "data/output_exploratory/model_rds/model_0.rds",
+  "1" = "data/output_1_posterior/model_rds/model_1.rds",
+  "2" = "data/output_1_posterior/model_rds/model_2.rds",
+  "3" = "data/output_1_posterior/model_rds/model_3.rds",
+  "4" = "data/output_1_posterior/model_rds/model_4.rds",
+  "5" = "data/output_1_posterior/model_rds/model_5.rds",
+  "6" = "data/output_1_posterior/model_rds/model_6.rds",
+  "7" = "data/output_1_posterior/model_rds/model_7.rds",
+  "8" = "data/output_1_posterior/model_rds/model_8.rds"
 )
