@@ -7,7 +7,7 @@ packageVersion("shiny")
 packageVersion("shinythemes")
 packageVersion("shinyWidgets")
 
-source("3.Data_Modelling/initialize.R")
+source("initialize.R")
 initialize()
 
 #Define UI

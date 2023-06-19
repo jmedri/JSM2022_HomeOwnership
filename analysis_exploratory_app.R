@@ -15,7 +15,6 @@ do_all_exploratory_analyses_app <- function() {
       Plot = "SC",
       SC.Smoother = "lm"
     ) +
-    ggplot2::theme(legend.position = "none") +
     ggplot2::xlim(4.4, 5.2) +
     ggplot2::ylim(10, 80) +
     ggplot2::scale_color_manual(values = "black")

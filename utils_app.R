@@ -2528,7 +2528,7 @@ plot_choropleth_app <- function(
 load_app_data <- function() {
   # Read county data
   DATA_COUNTY_FULL_APP <<- (
-    readr::read_csv("3.Data_Modelling_Output/input_processed/census_app/data.csv") |>
+    readr::read_csv("data/input_processed/census_app/data.csv") |>
     dplyr::filter(State %in% STATES) |>
     dplyr::mutate(
       S2502.group.ownedp = S2502.group.owned / S2502.group.total,
@@ -2642,7 +2642,7 @@ load_app_data <- function() {
   )
 
   # Load the final model for the app's predictive plots
-  MODEL_APP <<- readRDS("3.Data_Modelling_Output/output_1_posterior/model_rds/model_4.rds")
+  MODEL_APP <<- readRDS("data/output_1_posterior/model_rds/model_4.rds")
 }
 
 join_with_shape_app <- function(data, area = "county", year = 2020) {
