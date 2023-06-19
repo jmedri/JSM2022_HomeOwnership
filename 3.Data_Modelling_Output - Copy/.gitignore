@@ -1,3 +1,0 @@
-# keep .gitignore but ignore other contents
-*
-!.gitignore

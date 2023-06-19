@@ -1,0 +1,4 @@
+# keep .gitignore and input but ignore other contents
+*
+!.gitignore
+!input
