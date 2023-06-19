@@ -2139,8 +2139,11 @@ get_data_plot_app <- function(data) {
         Inc = Inc_Med,
         LInc = log10(Inc_Med),
         Pop = Pop_T / 1000000,
-        Pop_Share = Pop_P * 100,
         LPop = log10(Pop_T),
+        Pop_Share = Pop_P * 100,
+        HTot = Owned_T / 1000000,
+        LHTot = log10(Owned_T),
+        HOwn = Owned_T,
         UE = UE_P
       )
     )
@@ -2159,11 +2162,15 @@ get_var_name_app <- function(var) {
   } else if (var == "LInc") {
     expression(paste(Log[10], " Annual Income (Current US$)"))
   } else if (var == "Pop") {
-    "Population (Million Inhabitants)"
+    "Population (in Millions)"
   } else if (var == "Pop_Share") {
     "Population Share (%)"
   } else if (var == "LPop") {
-    expression(paste(Log[10], " Population (Million Inhabitants)"))
+    expression(paste(Log[10], " Population"))
+  } else if (var == "HTot") {
+    "Total Households (in Millions)"
+  } else if (var == "LHTot ()") {
+    expression(paste(Log[10], " Households"))
   } else if (var == "UE") {
     "Unemployment Rate (%)"
   }
@@ -2181,7 +2188,7 @@ plot_app <- function(
   Vary = "Own",
   Varx = "Inc",
   Plot = "BP",
-  BP.Violin = "F",
+  BP.Violin = FALSE,
   SC.Smoother = "loess"
 ) {
   Groups_r <- c(Group1, Group2, Group3, Group4)
@@ -2305,17 +2312,17 @@ plot_app <- function(
       )
     ) +
     (
-      if (BP.Violin == "F") {
-        ggplot2::geom_boxplot(linewidth = 0.7)
-      } else if (BP.Violin == "T") {
+      if (BP.Violin) {
         ggplot2::geom_violin(linewidth = 0.7)
+      } else {
+        ggplot2::geom_boxplot(linewidth = 0.7)
       }
     ) +
     (
-      if (BP.Violin == "F") {
-        ggplot2::geom_blank()
-      } else if (BP.Violin == "T") {
+      if (BP.Violin) {
         ggplot2::geom_jitter()
+      } else if (BP.Violin) {
+        ggplot2::geom_blank()
       }
     ) +
     ggplot2::ylab(y.name) +
@@ -2383,10 +2390,13 @@ plot_app <- function(
 }
 
 plot_prediction_app <- function(
-  model,
+  model_name,
   race = RACES_MODEL,
   state = "All",
-  inc.inc = NULL,
+  HS = NULL,
+  UE = NULL,
+  Inc = NULL,
+  HTot = NULL,
   separate_y = FALSE,
   x_lim_full = FALSE,
   fill_alpha = 0.3,
@@ -2396,7 +2406,7 @@ plot_prediction_app <- function(
 ) {
   #' @title plot_prediction_app()
   #' @description Helper function for app interface to plot predictions.
-  #' @param model model to use for prediction (brms::brm() output).
+  #' @param model_name Name of model to use for prediction (brms::brm() or glm() output).
   #' @param race races to predict and plot. If "All" plots all races,
   #' else must be a subset of RACES_MODEL.
   #' @param state which state to predict. If "All" will show the predicition for whole US.
@@ -2411,10 +2421,15 @@ plot_prediction_app <- function(
     list(
       race = race,
       state = state,
-      inc.inc = inc.inc
+      edu.hs = HS / 100,
+      emp.ue = UE / 100,
+      inc.inc = Inc,
+      hom.tot = HTot
     ) |>
     purrr::discard(is.null)
   )
+
+  model <- readRDS(MODEL_FILES_APP[[model_name]])
 
   plot_prediction(
     model = model,
@@ -2529,12 +2544,7 @@ load_app_data <- function() {
   # Read county data
   DATA_COUNTY_FULL_APP <<- (
     readr::read_csv("data/input_processed/census_app/data.csv") |>
-    dplyr::filter(State %in% STATES) |>
-    dplyr::mutate(
-      S2502.group.ownedp = S2502.group.owned / S2502.group.total,
-      S1501.group.HSp = S1501.group.HSt / S1501.group.total,
-      S1501.group.BSp = S1501.group.BSt / S1501.group.total
-    )
+    dplyr::filter(State %in% STATES)
   )
 
   # Aggregate data by state
@@ -2640,9 +2650,6 @@ load_app_data <- function() {
     dplyr::mutate(Pop_P = Pop_T / Pop_T[Group == "Total"]) |>
     dplyr::ungroup()
   )
-
-  # Load the final model for the app's predictive plots
-  MODEL_APP <<- readRDS("data/output_1_posterior/model_rds/model_4.rds")
 }
 
 join_with_shape_app <- function(data, area = "county", year = 2020) {

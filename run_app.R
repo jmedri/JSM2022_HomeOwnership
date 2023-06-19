@@ -32,11 +32,6 @@ APP_UI <- shiny::bootstrapPage(
           ),
           shiny::conditionalPanel(
             condition = "input.bp_area == 'County'",
-            # shiny::textInput(
-            #   "bp_st",
-            #   "Input State Name (i.e. Florida):",
-            #   value = "All"
-            # )
             shinyWidgets::pickerInput(
               "bp_st",
               "Input State Name:",
@@ -56,8 +51,8 @@ APP_UI <- shiny::bootstrapPage(
           shiny::radioButtons(
             "bp_v",
             "Type of Plot",
-            choices = c("Box Plot", "Violin Plot"),
-            selected = "Box Plot",
+            choices = c("Box Plot" = FALSE, "Violin Plot" = TRUE),
+            selected = FALSE,
             inline = TRUE
           ),
           #1.1.4 Specify Variable y
@@ -124,11 +119,6 @@ APP_UI <- shiny::bootstrapPage(
           ),
           shiny::conditionalPanel(
             condition = "input.sc_area == 'County'",
-            # shiny::textInput(
-            #   "sc_st",
-            #   "Input State Name (i.e. Florida):",
-            #   value = "All"
-            # )
             shinyWidgets::pickerInput(
               "sc_st",
               "Input State Name:",
@@ -223,11 +213,6 @@ APP_UI <- shiny::bootstrapPage(
           ),
           shiny::conditionalPanel(
             condition = "input.ts_area == 'County'",
-            # shiny::textInput(
-            #   "ts_st",
-            #   "Input State Name (i.e. Florida):",
-            #   value = "All"
-            # )
             shinyWidgets::pickerInput(
               "ts_st",
               "Input State Name:",
@@ -300,11 +285,6 @@ APP_UI <- shiny::bootstrapPage(
           ),
           shiny::conditionalPanel(
             condition = "input.ch_area == 'County'",
-            # shiny::textInput(
-            #   "ch_st",
-            #   "Input State Name (i.e. Florida):",
-            #   value = "All"
-            # )
             shinyWidgets::pickerInput(
               "ch_st",
               "Input State Name:",
@@ -381,6 +361,16 @@ APP_UI <- shiny::bootstrapPage(
       "Predictive Models",
       shiny::sidebarLayout(
         shiny::sidebarPanel(
+          #5.1.1 Model Type
+          shiny::tags$div(
+            shinyWidgets::pickerInput(
+              "pm_model",
+              "Input Model Type:",
+              selected = FINAL_MODEL,
+              choices = MODEL_NAMES_APP
+            ),
+            style = "display:inline-block"
+          ),
           #5.1.2 Select Race
           shiny::checkboxGroupInput(
             "pm_groups",
@@ -390,11 +380,6 @@ APP_UI <- shiny::bootstrapPage(
           ),
           #5.1.3 Input State
           shiny::tags$div(
-            # shiny::textInput(
-            #   "pm_st",
-            #   "Input State:",
-            #   value = "All"
-            # ),
             shinyWidgets::pickerInput(
               "pm_st",
               "Input State Name:",
@@ -403,36 +388,48 @@ APP_UI <- shiny::bootstrapPage(
             ),
             style = "display:inline-block"
           ),
-          # #5.1.5 Input High School
-          # shiny::numericInput(
-          #   "pm_hs",
-          #   "Input High School Completion % in State:",
-          #   value = 90
-          # ),
-          # #5.1.6 Input Unemployment
-          # shiny::numericInput(
-          #   "pm_ue",
-          #   "Input Unemployment % in State:",
-          #   value = 5
-          # ),
-          #5.1.7 Input Income
-          shiny::numericInput(
-            "pm_inc",
-            "Input Household Annual Income US$:",
-            value = 60000
+          #5.1.5 Input High School
+          shiny::conditionalPanel(
+            condition = paste0(MODEL_VARS_JS_APP, "[input.pm_model].includes('hs')"),
+            shiny::numericInput(
+              "pm_hs",
+              "Input High School Completion % in State:",
+              value = 90
+            )
           ),
-          # #5.1.8 Input Home Value
-          # shiny::numericInput(
-          #   "pm_val",
-          #   "Input Home Value US$:",
-          #   value = 200000
-          # ),
+          #5.1.6 Input Unemployment
+          shiny::conditionalPanel(
+            condition = paste0(MODEL_VARS_JS_APP, "[input.pm_model].includes('ue')"),
+            shiny::numericInput(
+              "pm_ue",
+              "Input Unemployment % in State:",
+              value = 5
+            )
+          ),
+          #5.1.7 Input Income
+          shiny::conditionalPanel(
+            condition = paste0(MODEL_VARS_JS_APP, "[input.pm_model].includes('inc')"),
+            shiny::numericInput(
+              "pm_inc",
+              "Input Household Annual Income US$:",
+              value = 60000
+            )
+          ),
+          #5.1.8 Input Population
+          shiny::conditionalPanel(
+            condition = paste0(MODEL_VARS_JS_APP, "[input.pm_model].includes('tot')"),
+            shiny::numericInput(
+              "pm_htot",
+              "Input County Total Households:",
+              value = 10000
+            )
+          ),
           #5.1.10 Not Overlaid
           shiny::radioButtons(
             "pm_sp",
             "Separate Plots?",
-            choices = c("Yes", "No"),
-            selected = "No",
+            choices = c("Yes" = TRUE, "No" = FALSE),
+            selected = FALSE,
             inline = TRUE
           ),
           #5.1.10 Include Action Button
@@ -447,6 +444,104 @@ APP_UI <- shiny::bootstrapPage(
           shiny::fluidRow(
             shiny::plotOutput(
               outputId = "pmplot",
+              height = 600
+            )
+          )
+        )
+      )
+    ),
+    shiny::tabPanel(
+      "Predictive Models 2",
+      shiny::sidebarLayout(
+        shiny::sidebarPanel(
+          #5.1.1 Model Type
+          shiny::radioButtons(
+            "pm2_model",
+            "Model Type:",
+            choices = c(
+              "MLE Gaussian" = "mle_gaus",
+              "MLE Binomial" = "mle_bin",
+              "Bayesian Gaussian" = "bay_gaus2",
+              "Bayesian Beta Binomial" = "bay_betabin"
+            )
+          ),
+          #5.1.2 Select Race
+          shiny::checkboxGroupInput(
+            "pm2_races",
+            "Select Racial/Ethic Group(s):",
+            choices = c("White", "Black", "Asian", "Other"),
+            selected = c("White", "Black", "Asian"),
+            inline = TRUE
+          ),
+          #5.1.3 Input State
+          shiny::tags$div(
+            shinyWidgets::pickerInput(
+              "pm2_st",
+              "Input State:",
+              selected = "All",
+              choices = STATES_APP
+            ),
+            style = "display:inline-block"
+          ),
+          #5.1.4 Input Year
+          shiny::tags$div(
+            shiny::numericInput(
+              "pm2_y",
+              "Input Year:",
+              value = 2021
+            ),
+            style = "display:inline-block"
+          ),
+          #5.1.5 Input High School
+          shiny::numericInput(
+            "pm2_hs",
+            "Input High School Completion % in State:",
+            value = 90
+          ),
+          #5.1.6 Input Unemployment
+          shiny::numericInput(
+            "pm2_ue",
+            "Input Unemployment % in State:",
+            value = 5
+          ),
+          #5.1.7 Input Income
+          shiny::numericInput(
+            "pm2_inc",
+            "Input Household Annual Income US$:",
+            value = 60000
+          ),
+          #5.1.8 Input Home Value
+          shiny::numericInput(
+            "pm2_val",
+            "Input Home Value US$:",
+            value = 200000
+          ),
+          #5.1.9 Input Population Share %
+          shiny::numericInput(
+            "pm2_shr",
+            "Input Race Population Share %:",
+            value = 25
+          ),
+          #5.1.10 Not Overlaid
+          shiny::radioButtons(
+            "pm2_sp",
+            "Separate Plots?",
+            choices = c("Yes", "No"),
+            selected = "No",
+            inline = TRUE
+          ),
+          #5.1.10 Include Action Button
+          shiny::actionButton(
+            "pm2go",
+            "Click here to Plot",
+            style = "background-color: #2d3e50"
+          )
+        ),
+        #5.2 Plot
+        shiny::mainPanel(
+          shiny::fluidRow(
+            shiny::plotOutput(
+              outputId = "pmplot2",
               height = 600
             )
           )
@@ -467,12 +562,8 @@ APP_SERVER <- function(input, output) {
         Plot = "BP",
         area = input$bp_area,
         Stated = input$bp_st,
-        BP.Violin = switch(
-          input$bp_v,
-          "Box Plot" = "F",
-          "Violin Plot" = "T"
-        ),
-        Yearp = input$bp_y,
+        BP.Violin = as.logical(input$bp_v),
+        Yearp = as.integer(input$bp_y),
         Vary = input$bp_var,
         Group1 = input$bp.gr_1,
         Group2 = input$bp.gr_2,
@@ -490,7 +581,7 @@ APP_SERVER <- function(input, output) {
         area = input$sc_area,
         Stated = input$sc_st,
         SC.Smoother = input$sc_sm,
-        Yearp = input$sc_y,
+        Yearp = as.integer(input$sc_y),
         Vary = input$sc_vary,
         Varx = input$sc_varx,
         Group1 = input$sc.gr_1,
@@ -523,7 +614,7 @@ APP_SERVER <- function(input, output) {
       plot_choropleth_app(
         area = input$ch_area,
         Stated = input$ch_st,
-        Yearp = input$ch_y,
+        Yearp = as.integer(input$ch_y),
         free_scales = FALSE,
         fill_var = input$ch_var,
         col_pal = input$ch_col,
@@ -539,18 +630,14 @@ APP_SERVER <- function(input, output) {
     if (input$pmgo == 0) return("")
     isolate(
       plot_prediction_app(
-        model = MODEL_APP,
+        model_name = input$pm_model,
         race = input$pm_groups,
         state = input$pm_st,
-        # edu.hs = input$pm_hs,
-        # emp.ue = input$pm_ue,
-        inc.inc = input$pm_inc,
-        # val.hom = input$pm_val,
-        separate_y = switch(
-          input$pm_sp,
-          "Yes" = TRUE,
-          "No" = FALSE
-        ),
+        HS = as.numeric(input$pm_hs),
+        UE = as.numeric(input$pm_ue),
+        Inc = as.numeric(input$pm_inc),
+        HTot = as.numeric(input$pm_htot),
+        separate_y = as.logical(input$pm_sp),
         title = "Predicted values for selected model"
       )
     )

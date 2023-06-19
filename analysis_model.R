@@ -30,20 +30,22 @@ plot_var_hist <- function() {
     )
 }
 
-get_model_data <- function(data = CENSUS_DATA,
-                           drop_size_0 = TRUE,
-                           drop_na = TRUE,
-                           race_list = RACES_MODEL,
-                           column_list = MODEL_COLUMNS) {
+get_model_data <- function(
+  data = CENSUS_DATA,
+  drop_size_0 = TRUE,
+  drop_na = TRUE,
+  race_list = RACES_MODEL,
+  column_list = MODEL_COLUMNS
+) {
   data <- (
     data |>
-      dplyr::filter(race %in% race_list) |>
-      dplyr::select(dplyr::all_of(column_list)) |>
-      dplyr::mutate(
-        inc.inc.trans = inc.inc / 1e5,
-        hom.tot.log = log(hom.tot),
-        hom.own.count = round(hom.own * size)
-      )
+    dplyr::filter(race %in% race_list) |>
+    dplyr::select(dplyr::all_of(column_list)) |>
+    dplyr::mutate(
+      inc.inc.trans = inc.inc / 1e5,
+      hom.tot.log = log(hom.tot),
+      hom.own.count = round(hom.own * size)
+    )
   )
 
   if (drop_size_0) {
@@ -61,9 +63,11 @@ load_model_data <- function() {
   MODEL_DATA <<- get_model_data()
 }
 
-compute_model <- function(model_name,
-                          iter = MCMC_ITERS,
-                          overwrite = FALSE) {
+compute_model <- function(
+  model_name,
+  iter = MCMC_ITERS,
+  overwrite = FALSE
+) {
   #' @description Compute a Bayesian model.
   #' @param model_name Name of the model to compute.
   #' @param iter Number of MCMC iterations.
@@ -606,29 +610,29 @@ plot_prediction <- function(
   interval_size = 5,
   num_draws = 1000
 ) {
-#' @title Plot predicted home ownership.
-#' @description Plots posterior predicted distributions for Bayesian models.
-#' @note This function needs library(ggdist) and library(brms)!
-#' 
-#' @param model the fitted model (e.g. output of lm function)
-#' @param data data model was fitted on
-#' @param new_data list of new covariates for prediction. Must have keys "state", "race", "year"
-#'                 and can optionally have any other keys including:
-#'                 "edu.hs", "emp.ue", "inc.inc", "val.hom", "hom.tot".
-#'                 If any of these are missing the default values will be taken from the real data.
-#'                 If "state" = "All" or "year" = "All" the average prediction over all state or years
-#'                 is given. "race" must be a string vector which is a subset of RACES_MODEL. Only the
-#'                 races in "race" will be displayed.
-#' @param separate_y If TRUE show predicted distribution for each race on a separate baseline.
-#'                   If FALSE overlay them on the same baseline.
-#' @param x_lim_full If TRUE show the entire x-axis from 0 to 1. If FALSE show only the range of
-#'                   of the plotted values.
-#' @param fill_alpha Alpha value to fill in the density.
-#' @param title title of plot. If NULL not title is plotted.
-#' @param show_subtitle If TRUE show a subtitle explaining the plotted point and interval within the density.
-#' @param base_size The base size of the ggplot2 theme.
-#' @param interval_size thickness of the part showing the median and .95 interval.
-#' @param num_draws number of posterior draws to use when estimating the prediction
+  #' @title Plot predicted home ownership.
+  #' @description Plots posterior predicted distributions for Bayesian models.
+  #' @note This function needs library(ggdist) and library(brms)!
+  #' 
+  #' @param model the fitted model (e.g. output of lm function)
+  #' @param data data model was fitted on
+  #' @param new_data list of new covariates for prediction. Must have keys "state", "race", "year"
+  #'                 and can optionally have any other keys including:
+  #'                 "edu.hs", "emp.ue", "inc.inc", "val.hom", "hom.tot".
+  #'                 If any of these are missing the default values will be taken from the real data.
+  #'                 If "state" = "All" or "year" = "All" the average prediction over all state or years
+  #'                 is given. "race" must be a string vector which is a subset of RACES_MODEL. Only the
+  #'                 races in "race" will be displayed.
+  #' @param separate_y If TRUE show predicted distribution for each race on a separate baseline.
+  #'                   If FALSE overlay them on the same baseline.
+  #' @param x_lim_full If TRUE show the entire x-axis from 0 to 1. If FALSE show only the range of
+  #'                   of the plotted values.
+  #' @param fill_alpha Alpha value to fill in the density.
+  #' @param title title of plot. If NULL not title is plotted.
+  #' @param show_subtitle If TRUE show a subtitle explaining the plotted point and interval within the density.
+  #' @param base_size The base size of the ggplot2 theme.
+  #' @param interval_size thickness of the part showing the median and .95 interval.
+  #' @param num_draws number of posterior draws to use when estimating the prediction
 
   # Check which variables need to be expanded to all possible values
   for (var_name in c("race", "state")) {
@@ -654,20 +658,47 @@ plot_prediction <- function(
   new_data <- (
     dplyr::inner_join(
       new_data,
-      data[c(
-        "state",
-        "race",
-        setdiff(colnames(data), colnames(new_data))
-      )],
+      data[
+        c(
+          "state",
+          "race",
+          setdiff(colnames(data), colnames(new_data))
+        )
+      ],
       by = c("state", "race")
     ) |>
-      get_model_data()
+    get_model_data()
   )
 
-  pred_draws <- (
-    brms::posterior_epred(model, newdata = new_data, ndraws = num_draws) |>
-      sweep(2, new_data[["size"]], `/`)
-  )
+  if ("brmsfit" %in% class(model)) {
+    pred_draws <- brms::posterior_predict(
+      model,
+      newdata = new_data,
+      ndraws = num_draws
+    )
+  } else if (
+    ("glm" %in% class(model)) &&
+    (model[["family"]][["family"]] == "binomial")
+  ) {
+    pred_draws <- (
+      purrr::map(
+        seq_len(num_draws),
+        function(...) {
+          rbinom(
+            n = nrow(new_data),
+            size = new_data[["size"]],
+            prob = predict(model, newdata = new_data, type = "response")
+          )
+        }
+      ) |>
+      x => do.call(rbind, x)
+    )
+  } else {
+    stop("Model class not supported.")
+  }
+
+  # Convert to a proportion by dividing by size
+  pred_draws <- sweep(pred_draws, 2, new_data[["size"]], `/`)
 
   pred_draws <- purrr::map_dfr(
     unique(new_data[["race"]]),

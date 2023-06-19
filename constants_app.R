@@ -60,9 +60,11 @@ VARS_APP <- c(
   "Bachelor Degree Completion (%)" = "BS",
   "Household Annual Income (Current US$)" = "Inc",
   "Log10 Annual Income (Current US$)" = "LInc",
-  "Population Size" = "Pop",
-  "Log10 Population Size" = "LPop",
+  "Population (in Millions)" = "Pop",
   "Population Share (%)" = "Pop_Share",
+  "Log10 Population" = "LPop",
+  "Total Households (in Millions)" = "HTot",
+  "Log10 Households" = "LHTot",
   "Unemployment (%)" = "UE"
 )
 
@@ -83,3 +85,44 @@ SMOOTHERS_APP <- c(
 )
 
 STATES_APP <- c("All", STATES)
+
+MODEL_NAMES_APP <- (
+  c("0", MODEL_NAMES) |>
+  x => setNames(
+    x,
+    ifelse(x == FINAL_MODEL, paste(x, " (final model)"), x)
+  )
+)
+
+MODEL_VARS_JS_APP <- (
+  "({
+    '0': ['state', 'race', 'hs', 'ue', 'inc'],
+    '1': ['state', 'race', 'hs', 'ue', 'inc', 'tot'],
+    '2': ['state', 'race', 'hs', 'ue', 'inc', 'tot'],
+    '3': ['state', 'race', 'hs', 'inc', 'tot'],
+    '4': ['state', 'race', 'inc', 'tot'],
+    '5': ['state', 'race', 'tot'],
+    '6': ['race', 'inc', 'tot'],
+    '7': ['state', 'race', 'inc', 'tot'],
+    '8': ['state', 'race', 'inc']
+  })" |>
+  stringr::str_remove_all(stringr::fixed("\n"))
+)
+
+MODEL_FILES_APP <- (
+  c(
+    file.path(
+      "data",
+      "output_exploratory",
+      "model_rds",
+      paste0("model_0.rds")
+    ),
+    file.path(
+      "data",
+      "output_1_posterior",
+      "model_rds",
+      paste0("model_", MODEL_NAMES_APP[2:length(MODEL_NAMES_APP)], ".rds")
+    )
+   ) |>
+  setNames(MODEL_NAMES_APP)
+)
