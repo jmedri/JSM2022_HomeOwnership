@@ -95,15 +95,17 @@ plot_choropleth <- function(
   tmap_out
 }
 
-plot_pair <- function(data,
-                      x_var,
-                      y_var,
-                      title = NULL,
-                      facet_var = NULL,
-                      facet_num_cols = NULL,
-                      facet_scales = "free",
-                      weight_var = NULL,
-                      fill_var = NULL) {
+plot_pair <- function(
+  data,
+  x_var,
+  y_var,
+  title = NULL,
+  facet_var = NULL,
+  facet_num_cols = NULL,
+  facet_scales = "free",
+  weight_var = NULL,
+  fill_var = NULL
+) {
   purrr::walk(
     c(x_var, y_var),
     function(var) {
@@ -124,9 +126,9 @@ plot_pair <- function(data,
       weight = weight_var,
       fill = fill_var
     ) |>
-      purrr::discard(is.null) |>
-      purrr::map(as.symbol) |>
-      x => do.call(aes, x)
+    purrr::discard(is.null) |>
+    purrr::map(as.symbol) |>
+    x => do.call(aes, x)
   )
 
   ggplot_out <- ggplot2::ggplot(
@@ -138,8 +140,8 @@ plot_pair <- function(data,
   } else if (is.numeric(data[[x_var]]) && is.numeric(data[[y_var]])) {
     ggplot_out <- (
       ggplot_out +
-        ggplot2::geom_point() +
-        ggplot2::geom_smooth(method = "lm", formula = y ~ x, se = FALSE)
+      ggplot2::geom_point() +
+      ggplot2::geom_smooth(method = "lm", formula = y ~ x, se = FALSE)
     )
   } else {
     # one numeric, the other is factor
@@ -147,37 +149,39 @@ plot_pair <- function(data,
   }
   ggplot_out <- (
     ggplot_out +
-      ggplot2::theme_classic(
-        base_size = if (is.null(facet_var)) {
-          GGPLOT_BASE_SIZE_BIG
-        } else {
-          GGPLOT_BASE_SIZE_SMALL
-        }
-      ) +
-      ggplot2::xlab(x_var) +
-      ggplot2::ylab(y_var) +
-      ggplot2::labs(title = title)
+    ggplot2::theme_classic(
+      base_size = if (is.null(facet_var)) {
+        GGPLOT_BASE_SIZE_BIG
+      } else {
+        GGPLOT_BASE_SIZE_SMALL
+      }
+    ) +
+    ggplot2::xlab(x_var) +
+    ggplot2::ylab(y_var) +
+    ggplot2::labs(title = title)
   )
   if (!is.null(facet_var)) {
     ggplot_out <- (
       ggplot_out +
-        ggplot2::facet_wrap(facet_var, ncol = facet_num_cols, scales = facet_scales)
+      ggplot2::facet_wrap(facet_var, ncol = facet_num_cols, scales = facet_scales)
     )
   }
   ggplot_out
 }
 
-plot_histogram <- function(data,
-                           value_var,
-                           weight_var = NULL,
-                           facet_var = NULL,
-                           color_var = NULL,
-                           title = NULL,
-                           y_expand = NULL,
-                           density = FALSE,
-                           line_size = 1,
-                           facet_scales = "free",
-                           x_lim = NULL) {
+plot_histogram <- function(
+  data,
+  value_var,
+  weight_var = NULL,
+  facet_var = NULL,
+  color_var = NULL,
+  title = NULL,
+  y_expand = NULL,
+  density = FALSE,
+  line_size = 1,
+  facet_scales = "free",
+  x_lim = NULL
+) {
   if (is.null(title)) {
     title <- value_var
   }
@@ -193,12 +197,12 @@ plot_histogram <- function(data,
     if (!is.null(facet_var)) {
       data_median <- (
         data_median |>
-          dplyr::group_by(dplyr::across(dplyr::all_of(facet_var)))
+        dplyr::group_by(dplyr::across(dplyr::all_of(facet_var)))
       )
     }
     data_median <- (
       data_median |>
-        dplyr::summarize(median = median(.data[[value_var]], na.rm = TRUE))
+      dplyr::summarize(median = median(.data[[value_var]], na.rm = TRUE))
     )
   }
 
@@ -208,9 +212,9 @@ plot_histogram <- function(data,
       fill = color_var,
       weight_var = weight_var
     ) |>
-      purrr::discard(is.null) |>
-      purrr::map(as.symbol) |>
-      x => do.call(aes, x)
+    purrr::discard(is.null) |>
+    purrr::map(as.symbol) |>
+    x => do.call(aes, x)
   )
 
   ggplot_out <- ggplot2::ggplot(
@@ -221,7 +225,7 @@ plot_histogram <- function(data,
   if (!is.null(color_var)) {
     ggplot_out <- (
       ggplot_out +
-        ggplot2::guides(fill = ggplot2::guide_legend(title = value_var))
+      ggplot2::guides(fill = ggplot2::guide_legend(title = value_var))
     )
   }
 
@@ -229,13 +233,13 @@ plot_histogram <- function(data,
     if (density) {
       ggplot_out <- (
         ggplot_out +
-          ggplot2::geom_density() +
-          ggplot2::geom_vline(
-            data = data_median,
-            aes(xintercept = median),
-            size = line_size
-          ) +
-          ggplot2::labs(subtitle = "with median line")
+        ggplot2::geom_density() +
+        ggplot2::geom_vline(
+          data = data_median,
+          aes(xintercept = median),
+          size = line_size
+        ) +
+        ggplot2::labs(subtitle = "with median line")
       )
     } else {
       ggplot_out <- ggplot_out + ggplot2::geom_histogram(bins = 20)
@@ -248,15 +252,15 @@ plot_histogram <- function(data,
 
   ggplot_out <- (
     ggplot_out +
-      ggplot2::theme_classic(
-        base_size = if (is.null(facet_var)) {
-          GGPLOT_BASE_SIZE_BIG
-        } else {
-          GGPLOT_BASE_SIZE_SMALL
-        }
-      ) +
-      ggplot2::labs(title = title) +
-      ggplot2::xlab(value_var)
+    ggplot2::theme_classic(
+      base_size = if (is.null(facet_var)) {
+        GGPLOT_BASE_SIZE_BIG
+      } else {
+        GGPLOT_BASE_SIZE_SMALL
+      }
+    ) +
+    ggplot2::labs(title = title) +
+    ggplot2::xlab(value_var)
   )
 
   if (!is.null(facet_var)) {
@@ -296,12 +300,12 @@ plot_histogram_all <- function(data, dir) {
             NULL
           }
         ) |>
-          save_ggplot(
-            file.path(
-              dir,
-              stringr::str_c("hist_", remove_punct(value_var), ".pdf")
-            )
+        save_ggplot(
+          file.path(
+            dir,
+            stringr::str_c("hist_", remove_punct(value_var), ".pdf")
           )
+        )
       }
     }
   )
@@ -314,12 +318,12 @@ plot_histogram_all <- function(data, dir) {
         value_var = "race",
         weight_var = weight_var
       ) |>
-        save_ggplot(
-          file.path(
-            dir,
-            stringr::str_c("hist_race_", remove_punct(weight_var), ".pdf")
-          )
+      save_ggplot(
+        file.path(
+          dir,
+          stringr::str_c("hist_race_", remove_punct(weight_var), ".pdf")
         )
+      )
     }
   )
 }
@@ -337,17 +341,17 @@ plot_pair_all <- function(data, dir, facet_num_cols) {
         facet_num_cols = facet_num_cols,
         weight_var = "size"
       ) |>
-        save_ggplot(
-          file.path(
-            dir,
-            stringr::str_c(
-              remove_punct(y_var),
-              "_vs_",
-              remove_punct(x_var),
-              ".pdf"
-            )
+      save_ggplot(
+        file.path(
+          dir,
+          stringr::str_c(
+            remove_punct(y_var),
+            "_vs_",
+            remove_punct(x_var),
+            ".pdf"
           )
         )
+      )
     }
   )
 }
@@ -360,8 +364,8 @@ plot_choropleth_all <- function(
 ) {
   data <- (
     data |>
-      dplyr::filter(state %in% CONTIGUOUS_STATES) |>
-      join_with_shape(area = area)
+    dplyr::filter(state %in% CONTIGUOUS_STATES) |>
+    join_with_shape(area = area)
   )
   purrr::walk(
     VALUE_COLUMNS,
@@ -384,87 +388,67 @@ plot_choropleth_all <- function(
           NULL
         }
       ) |>
-        save_tmap(
-          file.path(
-            dir,
-            stringr::str_c("choro_", remove_punct(fill_var), ".pdf")
-          )
+      save_tmap(
+        file.path(
+          dir,
+          stringr::str_c("choro_", remove_punct(fill_var), ".pdf")
         )
+      )
     }
   )
 }
 
 make_var_ranges_table <- function() {
   CENSUS_DATA |>
-    dplyr::filter(race == "Total") |>
-    dplyr::select(
-      edu.hs,
-      emp.ue,
-      # fin.cost,
-      # occ.fam,
-      hom.own,
-      inc.inc,
-      # val.hom,
-      # val.tax,
-      # val.mort,
-      pop.tot,
-      size
-    ) |>
-    tidyr::pivot_longer(dplyr::everything()) |>
-    dplyr::nest_by(name) |>
-    purrr::pmap_dfr(
-      function(name, data) {
-        tibble::tibble(
-          name = !!name,
-          low = quantile(data[["value"]], 0.1, na.rm = TRUE),
-          high = quantile(data[["value"]], 0.9, na.rm = TRUE)
+  dplyr::filter(race == "Total") |>
+  dplyr::select(
+    edu.hs,
+    emp.ue,
+    hom.own,
+    inc.inc,
+    pop.tot,
+    size
+  ) |>
+  tidyr::pivot_longer(dplyr::everything()) |>
+  dplyr::nest_by(name) |>
+  purrr::pmap_dfr(
+    function(name, data) {
+      tibble::tibble(
+        name = !!name,
+        low = quantile(data[["value"]], 0.1, na.rm = TRUE),
+        high = quantile(data[["value"]], 0.9, na.rm = TRUE)
+      )
+    }
+  ) |>
+  dplyr::rowwise() |>
+  dplyr::mutate(
+    `Variable Name` = c(
+      edu.hs = "High school attainment",
+      emp.ue = "Unemployment",
+      inc.inc = "Annual income",
+      hom.own = "Home ownership",
+      pop.tot = "Population",
+      size = "Sample size"
+    )[name],
+    `Description (units)` = c(
+      edu.hs = "Percentage of 18+ population",
+      emp.ue = "Percentage of total labor force",
+      inc.inc = "Annual amount in current US\\$",
+      hom.own = "Percentage of occupied households",
+      pop.tot = "Total inhabitants",
+      size = "Total interviews"
+    )[name],
+    `County Range` = (
+      if (
+        name %in% c(
+          "edu.hs",
+          "emp.ue",
+          "fin.cost",
+          "hom.own",
+          "occ.fam",
+          "val.mort"
         )
-      }
-    ) |>
-    dplyr::rowwise() |>
-    dplyr::mutate(
-      `Variable Name` = c(
-        edu.hs = "High school attainment",
-        emp.ue = "Unemployment",
-        inc.inc = "Annual income",
-        # fin.cost = "Housing cost",
-        hom.own = "Home ownership",
-        # val.hom = "Housing value",
-        # val.tax = "Housing tax",
-        # val.mort = "Households with a mortgage",
-        # occ.fam = "Family occupancy",
-        pop.tot = "Population",
-        size = "Sample size"
-      )[name],
-      `Description (units)` = c(
-        edu.hs = "Percentage of 18+ population",
-        emp.ue = "Percentage of total labor force",
-        inc.inc = "Annual amount in current US\\$",
-        # fin.cost = "Percentage of owner-occupied household income",
-        hom.own = "Percentage of occupied households",
-        # val.hom = "Amount in current US\\$",
-        # val.tax = "Annual amount in current US\\$",
-        # val.mort = "Percentage of owner-occupied households",
-        # occ.fam = "Percentage of owner-occupied households",
-        pop.tot = "Total inhabitants",
-        size = "Total interviews"
-      )[name],
-      # `County Range` = if (name %in% c("edu.hs", "emp.ue", "fin.cost", "hom.own", "occ.fam", "val.mort")) {
-      #   sprintf("%.1f\\%%--%.1f\\%%", low * 100, high * 100)
-      # } else if (name == "inc.inc") {
-      #   sprintf("\\$%.0fk--\\$%.0fk", round(low / 1000), round(high / 1000))
-      # } else if (name == "size") {
-      #   sprintf("%.0f--%.0fk", round(low), round(high / 1000))
-      # } else if (name == "pop.tot") {
-      #   sprintf("%.0fk--%.0fk", round(low / 1000), round(high / 1000))
-      # } else if (name == "val.hom") {
-      #   sprintf("\\$%.0fk--\\$%.0fk", round(low / 1000), round(high / 1000))
-      # } else if (name == "val.tax") {
-      #   sprintf("\\$%.0f--\\$%.0fk", round(low), round(high / 1000))
-      # } else {
-      #   stop("Impossible.")
-      # }
-      `County Range` = if (name %in% c("edu.hs", "emp.ue", "fin.cost", "hom.own", "occ.fam", "val.mort")) {
+      ) {
         sprintf("%.1f\\%% - %.1f\\%%", low * 100, high * 100)
       } else if (name %in% c("inc.inc", "val.hom", "val.tax")) {
         paste0("\\$", format(signif(round(low), 3), big.mark = ","), " - \\$",
@@ -475,39 +459,35 @@ make_var_ranges_table <- function() {
       } else {
         stop("Impossible.")
       }
-    ) |>
-    dplyr::ungroup() |>
-    tibble::add_row(name = "housing_header", `Variable Name` = "\\textbf{Housing Variables}") |>
-    tibble::add_row(name = "sociodemographic_header", `Variable Name` = "\\textbf{Sociodemographic Variables}") |>
-    tibble::add_row(name = "survey_header", `Variable Name` = "\\textbf{Survey Variables}") |>
-    dplyr::mutate(
-      name = factor(
-        name,
-        c(
-          "housing_header",
-          "hom.own",
-          # "fin.cost",
-          # "val.hom",
-          # "val.tax",
-          # "val.mort",
-          "sociodemographic_header",
-          "edu.hs",
-          "inc.inc",
-          "emp.ue",
-          "pop.tot",
-          # "occ.fam",
-          "survey_header",
-          "size"
-        )
-      )
-    ) |>
-    dplyr::arrange(name) |>
-    dplyr::select(`Variable Name`, `Description (units)`, `County Range`) |>
-    xtable::xtable(align = "rllc") |>
-    save_tex_formatted(
-      file.path(OUTPUT_EXPLORATORY_DIR, "county_ranges.tex"),
-      sanitize.text.function = I
     )
+  ) |>
+  dplyr::ungroup() |>
+  tibble::add_row(name = "housing_header", `Variable Name` = "\\textbf{Housing Variables}") |>
+  tibble::add_row(name = "sociodemographic_header", `Variable Name` = "\\textbf{Sociodemographic Variables}") |>
+  tibble::add_row(name = "survey_header", `Variable Name` = "\\textbf{Survey Variables}") |>
+  dplyr::mutate(
+    name = factor(
+      name,
+      c(
+        "housing_header",
+        "hom.own",
+        "sociodemographic_header",
+        "edu.hs",
+        "inc.inc",
+        "emp.ue",
+        "pop.tot",
+        "survey_header",
+        "size"
+      )
+    )
+  ) |>
+  dplyr::arrange(name) |>
+  dplyr::select(`Variable Name`, `Description (units)`, `County Range`) |>
+  xtable::xtable(align = "rllc") |>
+  save_tex_formatted(
+    file.path(OUTPUT_EXPLORATORY_DIR, "county_ranges.tex"),
+    sanitize.text.function = I
+  )
 }
 
 make_data_summary <- function() {
@@ -537,79 +517,79 @@ make_data_summary <- function() {
   save_output(
     (
       CENSUS_DATA |>
-        dplyr::mutate(
-          state = factor(state),
-          county = factor(county),
-          geoid = factor(geoid)
-        ) |>
-        print_summary()
+      dplyr::mutate(
+        state = factor(state),
+        county = factor(county),
+        geoid = factor(geoid)
+      ) |>
+      print_summary()
     ),
     file_name = file.path(OUTPUT_EXPLORATORY_DIR, "census_data_summary.txt")
   )
   save_output(
     (
       MODEL_DATA |>
-        dplyr::mutate(state = factor(state)) |>
-        print_summary()
+      dplyr::mutate(state = factor(state)) |>
+      print_summary()
     ),
     file_name = file.path(OUTPUT_EXPLORATORY_DIR, "model_data_summary.txt")
   )
 
   data_by_race_mean <- (
     CENSUS_DATA |>
-      dplyr::group_by(race) |>
-      dplyr::summarize(
-        edu.hs = matrixStats::weightedMean(edu.hs, edu.tot, na.rm = TRUE),
-        emp.ue = matrixStats::weightedMean(emp.ue, emp.tot, na.rm = TRUE),
-        fin.cost = matrixStats::weightedMean(fin.cost, fin.tot, na.rm = TRUE),
-        fin.inc = matrixStats::weightedMean(fin.inc, fin.tot, na.rm = TRUE),
-        hom.own = matrixStats::weightedMean(hom.own, hom.tot),
-        inc.inc = matrixStats::weightedMean(inc.inc, inc.tot, na.rm = TRUE),
-        occ.fam = matrixStats::weightedMean(occ.fam, occ.tot),
-        pop.share = matrixStats::weightedMean(pop.share, pop.tot.all),
-        val.hom = matrixStats::weightedMean(val.hom, val.tot, na.rm = TRUE),
-        val.mort = matrixStats::weightedMean(val.mort, val.tot, na.rm = TRUE),
-        val.tax = matrixStats::weightedMean(val.tax, val.tot, na.rm = TRUE),
-        edu.tot = mean(edu.tot),
-        emp.tot = mean(emp.tot),
-        fin.tot = mean(fin.tot),
-        hom.tot = mean(hom.tot),
-        inc.tot = mean(inc.tot),
-        occ.tot = mean(occ.tot),
-        pop.tot = mean(pop.tot),
-        size = mean(size),
-        val.tot = mean(val.tot)
-      )
+    dplyr::group_by(race) |>
+    dplyr::summarize(
+      edu.hs = matrixStats::weightedMean(edu.hs, edu.tot, na.rm = TRUE),
+      emp.ue = matrixStats::weightedMean(emp.ue, emp.tot, na.rm = TRUE),
+      fin.cost = matrixStats::weightedMean(fin.cost, fin.tot, na.rm = TRUE),
+      fin.inc = matrixStats::weightedMean(fin.inc, fin.tot, na.rm = TRUE),
+      hom.own = matrixStats::weightedMean(hom.own, hom.tot),
+      inc.inc = matrixStats::weightedMean(inc.inc, inc.tot, na.rm = TRUE),
+      occ.fam = matrixStats::weightedMean(occ.fam, occ.tot),
+      pop.share = matrixStats::weightedMean(pop.share, pop.tot.all),
+      val.hom = matrixStats::weightedMean(val.hom, val.tot, na.rm = TRUE),
+      val.mort = matrixStats::weightedMean(val.mort, val.tot, na.rm = TRUE),
+      val.tax = matrixStats::weightedMean(val.tax, val.tot, na.rm = TRUE),
+      edu.tot = mean(edu.tot),
+      emp.tot = mean(emp.tot),
+      fin.tot = mean(fin.tot),
+      hom.tot = mean(hom.tot),
+      inc.tot = mean(inc.tot),
+      occ.tot = mean(occ.tot),
+      pop.tot = mean(pop.tot),
+      size = mean(size),
+      val.tot = mean(val.tot)
+    )
   )
   data_by_race_sd <- (
     CENSUS_DATA |>
-      dplyr::group_by(race) |>
-      dplyr::summarize(
-        edu.hs = matrixStats::weightedSd(edu.hs, edu.tot, na.rm = TRUE),
-        emp.ue = matrixStats::weightedSd(emp.ue, emp.tot, na.rm = TRUE),
-        fin.cost = matrixStats::weightedSd(fin.cost, fin.tot, na.rm = TRUE),
-        fin.inc = matrixStats::weightedSd(fin.inc, fin.tot, na.rm = TRUE),
-        hom.own = matrixStats::weightedSd(hom.own, hom.tot),
-        inc.inc = matrixStats::weightedSd(inc.inc, inc.tot, na.rm = TRUE),
-        occ.fam = matrixStats::weightedSd(occ.fam, occ.tot),
-        pop.share = matrixStats::weightedSd(pop.share, pop.tot.all),
-        val.hom = matrixStats::weightedSd(val.hom, val.tot, na.rm = TRUE),
-        val.mort = matrixStats::weightedSd(val.mort, val.tot, na.rm = TRUE),
-        val.tax = matrixStats::weightedSd(val.tax, val.tot, na.rm = TRUE),
-        edu.tot = sd(edu.tot),
-        emp.tot = sd(emp.tot),
-        fin.tot = sd(fin.tot),
-        hom.tot = sd(hom.tot),
-        inc.tot = sd(inc.tot),
-        occ.tot = sd(occ.tot),
-        pop.tot = sd(pop.tot),
-        size = sd(size),
-        val.tot = sd(val.tot)
-      )
+    dplyr::group_by(race) |>
+    dplyr::summarize(
+      edu.hs = matrixStats::weightedSd(edu.hs, edu.tot, na.rm = TRUE),
+      emp.ue = matrixStats::weightedSd(emp.ue, emp.tot, na.rm = TRUE),
+      fin.cost = matrixStats::weightedSd(fin.cost, fin.tot, na.rm = TRUE),
+      fin.inc = matrixStats::weightedSd(fin.inc, fin.tot, na.rm = TRUE),
+      hom.own = matrixStats::weightedSd(hom.own, hom.tot),
+      inc.inc = matrixStats::weightedSd(inc.inc, inc.tot, na.rm = TRUE),
+      occ.fam = matrixStats::weightedSd(occ.fam, occ.tot),
+      pop.share = matrixStats::weightedSd(pop.share, pop.tot.all),
+      val.hom = matrixStats::weightedSd(val.hom, val.tot, na.rm = TRUE),
+      val.mort = matrixStats::weightedSd(val.mort, val.tot, na.rm = TRUE),
+      val.tax = matrixStats::weightedSd(val.tax, val.tot, na.rm = TRUE),
+      edu.tot = sd(edu.tot),
+      emp.tot = sd(emp.tot),
+      fin.tot = sd(fin.tot),
+      hom.tot = sd(hom.tot),
+      inc.tot = sd(inc.tot),
+      occ.tot = sd(occ.tot),
+      pop.tot = sd(pop.tot),
+      size = sd(size),
+      val.tot = sd(val.tot)
+    )
   )
 
   data_by_race_mean |>
-    save_csv(file.path(OUTPUT_EXPLORATORY_DIR, "census_data_by_race_means.csv"))
+  save_csv(file.path(OUTPUT_EXPLORATORY_DIR, "census_data_by_race_means.csv"))
 
   # Get the race dot chart data
   data_by_race_mean <- (
@@ -687,8 +667,6 @@ make_data_summary <- function() {
     dplyr::nest_by(var, .keep = TRUE) |>
     purrr::pmap(
       function(var, data) {
-        force(data)
-
         # For ordering from lowest to highest in each panel
         data <- (
           data |>
@@ -754,90 +732,90 @@ make_data_summary <- function() {
 
   data_by_state <- (
     CENSUS_DATA |>
-      dplyr::group_by(state) |>
-      dplyr::summarize(
-        edu.hs = matrixStats::weightedMean(edu.hs, edu.tot, na.rm = TRUE),
-        emp.ue = matrixStats::weightedMean(emp.ue, emp.tot, na.rm = TRUE),
-        fin.cost = matrixStats::weightedMean(fin.cost, fin.tot, na.rm = TRUE),
-        fin.inc = matrixStats::weightedMean(fin.inc, fin.tot, na.rm = TRUE),
-        hom.own = matrixStats::weightedMean(hom.own, hom.tot),
-        inc.inc = matrixStats::weightedMean(inc.inc, inc.tot, na.rm = TRUE),
-        occ.fam = matrixStats::weightedMean(occ.fam, occ.tot),
-        pop.share = matrixStats::weightedMean(pop.share, pop.tot.all),
-        val.hom = matrixStats::weightedMean(val.hom, val.tot, na.rm = TRUE),
-        val.mort = matrixStats::weightedMean(val.mort, val.tot, na.rm = TRUE),
-        val.tax = matrixStats::weightedMean(val.tax, val.tot, na.rm = TRUE),
-        edu.tot = mean(edu.tot),
-        emp.tot = mean(emp.tot),
-        fin.tot = mean(fin.tot),
-        hom.tot = mean(hom.tot),
-        inc.tot = mean(inc.tot),
-        occ.tot = mean(occ.tot),
-        pop.tot = mean(pop.tot),
-        size = mean(size),
-        val.tot = mean(val.tot)
-      )
+    dplyr::group_by(state) |>
+    dplyr::summarize(
+      edu.hs = matrixStats::weightedMean(edu.hs, edu.tot, na.rm = TRUE),
+      emp.ue = matrixStats::weightedMean(emp.ue, emp.tot, na.rm = TRUE),
+      fin.cost = matrixStats::weightedMean(fin.cost, fin.tot, na.rm = TRUE),
+      fin.inc = matrixStats::weightedMean(fin.inc, fin.tot, na.rm = TRUE),
+      hom.own = matrixStats::weightedMean(hom.own, hom.tot),
+      inc.inc = matrixStats::weightedMean(inc.inc, inc.tot, na.rm = TRUE),
+      occ.fam = matrixStats::weightedMean(occ.fam, occ.tot),
+      pop.share = matrixStats::weightedMean(pop.share, pop.tot.all),
+      val.hom = matrixStats::weightedMean(val.hom, val.tot, na.rm = TRUE),
+      val.mort = matrixStats::weightedMean(val.mort, val.tot, na.rm = TRUE),
+      val.tax = matrixStats::weightedMean(val.tax, val.tot, na.rm = TRUE),
+      edu.tot = mean(edu.tot),
+      emp.tot = mean(emp.tot),
+      fin.tot = mean(fin.tot),
+      hom.tot = mean(hom.tot),
+      inc.tot = mean(inc.tot),
+      occ.tot = mean(occ.tot),
+      pop.tot = mean(pop.tot),
+      size = mean(size),
+      val.tot = mean(val.tot)
+    )
   )
 
   data_by_state |>
-    save_csv(file.path(OUTPUT_EXPLORATORY_DIR, "census_data_by_state_means.csv"))
+  save_csv(file.path(OUTPUT_EXPLORATORY_DIR, "census_data_by_state_means.csv"))
 }
 
 plot_state_ranges <- function() {
   (
     CENSUS_DATA |>
-      dplyr::filter(race %in% RACES_MODEL) |>
-      dplyr::group_by(race, state) |>
-      dplyr::summarize(
-        hom.own_mean = 100 * matrixStats::weightedMean(hom.own, hom.tot, na.rm = TRUE),
-        hom.own_sd = 100 * matrixStats::weightedSd(hom.own, hom.tot, na.rm = TRUE),
-        .groups = "drop"
-      ) |>
-      dplyr::mutate(
-        state = (
-          state |>
-          forcats::fct_relabel(\(x) STATE_ABBREVS[x]) |>
-          forcats::fct_rev()
-        ),
-        race = factor(race, RACES_MODEL)
-      ) |>
-      ggplot2::ggplot(
-        mapping = ggplot2::aes(
-          y = state,
-          x = hom.own_mean,
-          xmin = hom.own_mean - hom.own_sd,
-          xmax = hom.own_mean + hom.own_sd,
-          color = race,
-          fill = race
-        )
-      ) +
-      ggplot2::geom_pointrange(position = ggplot2::position_dodge2(1)) +
-      ggplot2::scale_color_manual(values = RACE_COLORS) +
-      ggplot2::scale_fill_manual(values = RACE_COLORS) +
-      ggplot2::geom_hline(
-        data = tidyr::expand_grid(
-          y = STATE_ABBREVS,
-          race = factor(RACES_MODEL)
-        ),
-        mapping = ggplot2::aes(yintercept = y),
-        linetype = "dotted",
-        alpha = 0.3
-      ) +
-      ggplot2::facet_wrap(vars(race), nrow = 2, scales = "free") +
-      ggplot2::xlim(c(0, 100)) +
-      ggplot2::ylab("State") +
-      ggplot2::xlab("Home ownership rate (%)") +
-      ggplot2::theme_classic(GGPLOT_BASE_SIZE_BIG) +
-      ggplot2::theme(
-        legend.position = "none",
-        axis.text.y = ggplot2::element_text(size = 8)
+    dplyr::filter(race %in% RACES_MODEL) |>
+    dplyr::group_by(race, state) |>
+    dplyr::summarize(
+      hom.own_mean = 100 * matrixStats::weightedMean(hom.own, hom.tot, na.rm = TRUE),
+      hom.own_sd = 100 * matrixStats::weightedSd(hom.own, hom.tot, na.rm = TRUE),
+      .groups = "drop"
+    ) |>
+    dplyr::mutate(
+      state = (
+        state |>
+        forcats::fct_relabel(\(x) STATE_ABBREVS[x]) |>
+        forcats::fct_rev()
+      ),
+      race = factor(race, RACES_MODEL)
+    ) |>
+    ggplot2::ggplot(
+      mapping = ggplot2::aes(
+        y = state,
+        x = hom.own_mean,
+        xmin = hom.own_mean - hom.own_sd,
+        xmax = hom.own_mean + hom.own_sd,
+        color = race,
+        fill = race
       )
-  ) |>
-    save_ggplot(
-      file.path(OUTPUT_EXPLORATORY_DIR, "state_ranges.pdf"),
-      width = GGPLOT_WIDTH,
-      height = 1.5 * GGPLOT_HEIGHT
+    ) +
+    ggplot2::geom_pointrange(position = ggplot2::position_dodge2(1)) +
+    ggplot2::scale_color_manual(values = RACE_COLORS) +
+    ggplot2::scale_fill_manual(values = RACE_COLORS) +
+    ggplot2::geom_hline(
+      data = tidyr::expand_grid(
+        y = STATE_ABBREVS,
+        race = factor(RACES_MODEL)
+      ),
+      mapping = ggplot2::aes(yintercept = y),
+      linetype = "dotted",
+      alpha = 0.3
+    ) +
+    ggplot2::facet_wrap(vars(race), nrow = 2, scales = "free") +
+    ggplot2::xlim(c(0, 100)) +
+    ggplot2::ylab("State") +
+    ggplot2::xlab("Home ownership rate (%)") +
+    ggplot2::theme_classic(GGPLOT_BASE_SIZE_BIG) +
+    ggplot2::theme(
+      legend.position = "none",
+      axis.text.y = ggplot2::element_text(size = 8)
     )
+  ) |>
+  save_ggplot(
+    file.path(OUTPUT_EXPLORATORY_DIR, "state_ranges.pdf"),
+    width = GGPLOT_WIDTH,
+    height = 1.5 * GGPLOT_HEIGHT
+  )
 }
 
 make_binomial_model <- function() {
@@ -853,7 +831,8 @@ make_binomial_model <- function() {
       OUTPUT_EXPLORATORY_DIR,
       "model_rds",
       stringr::str_c("model_0.rds")
-    ))
+    )
+  )
 
   save_output(
     print(summary(model)),
@@ -919,34 +898,34 @@ do_binomial_model_analysis <- function() {
   )
   (
     ggplot2::ggplot() +
-      ggplot2::geom_freqpoly(
-        data = resid_sim_data,
-        mapping = ggplot2::aes(
-          x = resid,
-          group = iter,
-          weight = size
-        ),
-        alpha = 0.1,
-        bins = 30
-      ) +
-      ggplot2::geom_freqpoly(
-        data = resid_data,
-        mapping = ggplot2::aes(
-          x = resid,
-          weight = size
-        ),
-        bins = 30
-      ) +
-      ggplot2::facet_wrap(vars(type), ncol = 2, scales = "free") +
-      ggplot2::theme_classic(base_size = GGPLOT_BASE_SIZE_SMALL) +
-      ggplot2::xlab("Standardized residual") +
-      ggplot2::ylab("Count")
+    ggplot2::geom_freqpoly(
+      data = resid_sim_data,
+      mapping = ggplot2::aes(
+        x = resid,
+        group = iter,
+        weight = size
+      ),
+      alpha = 0.1,
+      bins = 30
+    ) +
+    ggplot2::geom_freqpoly(
+      data = resid_data,
+      mapping = ggplot2::aes(
+        x = resid,
+        weight = size
+      ),
+      bins = 30
+    ) +
+    ggplot2::facet_wrap(vars(type), ncol = 2, scales = "free") +
+    ggplot2::theme_classic(base_size = GGPLOT_BASE_SIZE_SMALL) +
+    ggplot2::xlab("Standardized residual") +
+    ggplot2::ylab("Count")
   ) |>
-    save_ggplot(
-      file.path(OUTPUT_EXPLORATORY_DIR, "binomial_analysis", "overdispersion.pdf"),
-      width = GGPLOT_WIDTH,
-      height = GGPLOT_HEIGHT / 3
-    )
+  save_ggplot(
+    file.path(OUTPUT_EXPLORATORY_DIR, "binomial_analysis", "overdispersion.pdf"),
+    width = GGPLOT_WIDTH,
+    height = GGPLOT_HEIGHT / 3
+  )
 
   # Phi estimation
   phi_data <- tibble::tibble(
@@ -955,7 +934,7 @@ do_binomial_model_analysis <- function() {
     county_size = model_data[["hom.tot"]],
     phi = (sample_size - 1) / (resid_sq - 1) - 1
   ) |>
-    dplyr::filter(phi > 0)
+  dplyr::filter(phi > 0)
 
   phi_lm_out_1 <- lm(log(phi) ~ 1, data = phi_data)
   phi_lm_out_2 <- lm(log(phi) ~ log(county_size), data = phi_data)
@@ -988,30 +967,30 @@ do_binomial_model_analysis <- function() {
   # log(phi) vs. log(population) plot
   (
     ggplot2::ggplot(phi_data, aes(log(county_size), log(phi))) +
-      ggplot2::geom_point() +
-      ggplot2::geom_smooth(
-        formula = y ~ x,
-        method = "lm",
-        se = FALSE,
-        color = "red",
-        linewidth = 2,
-        linetype = "dashed"
-      ) +
-      ggplot2::geom_hline(
-        yintercept = phi_lm_out_1[["coefficients"]][[1]],
-        color = "blue",
-        linewidth = 2,
-        linetype = "dashed"
-      ) +
-      ggplot2::xlab("Log(sample size)") +
-      ggplot2::ylab("Log(phi estimate)") +
-      ggplot2::theme_classic(base_size = GGPLOT_BASE_SIZE_SMALL)
+    ggplot2::geom_point() +
+    ggplot2::geom_smooth(
+      formula = y ~ x,
+      method = "lm",
+      se = FALSE,
+      color = "red",
+      linewidth = 2,
+      linetype = "dashed"
+    ) +
+    ggplot2::geom_hline(
+      yintercept = phi_lm_out_1[["coefficients"]][[1]],
+      color = "blue",
+      linewidth = 2,
+      linetype = "dashed"
+    ) +
+    ggplot2::xlab("Log(sample size)") +
+    ggplot2::ylab("Log(phi estimate)") +
+    ggplot2::theme_classic(base_size = GGPLOT_BASE_SIZE_SMALL)
   ) |>
-    save_ggplot(
-      file.path(OUTPUT_EXPLORATORY_DIR, "prior_estimates", "phi_scatter.pdf"),
-      width = GGPLOT_WIDTH / 2,
-      height = GGPLOT_HEIGHT / 2
-    )
+  save_ggplot(
+    file.path(OUTPUT_EXPLORATORY_DIR, "prior_estimates", "phi_scatter.pdf"),
+    width = GGPLOT_WIDTH / 2,
+    height = GGPLOT_HEIGHT / 2
+  )
 }
 
 do_missing_value_analysis <- function() {
@@ -1020,48 +999,46 @@ do_missing_value_analysis <- function() {
       drop_size_0 = FALSE,
       drop_na = FALSE
     ) |>
-      dplyr::select(
-        race,
-        size,
-        edu.hs,
-        emp.ue,
-        inc.inc.trans,
-        hom.own
-      ) |>
-      tidyr::pivot_longer(
-        !c(race, size),
-        names_to = "variable",
-        values_to = "value"
-      ) |>
-      (function(x) {
-        dplyr::bind_rows(
-          x,
-          x |> dplyr::mutate(variable = "All"),
-          x |> dplyr::mutate(race = "All"),
-          x |> dplyr::mutate(variable = "All", race = "All")
-        )
-      })() |>
-      dplyr::mutate(missing = ifelse(is.na(value), 1, 0)) |>
-      dplyr::reframe(
-        data = list(
-          list(weight_type = "size", missing_type = "Present", count = sum((1 - missing) * size)),
-          list(weight_type = "size", missing_type = "Missing", count = sum(missing * size)),
-          list(weight_type = "obs", missing_type = "Present", count = sum(1 - missing)),
-          list(weight_type = "obs", missing_type = "Missing", count = sum(missing))
-        ),
-        .by = c("race", "variable")
-      ) |>
-      tidyr::unnest_wider(data) |>
-      dplyr::mutate(
-        variable = replace_all_pairs(
-          variable,
-          COLUMNS_PAPER_OLD,
-          COLUMNS_PAPER_NEW
-        ),
-        missing_type = factor(missing_type, c("Present", "Missing")),
-        race = factor(race, c("All", RACES_MODEL))
-      ) |>
-      dplyr::arrange(variable, race, weight_type, missing_type)
+    dplyr::select(
+      race,
+      size,
+      edu.hs,
+      emp.ue,
+      inc.inc.trans,
+      hom.own
+    ) |>
+    tidyr::pivot_longer(
+      !c(race, size),
+      names_to = "variable",
+      values_to = "value"
+    ) |>
+    x => dplyr::bind_rows(
+      x,
+      x |> dplyr::mutate(variable = "All"),
+      x |> dplyr::mutate(race = "All"),
+      x |> dplyr::mutate(variable = "All", race = "All")
+    ) |>
+    dplyr::mutate(missing = ifelse(is.na(value), 1, 0)) |>
+    dplyr::reframe(
+      data = list(
+        list(weight_type = "size", missing_type = "Present", count = sum((1 - missing) * size)),
+        list(weight_type = "size", missing_type = "Missing", count = sum(missing * size)),
+        list(weight_type = "obs", missing_type = "Present", count = sum(1 - missing)),
+        list(weight_type = "obs", missing_type = "Missing", count = sum(missing))
+      ),
+      .by = c("race", "variable")
+    ) |>
+    tidyr::unnest_wider(data) |>
+    dplyr::mutate(
+      variable = replace_all_pairs(
+        variable,
+        COLUMNS_PAPER_OLD,
+        COLUMNS_PAPER_NEW
+      ),
+      missing_type = factor(missing_type, c("Present", "Missing")),
+      race = factor(race, c("All", RACES_MODEL))
+    ) |>
+    dplyr::arrange(variable, race, weight_type, missing_type)
   )
 
   purrr::walk(
@@ -1070,92 +1047,92 @@ do_missing_value_analysis <- function() {
       # barplot
       (
         data |>
-          dplyr::filter(weight_type == !!weight_type) |>
-          ggplot2::ggplot(
-            mapping = ggplot2::aes(
-              x = missing_type,
-              y = count,
-              label = count,
-              fill = race
-            )
-          ) +
-          ggplot2::geom_col() +
-          ggplot2::geom_text(vjust = -.5) +
-          ggplot2::scale_fill_manual(values = c(All = "#808080", RACE_COLORS)) +
-          ggplot2::ylab("Count") +
-          ggplot2::facet_grid(
-            rows = ggplot2::vars(variable),
-            cols = ggplot2::vars(race),
-            scales = "free"
-          ) +
-          ggplot2::theme_classic(GGPLOT_BASE_SIZE_SMALL) +
-          ggplot2::theme(
-            legend.position = "none",
-            panel.border = ggplot2::element_rect(fill = NA, linewidth = 1),
-            axis.title.x = ggplot2::element_blank()
+        dplyr::filter(weight_type == !!weight_type) |>
+        ggplot2::ggplot(
+          mapping = ggplot2::aes(
+            x = missing_type,
+            y = count,
+            label = count,
+            fill = race
           )
-      ) |>
-        save_ggplot(
-          file.path(
-            OUTPUT_EXPLORATORY_DIR,
-            "missing_values",
-            stringr::str_c("missing_barplot_", weight_type, ".pdf")
-          )
+        ) +
+        ggplot2::geom_col() +
+        ggplot2::geom_text(vjust = -.5) +
+        ggplot2::scale_fill_manual(values = c(All = "#808080", RACE_COLORS)) +
+        ggplot2::ylab("Count") +
+        ggplot2::facet_grid(
+          rows = ggplot2::vars(variable),
+          cols = ggplot2::vars(race),
+          scales = "free"
+        ) +
+        ggplot2::theme_classic(GGPLOT_BASE_SIZE_SMALL) +
+        ggplot2::theme(
+          legend.position = "none",
+          panel.border = ggplot2::element_rect(fill = NA, linewidth = 1),
+          axis.title.x = ggplot2::element_blank()
         )
+      ) |>
+      save_ggplot(
+        file.path(
+          OUTPUT_EXPLORATORY_DIR,
+          "missing_values",
+          stringr::str_c("missing_barplot_", weight_type, ".pdf")
+        )
+      )
     }
   )
 
   # Missing table
   data |>
-    dplyr::nest_by(race, variable, weight_type) |>
-    purrr::pmap_dfr(
-      function(race, variable, weight_type, data) {
-        tibble::tibble(
-          race = !!race,
-          variable = !!variable,
-          weight_type = !!weight_type,
-          missing_pct = if (!!weight_type == "size") {
-            data |>
-              dplyr::summarize(pct = 100 * count[missing_type == "Missing"] / sum(count)) |>
-              dplyr::pull(pct) |>
-              x => sprintf("%04.2f", x)
-          } else if (!!weight_type == "obs") {
-            data |>
-              dplyr::summarize(pct = 100 * count[missing_type == "Missing"] / sum(count)) |>
-              dplyr::pull(pct) |>
-              x => sprintf("%05.2f", x)
-          }
-        )
-      }
-    ) |>
-    tidyr::pivot_wider(
-      id_cols = c(variable, race),
-      names_from = weight_type,
-      values_from = missing_pct
-    ) |>
-    dplyr::mutate(
-      missing_pct = stringr::str_c(size, "/", obs),
-      variable = ifelse(
-        variable == "All",
-        "All",
-        stringr::str_c("$\\mathit{", variable, "}$")
+  dplyr::nest_by(race, variable, weight_type) |>
+  purrr::pmap_dfr(
+    function(race, variable, weight_type, data) {
+      tibble::tibble(
+        race = !!race,
+        variable = !!variable,
+        weight_type = !!weight_type,
+        missing_pct = if (!!weight_type == "size") {
+          data |>
+          dplyr::summarize(pct = 100 * count[missing_type == "Missing"] / sum(count)) |>
+          dplyr::pull(pct) |>
+          x => sprintf("%04.2f", x)
+        } else if (!!weight_type == "obs") {
+          data |>
+          dplyr::summarize(pct = 100 * count[missing_type == "Missing"] / sum(count)) |>
+          dplyr::pull(pct) |>
+          x => sprintf("%05.2f", x)
+        }
       )
-    ) |>
-    tidyr::pivot_wider(
-      id_cols = variable,
-      names_from = race,
-      values_from = missing_pct
-    ) |>
-    dplyr::rename_with(function(x) " ", variable) |>
-    xtable::xtable(align = "rl|lllll") |>
-    save_tex_formatted(
-      file.path(
-        OUTPUT_EXPLORATORY_DIR,
-        "missing_values",
-        stringr::str_c("missing_table.tex")
-      ),
-      sanitize.text.function = base::I
+    }
+  ) |>
+  tidyr::pivot_wider(
+    id_cols = c(variable, race),
+    names_from = weight_type,
+    values_from = missing_pct
+  ) |>
+  dplyr::mutate(
+    missing_pct = stringr::str_c(size, "/", obs),
+    variable = ifelse(
+      variable == "All",
+      "All",
+      stringr::str_c("$\\mathit{", variable, "}$")
     )
+  ) |>
+  tidyr::pivot_wider(
+    id_cols = variable,
+    names_from = race,
+    values_from = missing_pct
+  ) |>
+  dplyr::rename_with(function(x) " ", variable) |>
+  xtable::xtable(align = "rl|lllll") |>
+  save_tex_formatted(
+    file.path(
+      OUTPUT_EXPLORATORY_DIR,
+      "missing_values",
+      stringr::str_c("missing_table.tex")
+    ),
+    sanitize.text.function = base::I
+  )
 }
 
 make_model_formula_table <- function() {
@@ -1166,35 +1143,35 @@ make_model_formula_table <- function() {
     }
 
     strs[[3]] |>
-      stringr::str_split(" ") |>
-      purrr::pluck(1) |>
-      (function(x) {
-        if (is.null(response)) {
-          c(" & ", x)
-        } else {
-          c(response, " & \\sim ", x)
-        }
-      })() |>
-      replace_all_pairs(COLUMNS_PAPER_OLD, COLUMNS_PAPER_NEW) |>
-      stringr::str_replace("^([a-z]+)$", "\\\\mathit{\\1}") |>
-      stringr::str_c(collapse = " ") |>
-      stringr::str_split(" \\+ ") |>
-      purrr::pluck(1) |>
-      x => {
-        # groups <- rep(seq_len(length(x)), each = 3)[seq_len(length(x))]
-        groups <- rep(1, length(x))
-        if (
-          stringr::str_detect(x[[length(x)]], "popshareratio") &&
-            stringr::str_detect(x[[length(x)]], "group") &&
-            (groups[[length(x) - 1]] == groups[[length(x)]])
-        ) {
-          groups[[length(x)]] <- groups[[length(x)]] + 1
-        }
-        split(x, groups)
-      } |>
-      purrr::map(stringr::str_c, collapse = " + ") |>
-      purrr::flatten_chr() |>
-      stringr::str_c(collapse = " + \\\\ & ")
+    stringr::str_split(" ") |>
+    purrr::pluck(1) |>
+    x => (
+      if (is.null(response)) {
+        c(" & ", x)
+      } else {
+        c(response, " & \\sim ", x)
+      }
+    ) |>
+    replace_all_pairs(COLUMNS_PAPER_OLD, COLUMNS_PAPER_NEW) |>
+    stringr::str_replace("^([a-z]+)$", "\\\\mathit{\\1}") |>
+    stringr::str_c(collapse = " ") |>
+    stringr::str_split(" \\+ ") |>
+    purrr::pluck(1) |>
+    x => {
+      # groups <- rep(seq_len(length(x)), each = 3)[seq_len(length(x))]
+      groups <- rep(1, length(x))
+      if (
+        stringr::str_detect(x[[length(x)]], "popshareratio") &&
+          stringr::str_detect(x[[length(x)]], "group") &&
+          (groups[[length(x) - 1]] == groups[[length(x)]])
+      ) {
+        groups[[length(x)]] <- groups[[length(x)]] + 1
+      }
+      split(x, groups)
+    } |>
+    purrr::map(stringr::str_c, collapse = " + ") |>
+    purrr::flatten_chr() |>
+    stringr::str_c(collapse = " + \\\\ & ")
   }
 
   data <- purrr::imap_dfr(
@@ -1207,19 +1184,19 @@ make_model_formula_table <- function() {
       if ("brmsformula" %in% class(formula_obj)) {
         main_formula <- (
           formula_obj[["formula"]] |>
-            # get_formula(reponse_name)
-            get_formula(NULL)
+          # get_formula(reponse_name)
+          get_formula(NULL)
         )
         phi_formula <- (
           formula_obj[["pforms"]][["phi"]] |>
-            # get_formula("\\phi")
-            get_formula(NULL)
+          # get_formula("\\phi")
+          get_formula(NULL)
         )
       } else if ("formula" %in% class(formula_obj)) {
         main_formula <- (
           formula_obj |>
-            # get_formula(reponse_name)
-            get_formula(NULL)
+          # get_formula(reponse_name)
+          get_formula(NULL)
         )
         phi_formula <- NA
       }
@@ -1233,26 +1210,28 @@ make_model_formula_table <- function() {
   )
 
   data |>
-    purrr::pmap_dfr(
-      function(model_name, main_formula, phi_formula, N_formula) {
-        list(
-          `Proportion ($\\theta$)` = main_formula,
-          `Precision ($\\phi$)` = phi_formula
-        ) |>
-          purrr::map(function(x) stringr::str_c("$\\begin{aligned} ", x, " \\end{aligned}$")) |>
-          tibble::as_tibble() |>
-          x => dplyr::bind_cols(tibble::tibble(Model = model_name), x)
-      }
-    ) |>
-    dplyr::mutate(dplyr::across(
+  purrr::pmap_dfr(
+    function(model_name, main_formula, phi_formula, N_formula) {
+      list(
+        `Proportion ($\\theta$)` = main_formula,
+        `Precision ($\\phi$)` = phi_formula
+      ) |>
+        purrr::map(function(x) stringr::str_c("$\\begin{aligned} ", x, " \\end{aligned}$")) |>
+        tibble::as_tibble() |>
+        x => dplyr::bind_cols(tibble::tibble(Model = model_name), x)
+    }
+  ) |>
+  dplyr::mutate(
+    dplyr::across(
       dplyr::everything(),
       function(x) tidyr::replace_na(x, "N/A")
-    )) |>
-    xtable::xtable() |>
-    save_tex(
-      file.path(OUTPUT_EXPLORATORY_DIR, "model_formula_table", "model_formula_table.tex"),
-      sanitize.text.function = I
     )
+  ) |>
+  xtable::xtable() |>
+  save_tex(
+    file.path(OUTPUT_EXPLORATORY_DIR, "model_formula_table", "model_formula_table.tex"),
+    sanitize.text.function = I
+  )
 }
 
 make_size_table <- function() {
@@ -1292,31 +1271,33 @@ make_size_table <- function() {
   }
 
   CENSUS_DATA |>
-    dplyr::filter(race == "Total") |>
-    dplyr::select(dplyr::all_of(columns)) |>
-    dplyr::summarize(dplyr::across(
+  dplyr::filter(race == "Total") |>
+  dplyr::select(dplyr::all_of(columns)) |>
+  dplyr::summarize(
+    dplyr::across(
       dplyr::everything(),
       function(x) {
         low <- quantile(x, 0.1)
         high <- quantile(x, 0.9)
         paste0(label(low), " - ", label(high))
       }
-    )) |>
-    tidyr::pivot_longer(
-      cols = dplyr::everything(),
-      names_to = "Table",
-      values_to = "Size"
-    ) |>
-    dplyr::mutate(
-      Description = desc[`Table`],
-      Sample = samp[`Table`]
-    ) |>
-    dplyr::select(`Table`, Description, Sample, Size) |>
-    dplyr::rename(`Size (thousands)` = Size) |>
-    xtable::xtable() |>
-    save_tex(
-      file.path(OUTPUT_EXPLORATORY_DIR, "size_table", "size_table.tex")
     )
+  ) |>
+  tidyr::pivot_longer(
+    cols = dplyr::everything(),
+    names_to = "Table",
+    values_to = "Size"
+  ) |>
+  dplyr::mutate(
+    Description = desc[`Table`],
+    Sample = samp[`Table`]
+  ) |>
+  dplyr::select(`Table`, Description, Sample, Size) |>
+  dplyr::rename(`Size (thousands)` = Size) |>
+  xtable::xtable() |>
+  save_tex(
+    file.path(OUTPUT_EXPLORATORY_DIR, "size_table", "size_table.tex")
+  )
 }
 
 do_all_exploratory_analyses <- function() {
