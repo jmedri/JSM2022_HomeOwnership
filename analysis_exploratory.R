@@ -48,7 +48,7 @@ plot_choropleth <- function(
 #'       5000 x 5000 pixel resolution.
 
   # keep only contiguous states for plotting
-  data <- data |> dplyr::filter(state %in% CONTIGUOUS_STATES)
+  data <- data |> dplyr::filter(state %in% STATES_MAINLAND)
   if (log_scale) {
     data[[fill_var]] <- log10(
       replace(data[[fill_var]], data[[fill_var]] <= 0, NA)
@@ -364,7 +364,7 @@ plot_choropleth_all <- function(
 ) {
   data <- (
     data |>
-    dplyr::filter(state %in% CONTIGUOUS_STATES) |>
+    dplyr::filter(state %in% STATES_MAINLAND) |>
     join_with_shape(area = area)
   )
   purrr::walk(

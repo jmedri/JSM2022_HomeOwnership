@@ -121,7 +121,7 @@ colnames(yyy)
 initialize("1", FALSE)
 xxx <- join_with_shape(CENSUS_DATA, "state") |>
   dplyr::filter(race %in% RACES_MODEL) |>
-  dplyr::filter(state %in% CONTIGUOUS_STATES) |>
+  dplyr::filter(state %in% STATES_MAINLAND) |>
   dplyr::mutate(
     inc.inc.trans = inc.inc / 1e5,
     hom.tot.log = log(hom.tot),
@@ -130,7 +130,7 @@ xxx <- join_with_shape(CENSUS_DATA, "state") |>
     state = as.numeric(factor(state))
   ) |>
   tidyr::drop_na(hom.own.count, inc.inc.trans)
-sss <- STATE_SHAPE_DATA |> dplyr::filter(state %in% CONTIGUOUS_STATES) |>
+sss <- STATE_SHAPE_DATA |> dplyr::filter(state %in% STATES_MAINLAND) |>
   dplyr::mutate(state = factor(state))
 
 # Get the spatial weight matrix from xxx
