@@ -1,4 +1,0 @@
-# ignore all files except .ignore and README.md
-*
-!.gitignore
-!README.md

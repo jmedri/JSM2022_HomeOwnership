@@ -1,4 +1,3 @@
 # keep .gitignore and input but ignore other contents
-*
-!.gitignore
-!input
+output*
+input_processed
