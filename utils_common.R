@@ -27,11 +27,13 @@ save_plot <- function() {
   if (SAVE_PLOTS) dev.off()
 }
 
-save_ggplot <- function(ggplot_out,
-                        file_name,
-                        width = GGPLOT_WIDTH,
-                        height = GGPLOT_HEIGHT,
-                        ...) {
+save_ggplot <- function(
+  ggplot_out,
+  file_name,
+  width = GGPLOT_WIDTH,
+  height = GGPLOT_HEIGHT,
+  ...
+) {
   create_parent_dir(file_name)
   log_msg(file_name)
   ggplot2::ggsave(
@@ -43,11 +45,13 @@ save_ggplot <- function(ggplot_out,
   )
 }
 
-save_tmap <- function(tmap_out,
-                      file_name,
-                      width = TMAP_WIDTH,
-                      height = TMAP_HEIGHT,
-                      ...) {
+save_tmap <- function(
+  tmap_out,
+  file_name,
+  width = TMAP_WIDTH,
+  height = TMAP_HEIGHT,
+  ...
+) {
   create_parent_dir(file_name)
   log_msg(file_name)
   tmap::tmap_save(tmap_out, file_name, width = width, height = height, ...)

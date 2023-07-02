@@ -98,22 +98,22 @@ ID_COLUMNS <- c("state", "county", "geoid", "race")
 
 COLUMN_NAMES <- (
   names(COLUMNS_RENAME) |>
-    setdiff(ID_COLUMNS) |>
-    purrr::discard(stringr::str_detect, "mort|nmort") |>
-    append(
-      c(
-        "val.tot",
-        "val.hom",
-        "val.tax",
-        "val.mort",
-        "pop.tot.all",
-        "pop.tot",
-        "pop.share",
-        "pop.share.ratio"
-      )
-    ) |>
-    sort() |>
-    append(ID_COLUMNS, 0)
+  setdiff(ID_COLUMNS) |>
+  purrr::discard(stringr::str_detect, "mort|nmort") |>
+  append(
+    c(
+      "val.tot",
+      "val.hom",
+      "val.tax",
+      "val.mort",
+      "pop.tot.all",
+      "pop.tot",
+      "pop.share",
+      "pop.share.ratio"
+    )
+  ) |>
+  sort() |>
+  append(ID_COLUMNS, 0)
 )
 
 VALUE_COLUMNS <- setdiff(COLUMN_NAMES, ID_COLUMNS)
@@ -124,9 +124,9 @@ MEAN_COLUMNS <- setdiff(VALUE_COLUMNS, TOTAL_COLUMNS)
 
 RACE_COLUMNS <- (
   COLUMNS_RENAME |>
-    purrr::keep(stringr::str_detect, "DP05|S1501|S1903|S2301|S2502") |>
-    names() |>
-    append(c("pop.share", "pop.share.ratio", "size"))
+  purrr::keep(stringr::str_detect, "DP05|S1501|S1903|S2301|S2502") |>
+  names() |>
+  append(c("pop.share", "pop.share.ratio", "size"))
 )
 
 NON_RACE_COLUMNS <- setdiff(VALUE_COLUMNS, RACE_COLUMNS)

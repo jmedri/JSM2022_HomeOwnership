@@ -3,31 +3,31 @@
 plot_var_hist <- function() {
   (
     MODEL_DATA |>
-      dplyr::select(
-        dplyr::any_of(c(ID_COLUMNS, COLUMNS_RENAME_PAPER))
-      ) |>
-      dplyr::select(!c(pop, owners)) |>
-      dplyr::filter(unemp < 0.2) |>
-      tidyr::pivot_longer(
-        dplyr::any_of(setdiff(COLUMNS_PAPER_NEW, "sampsize"))
-      ) |>
-      ggplot2::ggplot(mapping = aes(x = value, weight = sampsize, fill = race)) +
-      ggplot2::geom_histogram(bins = 10) +
-      ggplot2::theme_classic(base_size = GGPLOT_BASE_SIZE_BIG) +
-      ggplot2::facet_grid(rows = vars(race), cols = vars(name), scales = "free") +
-      ggplot2::scale_color_manual(values = RACE_COLORS) +
-      ggplot2::xlab("Value") +
-      ggplot2::ylab("Count") +
-      ggplot2::theme(
-        legend.position = "none",
-        panel.background = ggplot2::element_rect(fill = NA, color = "black")
-      )
-  ) |>
-    save_ggplot(
-      file.path(OUTPUT_DIR, "var_hist", "var_hist.pdf"),
-      width = GGPLOT_WIDTH * 1.5,
-      height = GGPLOT_HEIGHT * 0.75
+    dplyr::select(
+      dplyr::any_of(c(ID_COLUMNS, COLUMNS_RENAME_PAPER))
+    ) |>
+    dplyr::select(!c(pop, owners)) |>
+    dplyr::filter(unemp < 0.2) |>
+    tidyr::pivot_longer(
+      dplyr::any_of(setdiff(COLUMNS_PAPER_NEW, "sampsize"))
+    ) |>
+    ggplot2::ggplot(mapping = aes(x = value, weight = sampsize, fill = race)) +
+    ggplot2::geom_histogram(bins = 10) +
+    ggplot2::theme_classic(base_size = GGPLOT_BASE_SIZE_BIG) +
+    ggplot2::facet_grid(rows = vars(race), cols = vars(name), scales = "free") +
+    ggplot2::scale_color_manual(values = RACE_COLORS) +
+    ggplot2::xlab("Value") +
+    ggplot2::ylab("Count") +
+    ggplot2::theme(
+      legend.position = "none",
+      panel.background = ggplot2::element_rect(fill = NA, color = "black")
     )
+  ) |>
+  save_ggplot(
+    file.path(OUTPUT_DIR, "var_hist", "var_hist.pdf"),
+    width = GGPLOT_WIDTH * 1.5,
+    height = GGPLOT_HEIGHT * 0.75
+  )
 }
 
 get_model_data <- function(
@@ -104,17 +104,21 @@ load_model <- function(model_name) {
   #' @param model_name Name of the model to load.
   #' @return A brmsfit object (for a Bayesian model) or else a glm object (for Model 0).
   if (model_name == "0") {
-    readRDS(file = file.path(
-      OUTPUT_EXPLORATORY_DIR,
-      "model_rds",
-      stringr::str_c("model_", model_name, ".rds")
-    ))
+    readRDS(
+      file = file.path(
+        OUTPUT_EXPLORATORY_DIR,
+        "model_rds",
+        stringr::str_c("model_", model_name, ".rds")
+      )
+    )
   } else {
-    readRDS(file = file.path(
-      OUTPUT_DIR,
-      "model_rds",
-      stringr::str_c("model_", model_name, ".rds")
-    ))
+    readRDS(
+      file = file.path(
+        OUTPUT_DIR,
+        "model_rds",
+        stringr::str_c("model_", model_name, ".rds")
+      )
+    )
   }
 }
 
@@ -130,8 +134,8 @@ plot_post_pred_density <- function(brms_out) {
   hom.own <- hom.own.count / size
   hom.own.count_rep <- (
     brms::posterior_predict(brms_out, ndraws = n_draws) |>
-      t() |>
-      as.vector()
+    t() |>
+    as.vector()
   )
   hom.own_rep <- hom.own.count_rep / size_rep
   iter_rep <- rep(seq_len(n_draws), each = n_obs)
@@ -155,40 +159,40 @@ plot_post_pred_density <- function(brms_out) {
   limits <- c(0, 1)
 
   ggplot2::ggplot() +
-    ggplot2::geom_freqpoly(
-      data = data_rep,
-      mapping = ggplot2::aes(
-        x = hom.own,
-        group = iter,
-        weight = size,
-        color = race
-      ),
-      breaks = breaks,
-      alpha = 0.1
-    ) +
-    ggplot2::scale_color_manual(values = RACE_COLORS) +
-    ggplot2::geom_freqpoly(
-      data = data,
-      mapping = ggplot2::aes(x = hom.own, weight = size),
-      color = "black",
-      linewidth = 1,
-      linetype = "dashed",
-      breaks = breaks
-    ) +
-    ggplot2::scale_x_continuous(
-      breaks = breaks,
-      labels = labels,
-      limits = limits
-    ) +
-    ggplot2::ggtitle("Density") +
-    ggplot2::xlab("Home ownership rate") +
-    ggplot2::ylab("Sample size") +
-    ggplot2::facet_wrap(vars(race), scales = "free", ncol = 4) +
-    ggplot2::theme_classic(base_size = GGPLOT_BASE_SIZE_SMALL) +
-    ggplot2::theme(
-      legend.position = "none",
-      plot.title = ggplot2::element_text(hjust = 0.5)
-    )
+  ggplot2::geom_freqpoly(
+    data = data_rep,
+    mapping = ggplot2::aes(
+      x = hom.own,
+      group = iter,
+      weight = size,
+      color = race
+    ),
+    breaks = breaks,
+    alpha = 0.1
+  ) +
+  ggplot2::scale_color_manual(values = RACE_COLORS) +
+  ggplot2::geom_freqpoly(
+    data = data,
+    mapping = ggplot2::aes(x = hom.own, weight = size),
+    color = "black",
+    linewidth = 1,
+    linetype = "dashed",
+    breaks = breaks
+  ) +
+  ggplot2::scale_x_continuous(
+    breaks = breaks,
+    labels = labels,
+    limits = limits
+  ) +
+  ggplot2::ggtitle("Density") +
+  ggplot2::xlab("Home ownership rate") +
+  ggplot2::ylab("Sample size") +
+  ggplot2::facet_wrap(vars(race), scales = "free", ncol = 4) +
+  ggplot2::theme_classic(base_size = GGPLOT_BASE_SIZE_SMALL) +
+  ggplot2::theme(
+    legend.position = "none",
+    plot.title = ggplot2::element_text(hjust = 0.5)
+  )
 }
 
 plot_post_pred_density_resid <- function(brms_out, n_draws = 100) {
@@ -218,41 +222,43 @@ plot_post_pred_density_resid <- function(brms_out, n_draws = 100) {
   limits <- c(-5, 5)
 
   ggplot2::ggplot() +
-    ggplot2::geom_freqpoly(
-      data = data_rep,
-      mapping = ggplot2::aes(
-        x = std_resid,
-        group = iter,
-        weight = size,
-        color = race
-      ),
-      breaks = breaks,
-      alpha = 0.1
-    ) +
-    ggplot2::scale_color_manual(values = RACE_COLORS) +
-    ggplot2::scale_x_continuous(
-      breaks = breaks,
-      labels = labels,
-      limits = limits
-    ) +
-    ggplot2::geom_vline(
-      xintercept = 0,
-      linetype = "dashed",
-      linewidth = 2
-    ) +
-    ggplot2::xlab("Home ownership rate") +
-    ggplot2::ylab("Count") +
-    ggplot2::facet_wrap(vars(race), scales = "free") +
-    ggplot2::theme_classic(base_size = GGPLOT_BASE_SIZE_SMALL) +
-    ggplot2::theme(legend.position = "none")
+  ggplot2::geom_freqpoly(
+    data = data_rep,
+    mapping = ggplot2::aes(
+      x = std_resid,
+      group = iter,
+      weight = size,
+      color = race
+    ),
+    breaks = breaks,
+    alpha = 0.1
+  ) +
+  ggplot2::scale_color_manual(values = RACE_COLORS) +
+  ggplot2::scale_x_continuous(
+    breaks = breaks,
+    labels = labels,
+    limits = limits
+  ) +
+  ggplot2::geom_vline(
+    xintercept = 0,
+    linetype = "dashed",
+    linewidth = 2
+  ) +
+  ggplot2::xlab("Home ownership rate") +
+  ggplot2::ylab("Count") +
+  ggplot2::facet_wrap(vars(race), scales = "free") +
+  ggplot2::theme_classic(base_size = GGPLOT_BASE_SIZE_SMALL) +
+  ggplot2::theme(legend.position = "none")
 }
 
-plot_post_pred_stat <- function(brms_out,
-                                stat_func,
-                                x_label,
-                                y_label,
-                                title,
-                                n_draws = 100) {
+plot_post_pred_stat <- function(
+  brms_out,
+  stat_func,
+  x_label,
+  y_label,
+  title,
+  n_draws = 100
+) {
   num_obs <- nrow(brms_out[["data"]])
   race <- brms_out[["data"]][["race"]]
   race_rep <- t(matrix(rep(race, n_draws), ncol = n_draws))
@@ -267,11 +273,11 @@ plot_post_pred_stat <- function(brms_out,
       size = size,
       race = factor(race, RACES_MODEL)
     ) |>
-      dplyr::group_by(race) |>
-      dplyr::summarize(
-        stat = stat_func(hom.own, size),
-        .groups = "drop"
-      )
+    dplyr::group_by(race) |>
+    dplyr::summarize(
+      stat = stat_func(hom.own, size),
+      .groups = "drop"
+    )
   )
 
   data_rep <- (
@@ -281,39 +287,40 @@ plot_post_pred_stat <- function(brms_out,
       race = factor(as.vector(t(race_rep)), RACES_MODEL),
       iter = rep(seq_len(n_draws), each = num_obs)
     ) |>
-      dplyr::group_by(iter, race) |>
-      dplyr::summarize(
-        stat = stat_func(hom.own, size),
-        .groups = "drop"
-      )
-  )
-  ggplot2::ggplot() +
-    ggplot2::geom_histogram(
-      data = data_rep,
-      mapping = ggplot2::aes(
-        x = stat,
-        group = iter,
-        fill = race
-      ),
-      bins = 20
-    ) +
-    ggplot2::geom_vline(
-      data = data,
-      mapping = ggplot2::aes(xintercept = stat),
-      color = "black",
-      linewidth = 1,
-      linetype = "dashed"
-    ) +
-    ggplot2::scale_fill_manual(values = RACE_COLORS) +
-    ggplot2::xlab(x_label) +
-    ggplot2::ylab(y_label) +
-    ggplot2::ggtitle(title) +
-    ggplot2::facet_wrap(vars(race), ncol = 4, scales = "free") +
-    ggplot2::theme_classic(base_size = GGPLOT_BASE_SIZE_SMALL) +
-    ggplot2::theme(
-      legend.position = "none",
-      plot.title = ggplot2::element_text(hjust = 0.5)
+    dplyr::group_by(iter, race) |>
+    dplyr::summarize(
+      stat = stat_func(hom.own, size),
+      .groups = "drop"
     )
+  )
+
+  ggplot2::ggplot() +
+  ggplot2::geom_histogram(
+    data = data_rep,
+    mapping = ggplot2::aes(
+      x = stat,
+      group = iter,
+      fill = race
+    ),
+    bins = 20
+  ) +
+  ggplot2::geom_vline(
+    data = data,
+    mapping = ggplot2::aes(xintercept = stat),
+    color = "black",
+    linewidth = 1,
+    linetype = "dashed"
+  ) +
+  ggplot2::scale_fill_manual(values = RACE_COLORS) +
+  ggplot2::xlab(x_label) +
+  ggplot2::ylab(y_label) +
+  ggplot2::ggtitle(title) +
+  ggplot2::facet_wrap(vars(race), ncol = 4, scales = "free") +
+  ggplot2::theme_classic(base_size = GGPLOT_BASE_SIZE_SMALL) +
+  ggplot2::theme(
+    legend.position = "none",
+    plot.title = ggplot2::element_text(hjust = 0.5)
+  )
 }
 
 compute_model_loo <- function(model_name, cores = 1, overwrite = FALSE) {
@@ -332,8 +339,9 @@ compute_model_loo <- function(model_name, cores = 1, overwrite = FALSE) {
       loo::loo(model, cores = cores)
     } else {
       NULL
-    }) |>
-    save_rds(file_out)
+    }
+  ) |>
+  save_rds(file_out)
 }
 
 load_model_loo <- function(model_name) {
@@ -360,37 +368,37 @@ make_model_loo_table <- function() {
   )
 
   loo_data |>
-    (function(x) {
-      min_idx <- which.min(x[["LOOIC"]])
-      min_looic <- x[["LOOIC"]][[min_idx]]
-      min_se <- x[["SE"]][[min_idx]]
+  x => {
+    min_idx <- which.min(x[["LOOIC"]])
+    min_looic <- x[["LOOIC"]][[min_idx]]
+    min_se <- x[["SE"]][[min_idx]]
 
-      x |>
-        dplyr::mutate(` ` = ifelse(LOOIC <= min_looic + min_se, "†", "")) |>
-        dplyr::mutate(` ` = stringr::str_c(` `, ifelse(Model == FINAL_MODEL, "*", "")))
-    })() |>
-    (function(x) {
-      dplyr::bind_cols(
-        (
-          x |>
-            dplyr::slice(1:4) |>
-            dplyr::rename_with(function(y) stringr::str_c(y, "_1"))
-        ),
-        (
-          x |>
-            dplyr::slice(5:8) |>
-            dplyr::rename_with(function(y) stringr::str_c(y, "_2"))
-        )
+    x |>
+    dplyr::mutate(` ` = ifelse(LOOIC <= min_looic + min_se, "†", "")) |>
+    dplyr::mutate(` ` = stringr::str_c(` `, ifelse(Model == FINAL_MODEL, "*", "")))
+  } |>
+  x => {
+    dplyr::bind_cols(
+      (
+        x |>
+          dplyr::slice(1:4) |>
+          dplyr::rename_with(function(y) stringr::str_c(y, "_1"))
+      ),
+      (
+        x |>
+          dplyr::slice(5:8) |>
+          dplyr::rename_with(function(y) stringr::str_c(y, "_2"))
       )
-    })() |>
-    xtable::xtable(align = "rlrrl|lrrl") |>
-    save_tex(
-      file.path(OUTPUT_DIR, "loo_analysis", "loo_table.tex"),
-      sanitize.colnames.function = function(x) stringr::str_replace(x, "_\\d", "")
     )
+  } |>
+  xtable::xtable(align = "rlrrl|lrrl") |>
+  save_tex(
+    file.path(OUTPUT_DIR, "loo_analysis", "loo_table.tex"),
+    sanitize.colnames.function = function(x) stringr::str_replace(x, "_\\d", "")
+  )
 
   loo_data |>
-    save_csv(file.path(OUTPUT_DIR, "loo_analysis", "loo_table.csv"))
+  save_csv(file.path(OUTPUT_DIR, "loo_analysis", "loo_table.csv"))
 }
 
 plot_model_loo_figure <- function() {
@@ -411,8 +419,10 @@ plot_model_loo_figure <- function() {
   min_se <- loo_data[["SE"]][[min_idx]]
 
   loo_data <- loo_data |>
-    dplyr::mutate(annotation = ifelse(LOOIC <= min_looic + min_se, "†", "")) |>
-    dplyr::mutate(annotation = stringr::str_c(annotation, ifelse(Model == FINAL_MODEL, "*", "")))
+  dplyr::mutate(annotation = ifelse(LOOIC <= min_looic + min_se, "†", "")) |>
+  dplyr::mutate(
+    annotation = stringr::str_c(annotation, ifelse(Model == FINAL_MODEL, "*", ""))
+  )
   
   span_x <- (
     max(loo_data[["LOOIC"]] + loo_data[["SE"]]) -
@@ -480,24 +490,24 @@ plot_post_pred_density_all <- function() {
     function(model_name) {
       model_out <- load_model(model_name)
       plot_post_pred_density(model_out) |>
-        save_ggplot(
-          file.path(
-            OUTPUT_DIR,
-            "post_pred_density",
-            stringr::str_c("post_pred_density_", model_name, ".pdf")
-          ),
-          width = GGPLOT_WIDTH * 1.5,
-          height = GGPLOT_HEIGHT * 1.5 / 4
-        )
+      save_ggplot(
+        file.path(
+          OUTPUT_DIR,
+          "post_pred_density",
+          stringr::str_c("post_pred_density_", model_name, ".pdf")
+        ),
+        width = GGPLOT_WIDTH * 1.5,
+        height = GGPLOT_HEIGHT * 1.5 / 4
+      )
 
       plot_post_pred_density_resid(model_out) |>
-        save_ggplot(
-          file.path(
-            OUTPUT_DIR,
-            "post_pred_density_resid",
-            stringr::str_c("post_pred_density_resid_", model_name, ".pdf")
-          )
+      save_ggplot(
+        file.path(
+          OUTPUT_DIR,
+          "post_pred_density_resid",
+          stringr::str_c("post_pred_density_resid_", model_name, ".pdf")
         )
+      )
     }
   )
 }
@@ -514,30 +524,30 @@ plot_post_pred_stat_all <- function() {
         list(stat_name = "median", stat_func = list(matrixStats::weightedMedian)),
         list(stat_name = "variance", stat_func = list(matrixStats::weightedVar))
       ) |>
-        purrr::pwalk(
-          function(stat_name, stat_func) {
-            file_prefix <- stringr::str_c("post_pred_stat_", stat_name)
-            plot_post_pred_stat(
-              model,
-              stat_func = stat_func,
-              x_label = stringr::str_c(
-                "Home ownership rate ",
-                stat_name
-              ),
-              y_label = "Count",
-              title = stringr::str_to_title(stat_name)
-            ) |>
-              save_ggplot(
-                file.path(
-                  OUTPUT_DIR,
-                  file_prefix,
-                  stringr::str_c(file_prefix, "_", model_name, ".pdf")
-                ),
-                width = GGPLOT_WIDTH * 1.5,
-                height = GGPLOT_HEIGHT * 1.5 / 4
-              )
-          }
-        )
+      purrr::pwalk(
+        function(stat_name, stat_func) {
+          file_prefix <- stringr::str_c("post_pred_stat_", stat_name)
+          plot_post_pred_stat(
+            model,
+            stat_func = stat_func,
+            x_label = stringr::str_c(
+              "Home ownership rate ",
+              stat_name
+            ),
+            y_label = "Count",
+            title = stringr::str_to_title(stat_name)
+          ) |>
+          save_ggplot(
+            file.path(
+              OUTPUT_DIR,
+              file_prefix,
+              stringr::str_c(file_prefix, "_", model_name, ".pdf")
+            ),
+            width = GGPLOT_WIDTH * 1.5,
+            height = GGPLOT_HEIGHT * 1.5 / 4
+          )
+        }
+      )
     }
   )
 }
@@ -555,45 +565,45 @@ plot_loo_pareto_k_all <- function() {
       )
       data_outlier <- (
         data |>
-          dplyr::filter(pareto_k > 0.7)
+        dplyr::filter(pareto_k > 0.7)
       )
 
       (
         ggplot2::ggplot() +
-          ggplot2::geom_point(
-            data = data,
-            mapping = ggplot2::aes(
-              x = index,
-              y = pareto_k,
-              color = race
-            )
-          ) +
-          ggplot2::geom_text(
-            data = data_outlier,
-            mapping = ggplot2::aes(
-              x = index,
-              y = pareto_k,
-              color = race,
-              label = index
-            ),
-            nudge_x = 500
-          ) +
-          ggplot2::geom_hline(yintercept = 0.7, linetype = "dashed") +
-          ggplot2::ylim(c(-0.5, 1)) +
-          ggplot2::xlab("Index") +
-          ggplot2::ylab("LOO PSIS Pareto K") +
-          ggplot2::facet_wrap(ggplot2::vars(race), ncol = 2) +
-          ggplot2::theme_classic(base_size = GGPLOT_BASE_SIZE_SMALL) +
-          ggplot2::theme(legend.position = "none")
-      ) |>
-        save_ggplot(
-          file.path(
-            OUTPUT_DIR,
-            "loo_psis_pareto_k",
-            stringr::str_c("loo_psis_pareto_k_", model_name, ".pdf")
+        ggplot2::geom_point(
+          data = data,
+          mapping = ggplot2::aes(
+            x = index,
+            y = pareto_k,
+            color = race
           )
+        ) +
+        ggplot2::geom_text(
+          data = data_outlier,
+          mapping = ggplot2::aes(
+            x = index,
+            y = pareto_k,
+            color = race,
+            label = index
+          ),
+          nudge_x = 500
+        ) +
+        ggplot2::geom_hline(yintercept = 0.7, linetype = "dashed") +
+        ggplot2::ylim(c(-0.5, 1)) +
+        ggplot2::xlab("Index") +
+        ggplot2::ylab("LOO PSIS Pareto K") +
+        ggplot2::facet_wrap(ggplot2::vars(race), ncol = 2) +
+        ggplot2::theme_classic(base_size = GGPLOT_BASE_SIZE_SMALL) +
+        ggplot2::theme(legend.position = "none")
+      ) |>
+      save_ggplot(
+        file.path(
+          OUTPUT_DIR,
+          "loo_psis_pareto_k",
+          stringr::str_c("loo_psis_pareto_k_", model_name, ".pdf")
         )
-      }
+      )
+    }
   )
 }
 
@@ -744,20 +754,20 @@ plot_prediction <- function(
   }
   ggplot_out <- (
     ggplot_out +
-      ggdist::stat_halfeye(
-        alpha = fill_alpha,
-        .width = .95,
-        interval_size = interval_size,
-        interval_alpha = 1,
-        point_alpha = 1
-      ) +
-      ggplot2::xlab("Home Ownership Rate (%)") +
-      ggplot2::theme_classic(base_size = base_size) +
-      ggplot2::scale_color_manual(
-        values = RACE_COLORS,
-        name = "Group",
-        aesthetics = c("color", "fill", "slab_color")
-      )
+    ggdist::stat_halfeye(
+      alpha = fill_alpha,
+      .width = .95,
+      interval_size = interval_size,
+      interval_alpha = 1,
+      point_alpha = 1
+    ) +
+    ggplot2::xlab("Home Ownership Rate (%)") +
+    ggplot2::theme_classic(base_size = base_size) +
+    ggplot2::scale_color_manual(
+      values = RACE_COLORS,
+      name = "Group",
+      aesthetics = c("color", "fill", "slab_color")
+    )
   )
 
   if (!separate_y) {
@@ -783,22 +793,22 @@ plot_prediction <- function(
 
 make_outlier_tables <- function() {
   CENSUS_DATA |>
-    dplyr::filter(
-      race == "Hispanic",
-      (0.3 <= hom.own) & (hom.own <= 0.4)
-    ) |>
-    dplyr::arrange(dplyr::desc(size)) |>
-    dplyr::select(county, hom.own, pop.share, pop.share.ratio, size) |>
-    save_csv(file.path(OUTPUT_DIR, "outliers", "hispanic_homown_0.3_0.4.csv"))
+  dplyr::filter(
+    race == "Hispanic",
+    (0.3 <= hom.own) & (hom.own <= 0.4)
+  ) |>
+  dplyr::arrange(dplyr::desc(size)) |>
+  dplyr::select(county, hom.own, pop.share, pop.share.ratio, size) |>
+  save_csv(file.path(OUTPUT_DIR, "outliers", "hispanic_homown_0.3_0.4.csv"))
 
   CENSUS_DATA |>
-    dplyr::filter(
-      race == "Black",
-      (0.55 <= hom.own) & (hom.own <= 0.7)
-    ) |>
-    dplyr::arrange(dplyr::desc(size)) |>
-    dplyr::select(county, hom.own, pop.share, pop.share.ratio, size) |>
-    save_csv(file.path(OUTPUT_DIR, "outliers", "black_homown_0.55_0.7.csv"))
+  dplyr::filter(
+    race == "Black",
+    (0.55 <= hom.own) & (hom.own <= 0.7)
+  ) |>
+  dplyr::arrange(dplyr::desc(size)) |>
+  dplyr::select(county, hom.own, pop.share, pop.share.ratio, size) |>
+  save_csv(file.path(OUTPUT_DIR, "outliers", "black_homown_0.55_0.7.csv"))
 }
 
 get_model_draws <- function(model_name, with_state, do_exp) {
@@ -826,13 +836,13 @@ get_model_draws <- function(model_name, with_state, do_exp) {
   dplyr::mutate(
     name = (
       name |>
-        stringr::str_replace("^phi_", "") |>
-        stringr::str_replace("^race", "") |>
-        stringr::str_replace("^state", "") |>
-        replace_all_pairs(
-          COLUMNS_PAPER_OLD,
-          COLUMNS_PAPER_NEW
-        )
+      stringr::str_replace("^phi_", "") |>
+      stringr::str_replace("^race", "") |>
+      stringr::str_replace("^state", "") |>
+      replace_all_pairs(
+        COLUMNS_PAPER_OLD,
+        COLUMNS_PAPER_NEW
+      )
     )
   ) |>
   dplyr::mutate(
@@ -872,78 +882,78 @@ make_model_coef_table <- function() {
 
       data_coef <- (
         data_draws |>
-          dplyr::group_by(name, name_base, name_race, component) |>
-          dplyr::summarize(
-            Mean = mean(value),
-            SD = sd(value),
-            `2.5%` = quantile(value, 0.025),
-            `97.5%` = quantile(value, 0.975),
-            .groups = "drop"
-          ) |>
-          dplyr::mutate(
-            name_base = factor(
-              name_base,
-              c("Intercept", RACES_MODEL, COLUMNS_PAPER_NEW)
-            ),
-            name_race = factor(name_race, RACES_MODEL),
-            component = factor(component, c("response", "precision"))
-          ) |>
-          dplyr::arrange(component, name_base, name_race) |>
-          dplyr::mutate(component = stringr::str_to_title(component)) |>
-          dplyr::transmute(
-            Component = component,
-            Name = name,
-            Mean,
-            SD,
-            `2.5%`,
-            `97.5%`
-          )
+        dplyr::group_by(name, name_base, name_race, component) |>
+        dplyr::summarize(
+          Mean = mean(value),
+          SD = sd(value),
+          `2.5%` = quantile(value, 0.025),
+          `97.5%` = quantile(value, 0.975),
+          .groups = "drop"
+        ) |>
+        dplyr::mutate(
+          name_base = factor(
+            name_base,
+            c("Intercept", RACES_MODEL, COLUMNS_PAPER_NEW)
+          ),
+          name_race = factor(name_race, RACES_MODEL),
+          component = factor(component, c("response", "precision"))
+        ) |>
+        dplyr::arrange(component, name_base, name_race) |>
+        dplyr::mutate(component = stringr::str_to_title(component)) |>
+        dplyr::transmute(
+          Component = component,
+          Name = name,
+          Mean,
+          SD,
+          `2.5%`,
+          `97.5%`
+        )
       )
 
       data_coef |>
-        save_csv(
-          file.path(
-            OUTPUT_DIR,
-            "model_coef",
-            stringr::str_c(
-              "model_coef_",
-              model_name,
-              if (with_state) "_state" else "",
-              if (do_exp) "_exp" else "",
-              ".csv"
-            )
+      save_csv(
+        file.path(
+          OUTPUT_DIR,
+          "model_coef",
+          stringr::str_c(
+            "model_coef_",
+            model_name,
+            if (with_state) "_state" else "",
+            if (do_exp) "_exp" else "",
+            ".csv"
           )
         )
+      )
 
       data_coef_tex <- (
         data_coef |>
-          dplyr::mutate(
-            Component = forcats::fct_relabel(
-              Component,
-              function(x) {
-                if (do_exp) {
-                  c(
-                    Response = "$\\theta / (1-\\theta)$",
-                    Precision = "$\\phi$"
-                  )[x]
-                } else {
-                  c(
-                    Response = "$\\mathrm{logit}(\\theta)$",
-                    Precision = "$\\log(\\phi)$"
-                  )[x]
-                }
+        dplyr::mutate(
+          Component = forcats::fct_relabel(
+            Component,
+            function(x) {
+              if (do_exp) {
+                c(
+                  Response = "$\\theta / (1-\\theta)$",
+                  Precision = "$\\phi$"
+                )[x]
+              } else {
+                c(
+                  Response = "$\\mathrm{logit}(\\theta)$",
+                  Precision = "$\\log(\\phi)$"
+                )[x]
               }
-            ),
-            Name = stringr::str_replace_all(
-              Name,
-              "\\w+",
-              "$\\\\mathit{\\0}$"
-            ),
-            Mean = sprintf("$%.2f$", Mean),
-            SD = sprintf("$%.2f$", SD),
-            `2.5%` = sprintf("$%.2f$", `2.5%`),
-            `97.5%` = sprintf("$%.2f$", `97.5%`)
-          )
+            }
+          ),
+          Name = stringr::str_replace_all(
+            Name,
+            "\\w+",
+            "$\\\\mathit{\\0}$"
+          ),
+          Mean = sprintf("$%.2f$", Mean),
+          SD = sprintf("$%.2f$", SD),
+          `2.5%` = sprintf("$%.2f$", `2.5%`),
+          `97.5%` = sprintf("$%.2f$", `97.5%`)
+        )
       )
 
       data_coef_tex |>
@@ -968,98 +978,98 @@ make_model_coef_table <- function() {
       if (!with_state) {
         hom.own_mean <- (
           CENSUS_DATA |>
-            dplyr::select(hom.own, hom.tot) |>
-            tidyr::drop_na() |>
-            dplyr::summarize(hom.own_mean = weighted.mean(hom.own, hom.tot)) |>
-            dplyr::pull(hom.own_mean)
+          dplyr::select(hom.own, hom.tot) |>
+          tidyr::drop_na() |>
+          dplyr::summarize(hom.own_mean = weighted.mean(hom.own, hom.tot)) |>
+          dplyr::pull(hom.own_mean)
         )
         
         data_effect <- (
           data_draws |>
-            dplyr::filter(component == "response", name_base != "Intercept") |>
-            dplyr::select(!component) |>
-            dplyr::mutate(
-              unit = list(
-                Hispanic = list(unit_value = 1, Unit = "N/A"),
-                Black = list(unit_value = 1, Unit = "N/A"),
-                Asian = list(unit_value = 1, Unit = "N/A"),
-                income = list(unit_value = 0.1, Unit = "$10,000"),
-                hsedu = list(unit_value = 0.1, Unit = "10%"),
-                unemp = list(unit_value = 0.1, Unit = "10%")
-              )[name_base]
-            ) |>
-            tidyr::unnest_wider(unit) |>
-            dplyr::mutate(
-              effect = plogis(qlogis(hom.own_mean) + unit_value * value) - hom.own_mean
-            ) |>
-            dplyr::group_by(name, name_base, name_race, Unit) |>
-            dplyr::summarize(
-              Effect = mean(effect),
-              `2.5%` = quantile(effect, 0.025),
-              `97.5%` = quantile(effect, 0.975),
-              .groups = "drop"
-            ) |>
-            dplyr::mutate(
-              name_base = factor(
-                name_base,
-                c("Intercept", RACES_MODEL, COLUMNS_PAPER_NEW)
-              ),
-              name_race = factor(name_race, RACES_MODEL)
-            ) |>
-            dplyr::arrange(name_base, name_race) |>
-            dplyr::select(
-              Name = name,
-              Unit,
-              Effect,
-              `2.5%`,
-              `97.5%`
-            )
+          dplyr::filter(component == "response", name_base != "Intercept") |>
+          dplyr::select(!component) |>
+          dplyr::mutate(
+            unit = list(
+              Hispanic = list(unit_value = 1, Unit = "N/A"),
+              Black = list(unit_value = 1, Unit = "N/A"),
+              Asian = list(unit_value = 1, Unit = "N/A"),
+              income = list(unit_value = 0.1, Unit = "$10,000"),
+              hsedu = list(unit_value = 0.1, Unit = "10%"),
+              unemp = list(unit_value = 0.1, Unit = "10%")
+            )[name_base]
+          ) |>
+          tidyr::unnest_wider(unit) |>
+          dplyr::mutate(
+            effect = plogis(qlogis(hom.own_mean) + unit_value * value) - hom.own_mean
+          ) |>
+          dplyr::group_by(name, name_base, name_race, Unit) |>
+          dplyr::summarize(
+            Effect = mean(effect),
+            `2.5%` = quantile(effect, 0.025),
+            `97.5%` = quantile(effect, 0.975),
+            .groups = "drop"
+          ) |>
+          dplyr::mutate(
+            name_base = factor(
+              name_base,
+              c("Intercept", RACES_MODEL, COLUMNS_PAPER_NEW)
+            ),
+            name_race = factor(name_race, RACES_MODEL)
+          ) |>
+          dplyr::arrange(name_base, name_race) |>
+          dplyr::select(
+            Name = name,
+            Unit,
+            Effect,
+            `2.5%`,
+            `97.5%`
+          )
         )
 
         data_effect |>
-          save_csv(
-            file.path(
-              OUTPUT_DIR,
-              "model_effect",
-              stringr::str_c(
-                "model_effect_",
-                model_name,
-                ".csv"
-              )
+        save_csv(
+          file.path(
+            OUTPUT_DIR,
+            "model_effect",
+            stringr::str_c(
+              "model_effect_",
+              model_name,
+              ".csv"
             )
           )
+        )
 
         data_effect |>
-          dplyr::mutate(
-            Name = stringr::str_replace_all(
-              Name,
-              "\\w+",
-              "$\\\\mathit{\\0}$"
-            ),
-            Unit = xtable::sanitize(Unit),
-            Effect = sprintf("$%.1f\\%%$", 100 * Effect),
-            `2.5%` = sprintf("$%.1f\\%%$", 100 * `2.5%`),
-            `97.5%` = sprintf("$%.1f\\%%$", 100 * `97.5%`),
-          ) |>
-          xtable::xtable(
-            align = "rllrrr",
-            caption = xtable::sanitize(
-              sprintf("Home ownership mean: %.2f%%", 100 * hom.own_mean)
-            )
-          ) |>
-          save_tex_formatted(
-            file.path(
-              OUTPUT_DIR,
-              "model_effect",
-              stringr::str_c(
-                "model_effect_",
-                model_name,
-                ".tex"
-              )
-            ),
-            sanitize.text.function = base::I,
-            sanitize.colnames.function = xtable::sanitize
+        dplyr::mutate(
+          Name = stringr::str_replace_all(
+            Name,
+            "\\w+",
+            "$\\\\mathit{\\0}$"
+          ),
+          Unit = xtable::sanitize(Unit),
+          Effect = sprintf("$%.1f\\%%$", 100 * Effect),
+          `2.5%` = sprintf("$%.1f\\%%$", 100 * `2.5%`),
+          `97.5%` = sprintf("$%.1f\\%%$", 100 * `97.5%`),
+        ) |>
+        xtable::xtable(
+          align = "rllrrr",
+          caption = xtable::sanitize(
+            sprintf("Home ownership mean: %.2f%%", 100 * hom.own_mean)
           )
+        ) |>
+        save_tex_formatted(
+          file.path(
+            OUTPUT_DIR,
+            "model_effect",
+            stringr::str_c(
+              "model_effect_",
+              model_name,
+              ".tex"
+            )
+          ),
+          sanitize.text.function = base::I,
+          sanitize.colnames.function = xtable::sanitize
+        )
       }
     }
   )
@@ -1074,45 +1084,45 @@ make_mean_vs_model_table <- function() {
           file.path(OUTPUT_DIR, "model_effect",
                     paste0("model_effect_", model_name, ".csv"))
         ) |>
-          dplyr::filter(Name %in% RACES_MODEL) |>
-          dplyr::select(
-            race = Name,
-            hom.own_fitted = Effect
-          )
+        dplyr::filter(Name %in% RACES_MODEL) |>
+        dplyr::select(
+          race = Name,
+          hom.own_fitted = Effect
+        )
       )
 
       readr::read_csv(
         file.path(OUTPUT_EXPLORATORY_DIR, "census_data_by_race_means.csv")
       ) |>
-        dplyr::filter(race != "Total") |>
-        dplyr::select(race, hom.own) |>
-        dplyr::mutate(
-          hom.own_diff = hom.own - hom.own[race == "WhiteNH"]
-        ) |>
-        dplyr::left_join(
-          data_fitted,
-          by = "race"
-        ) |>
-        dplyr::transmute(
-          Group = race,
-          Rate = sprintf("$%.2f\\%%$", 100 * hom.own),
-          Difference = ifelse(race == "WhiteNH", "", sprintf("$%.2f\\%%$", 100 * hom.own_diff)),
-          `Model Effect` = ifelse(race == "WhiteNH", "", sprintf("$%.2f\\%%$", 100 * hom.own_fitted))
-        ) |>
-        xtable::xtable(align = "rlrrr") |>
-        save_tex_formatted(
-          file.path(OUTPUT_DIR, "mean_vs_model", paste0("mean_vs_model_", model_name, ".tex")),
-          sanitize.text.function = I
-        )
-      }
+      dplyr::filter(race != "Total") |>
+      dplyr::select(race, hom.own) |>
+      dplyr::mutate(
+        hom.own_diff = hom.own - hom.own[race == "WhiteNH"]
+      ) |>
+      dplyr::left_join(
+        data_fitted,
+        by = "race"
+      ) |>
+      dplyr::transmute(
+        Group = race,
+        Rate = sprintf("$%.2f\\%%$", 100 * hom.own),
+        Difference = ifelse(race == "WhiteNH", "", sprintf("$%.2f\\%%$", 100 * hom.own_diff)),
+        `Model Effect` = ifelse(race == "WhiteNH", "", sprintf("$%.2f\\%%$", 100 * hom.own_fitted))
+      ) |>
+      xtable::xtable(align = "rlrrr") |>
+      save_tex_formatted(
+        file.path(OUTPUT_DIR, "mean_vs_model", paste0("mean_vs_model_", model_name, ".tex")),
+        sanitize.text.function = I
+      )
+    }
   )
 }
 
 make_model_effect_county <- function(county) {
   data <- (
     get_model_data(drop_size_0 = FALSE, drop_na = FALSE, column_list = COLUMN_NAMES) |>
-      dplyr::filter(county == !!county) |>
-      dplyr::mutate(race = factor(race, RACES_MODEL))
+    dplyr::filter(county == !!county) |>
+    dplyr::mutate(race = factor(race, RACES_MODEL))
   )
   effect_list <- list(
     list(variable = "inc.inc.trans", delta = 0.1, name = "Income_$+\\$10$k"),
@@ -1142,86 +1152,86 @@ make_model_effect_county <- function(county) {
             )
           }
         ) |>
-          tidyr::pivot_wider(id_cols = Group, names_from = Name, values_from = Delta) |>
-          dplyr::inner_join(
+        tidyr::pivot_wider(id_cols = Group, names_from = Name, values_from = Delta) |>
+        dplyr::inner_join(
+          tibble::tibble(
+            Group = data[["race"]],
+            HOwnR_Empirical = data[["hom.own"]],
+            Income_Empirical = data[["inc.inc.trans"]]
+          ),
+          by = "Group"
+        ) |>
+        dplyr::inner_join(
+          (
             tibble::tibble(
               Group = data[["race"]],
-              HOwnR_Empirical = data[["hom.own"]],
-              Income_Empirical = data[["inc.inc.trans"]]
-            ),
-            by = "Group"
-          ) |>
-          dplyr::inner_join(
-            (
-              tibble::tibble(
-                Group = data[["race"]],
-                predict_out = (
-                  predict(model, newdata = data)[, c("Estimate", "Est.Error")] /
-                    data[["size"]]
-                ),
-                HOwnR_Fitted = predict_out[, 1],
-                HOwnR_SD = predict_out[, 2]
-              ) |>
-                dplyr::select(!predict_out)
-            ),
-            by = "Group"
-          ) |>
-          dplyr::mutate(
-            HOwnR_Empirical = sprintf("$%.1f\\%%$", 100 * HOwnR_Empirical),
-            HOwnR_Fitted = sprintf("$%.1f\\%%$", 100 * HOwnR_Fitted),
-            Income_Empirical = sprintf("$\\$%d$k", round(100 * Income_Empirical))
-          ) |>
-          dplyr::mutate(
-            dplyr::across(
-              tidyselect::where(is.numeric),
-              function(x) {
-                sprintf("$%.2f\\%%$", 100 * x)
-              }
-            )
-          ) |>
-          x => {
-            first_row <- (
-              colnames(x) |>
-                stringr:::str_split("_") |>
-                purrr::map(purrr::pluck, 2, .default = "")
-            )
-            dplyr::bind_rows(
-              first_row |> rlang::set_names(colnames(x)),
-              x
-            )
-          } |>
-          dplyr::relocate(
-            Group,
-            HOwnR_Empirical,
-            HOwnR_Fitted,
-            HOwnR_SD,
-            Income_Empirical
-          ) |>
-          xtable::xtable(align = "rlrrrr|rrr") |>
-          x => save_tex(
-            x,
-            file.path(
-              OUTPUT_DIR,
-              "model_effect_cases",
-              stringr::str_c(
-                (
-                  county |>
-                    remove_punct() |>
-                    stringr::str_replace_all(" ", "_")
-                ),
-                "_",
-                model_name,
-                ".tex"
-              )
-            ),
-            hline.after = c(-1, -1, 1, nrow(x)),
-            sanitize.text.function = I,
-            sanitize.colnames.function = function(y) {
-              y |>
-                stringr:::str_split("_") |>
-                purrr::map(purrr::pluck, 1)
+              predict_out = (
+                predict(model, newdata = data)[, c("Estimate", "Est.Error")] /
+                  data[["size"]]
+              ),
+              HOwnR_Fitted = predict_out[, 1],
+              HOwnR_SD = predict_out[, 2]
+            ) |>
+              dplyr::select(!predict_out)
+          ),
+          by = "Group"
+        ) |>
+        dplyr::mutate(
+          HOwnR_Empirical = sprintf("$%.1f\\%%$", 100 * HOwnR_Empirical),
+          HOwnR_Fitted = sprintf("$%.1f\\%%$", 100 * HOwnR_Fitted),
+          Income_Empirical = sprintf("$\\$%d$k", round(100 * Income_Empirical))
+        ) |>
+        dplyr::mutate(
+          dplyr::across(
+            tidyselect::where(is.numeric),
+            function(x) {
+              sprintf("$%.2f\\%%$", 100 * x)
             }
           )
+        ) |>
+        x => {
+          first_row <- (
+            colnames(x) |>
+              stringr:::str_split("_") |>
+              purrr::map(purrr::pluck, 2, .default = "")
+          )
+          dplyr::bind_rows(
+            first_row |> rlang::set_names(colnames(x)),
+            x
+          )
+        } |>
+        dplyr::relocate(
+          Group,
+          HOwnR_Empirical,
+          HOwnR_Fitted,
+          HOwnR_SD,
+          Income_Empirical
+        ) |>
+        xtable::xtable(align = "rlrrrr|rrr") |>
+        x => save_tex(
+          x,
+          file.path(
+            OUTPUT_DIR,
+            "model_effect_cases",
+            stringr::str_c(
+              (
+                county |>
+                  remove_punct() |>
+                  stringr::str_replace_all(" ", "_")
+              ),
+              "_",
+              model_name,
+              ".tex"
+            )
+          ),
+          hline.after = c(-1, -1, 1, nrow(x)),
+          sanitize.text.function = I,
+          sanitize.colnames.function = function(y) {
+            y |>
+              stringr:::str_split("_") |>
+              purrr::map(purrr::pluck, 1)
+          }
+        )
       )
     }
   )
@@ -1262,32 +1272,32 @@ plot_model_residual_choropleth <- function(standardize = FALSE) {
         race = model_data[["race"]],
         residual = residual
       ) |>
-        dplyr::right_join(
-          id_data,
-          by = c("state", "county", "geoid", "race")
-        ) |>
-        join_with_shape() |>
-        plot_choropleth(
-          "residual",
-          outline = TRUE,
-          breaks = if (standardize) {
-            c(-2, -1, 0, 1, 2)
-          } else {
-            c(-0.1, -0.05, 0, 0.05, 0.1)
-          }
-        ) |>
-        save_tmap(
-          file.path(
-            OUTPUT_DIR,
-            "model_residuals",
-            stringr::str_c(
-              "model_residuals_",
-              model_name,
-              if (standardize) "_std" else "_raw",
-              ".png"
-            )
+      dplyr::right_join(
+        id_data,
+        by = c("state", "county", "geoid", "race")
+      ) |>
+      join_with_shape() |>
+      plot_choropleth(
+        "residual",
+        outline = TRUE,
+        breaks = if (standardize) {
+          c(-2, -1, 0, 1, 2)
+        } else {
+          c(-0.1, -0.05, 0, 0.05, 0.1)
+        }
+      ) |>
+      save_tmap(
+        file.path(
+          OUTPUT_DIR,
+          "model_residuals",
+          stringr::str_c(
+            "model_residuals_",
+            model_name,
+            if (standardize) "_std" else "_raw",
+            ".png"
           )
         )
+      )
     }
   )
 }
@@ -1367,26 +1377,26 @@ do_fitted_correlation <- function() {
   cor() |>
   x => {
     x |>
-      xtable::xtable() |>
-      save_tex(
-        file.path(
-          OUTPUT_DIR,
-          "fitted_correlation",
-          "fitted_correlation.tex"
-        ),
-        .include.rownames = TRUE
-      )
+    xtable::xtable() |>
+    save_tex(
+      file.path(
+        OUTPUT_DIR,
+        "fitted_correlation",
+        "fitted_correlation.tex"
+      ),
+      .include.rownames = TRUE
+    )
 
     x |>
-      tibble::as_tibble() |>
-      dplyr::mutate(model = rownames(x), .before = 1) |>
-      save_csv(
-        file.path(
-          OUTPUT_DIR,
-          "fitted_correlation",
-          "fitted_correlation.csv"
-        )
+    tibble::as_tibble() |>
+    dplyr::mutate(model = rownames(x), .before = 1) |>
+    save_csv(
+      file.path(
+        OUTPUT_DIR,
+        "fitted_correlation",
+        "fitted_correlation.csv"
       )
+    )
   }
 }
 

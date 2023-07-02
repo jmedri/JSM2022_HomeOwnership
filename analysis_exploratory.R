@@ -54,7 +54,7 @@ plot_choropleth <- function(
       replace(data[[fill_var]], data[[fill_var]] <= 0, NA)
     )
   }
-  tmap_out <-
+  tmap_out <- (
     tmap::tm_shape(data) +
     tmap::tm_fill(
       col = fill_var,
@@ -64,6 +64,7 @@ plot_choropleth <- function(
       legend.is.portrait = legend_portrait,
       palette = palette
     )
+  )
   if (outline) {
     tmap_out <- tmap_out + tmap::tm_borders()
   }
@@ -266,7 +267,7 @@ plot_histogram <- function(
   if (!is.null(facet_var)) {
     ggplot_out <- (
       ggplot_out +
-        ggplot2::facet_grid(rows = facet_var, scales = facet_scales)
+      ggplot2::facet_grid(rows = facet_var, scales = facet_scales)
     )
     if (!is.null(color_var) && (color_var == facet_var)) {
       ggplot_out <- ggplot_out + ggplot2::guides(fill = "none")
@@ -462,9 +463,17 @@ make_var_ranges_table <- function() {
     )
   ) |>
   dplyr::ungroup() |>
-  tibble::add_row(name = "housing_header", `Variable Name` = "\\textbf{Housing Variables}") |>
-  tibble::add_row(name = "sociodemographic_header", `Variable Name` = "\\textbf{Sociodemographic Variables}") |>
-  tibble::add_row(name = "survey_header", `Variable Name` = "\\textbf{Survey Variables}") |>
+  tibble::add_row(
+    name = "housing_header",
+    `Variable Name` = "\\textbf{Housing Variables}"
+  ) |>
+  tibble::add_row(
+    name = "sociodemographic_header",
+    `Variable Name` = "\\textbf{Sociodemographic Variables}"
+  ) |>
+  tibble::add_row(
+    name = "survey_header", `Variable Name` = "\\textbf{Survey Variables}"
+  ) |>
   dplyr::mutate(
     name = factor(
       name,
@@ -646,9 +655,7 @@ make_data_summary <- function() {
       by = c("race", "var"),
       suffix = c("_mean", "_sd")
     ) |>
-    dplyr::mutate(
-      var = factor(var)
-    ) |>
+    dplyr::mutate(var = factor(var)) |>
     dplyr::mutate(
       var = forcats::fct_recode(
         var,
@@ -860,13 +867,15 @@ do_binomial_model_analysis <- function() {
       cat(stringr::str_c(rep("-", 100), collapse = ""))
       cat("\n")
       cat("Linear residual Summary\n")
-      print(quantile(
-        (
-          (qlogis(model_data[["hom.own"]]) - predict(glm_out, type = "link")) |>
+      print(
+        quantile(
+          (
+            (qlogis(model_data[["hom.own"]]) - predict(glm_out, type = "link")) |>
             purrr::keep(is.finite)
-        ),
-        seq(0, 1, by = 0.1)
-      ))
+          ),
+          seq(0, 1, by = 0.1)
+        )
+      )
     },
     file_name = file.path(OUTPUT_EXPLORATORY_DIR, "binomial_analysis", "binomial_summary.txt")
   )
@@ -1158,12 +1167,11 @@ make_model_formula_table <- function() {
     stringr::str_split(" \\+ ") |>
     purrr::pluck(1) |>
     x => {
-      # groups <- rep(seq_len(length(x)), each = 3)[seq_len(length(x))]
       groups <- rep(1, length(x))
       if (
         stringr::str_detect(x[[length(x)]], "popshareratio") &&
-          stringr::str_detect(x[[length(x)]], "group") &&
-          (groups[[length(x) - 1]] == groups[[length(x)]])
+        stringr::str_detect(x[[length(x)]], "group") &&
+        (groups[[length(x) - 1]] == groups[[length(x)]])
       ) {
         groups[[length(x)]] <- groups[[length(x)]] + 1
       }
@@ -1184,18 +1192,15 @@ make_model_formula_table <- function() {
       if ("brmsformula" %in% class(formula_obj)) {
         main_formula <- (
           formula_obj[["formula"]] |>
-          # get_formula(reponse_name)
           get_formula(NULL)
         )
         phi_formula <- (
           formula_obj[["pforms"]][["phi"]] |>
-          # get_formula("\\phi")
           get_formula(NULL)
         )
       } else if ("formula" %in% class(formula_obj)) {
         main_formula <- (
           formula_obj |>
-          # get_formula(reponse_name)
           get_formula(NULL)
         )
         phi_formula <- NA
@@ -1216,9 +1221,9 @@ make_model_formula_table <- function() {
         `Proportion ($\\theta$)` = main_formula,
         `Precision ($\\phi$)` = phi_formula
       ) |>
-        purrr::map(function(x) stringr::str_c("$\\begin{aligned} ", x, " \\end{aligned}$")) |>
-        tibble::as_tibble() |>
-        x => dplyr::bind_cols(tibble::tibble(Model = model_name), x)
+      purrr::map(function(x) stringr::str_c("$\\begin{aligned} ", x, " \\end{aligned}$")) |>
+      tibble::as_tibble() |>
+      x => dplyr::bind_cols(tibble::tibble(Model = model_name), x)
     }
   ) |>
   dplyr::mutate(

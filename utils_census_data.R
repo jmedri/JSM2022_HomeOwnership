@@ -190,7 +190,7 @@ process_census_data_2_long <- function() {
               )
             }
             old_col_name <- names(data)[[col_index]]
-            col_data <-
+            col_data <- (
               list(
                 data = (
                   data |>
@@ -214,6 +214,7 @@ process_census_data_2_long <- function() {
                   )
                 )
               )
+            )
           }
         )
       }
@@ -248,24 +249,26 @@ process_census_data_3_wide <- function() {
   ) |>
   dplyr::mutate(dplyr::across(!c(State, County, GEO_ID, Group), as.numeric)) |>
   dplyr::nest_by(Group, .keep = TRUE) |>
-  purrr::pmap_dfr(function(Group, data) { # For combining the split columns for Total race
-    if (Group == "Total") {
-      data <- (
-        data |>
+  purrr::pmap_dfr(
+    function(Group, data) { # For combining the split columns for Total race
+      if (Group == "Total") {
+        data <- (
+          data |>
           dplyr::mutate(
             S1501.group.total = S1501.group.total.1 + S1501.group.total.2,
             S1501.group.HSt = (
               S1501.group.edu.1 +
-                S1501.group.edu.2 +
-                S1501.group.edu.3 +
-                S1501.group.edu.4
+              S1501.group.edu.2 +
+              S1501.group.edu.3 +
+              S1501.group.edu.4
             ),
             S1501.group.BSt = S1501.group.edu.3 + S1501.group.edu.5
           )
-      )
+        )
+      }
+      data
     }
-    data
-  }) |>
+  ) |>
   dplyr::select(
     !c(
       S1501.group.total.1,
@@ -279,7 +282,7 @@ process_census_data_3_wide <- function() {
   ) |>
   x => {
     x |>
-      dplyr::select(dplyr::all_of(sort(colnames(x))))
+    dplyr::select(dplyr::all_of(sort(colnames(x))))
   } |>
   dplyr::relocate(State, County, GEO_ID, Group) |>
   dplyr::arrange(State, County, Group) |>
@@ -287,7 +290,9 @@ process_census_data_3_wide <- function() {
 }
 
 check_old_new_data <- function() {
-  data_new <- readr::read_csv(file.path(INPUT_PROCESSED_DIR, "census_model", "3_wide", "data.csv"))
+  data_new <- readr::read_csv(
+    file.path(INPUT_PROCESSED_DIR, "census_model", "3_wide", "data.csv")
+  )
   data_old <- (
     readr::read_csv(file.path(INPUT_PROCESSED_DIR, "census_app", "data.csv")) |>
     dplyr::filter(Year == 2020) |>
@@ -301,12 +306,14 @@ check_old_new_data <- function() {
     dplyr::select(dplyr::all_of(common_columns)) |>
     tidyr::pivot_longer(!c(State, County, GEO_ID, Group)) |>
     dplyr::arrange(State, County, Group, name) |>
-    dplyr::mutate(dplyr::across(
-      dplyr::everything(),
-      function(v) {
-        ifelse(is.na(v), "", as.character(v))
-      }
-    ))
+    dplyr::mutate(
+      dplyr::across(
+        dplyr::everything(),
+        function(v) {
+          ifelse(is.na(v), "", as.character(v))
+        }
+      )
+    )
   }
   data_new <- make_longer(data_new)
   data_old <- make_longer(data_old)

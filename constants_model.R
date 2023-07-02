@@ -44,15 +44,15 @@ if (PRIOR_TYPE == "1") {
 PRIOR_BETA_BIN_1 <- (
   # This verision for there is a phi covariate.
   brms::set_prior(PRIOR_THETA_INTERCEPT, class = "Intercept") +
-    brms::set_prior(PRIOR_THETA_B, class = "b") +
-    brms::set_prior(PRIOR_PHI_INTERCEPT, class = "Intercept", dpar = "phi") +
-    brms::set_prior(PRIOR_PHI_B, class = "b", dpar = "phi")
+  brms::set_prior(PRIOR_THETA_B, class = "b") +
+  brms::set_prior(PRIOR_PHI_INTERCEPT, class = "Intercept", dpar = "phi") +
+  brms::set_prior(PRIOR_PHI_B, class = "b", dpar = "phi")
 )
 PRIOR_BETA_BIN_2 <- (
   # This version for when there is no phi covariate.
   brms::set_prior(PRIOR_THETA_INTERCEPT, class = "Intercept") +
-    brms::set_prior(PRIOR_THETA_B, class = "b") +
-    brms::set_prior(PRIOR_PHI_INTERCEPT, class = "Intercept", dpar = "phi")
+  brms::set_prior(PRIOR_THETA_B, class = "b") +
+  brms::set_prior(PRIOR_PHI_INTERCEPT, class = "Intercept", dpar = "phi")
 )
 
 RACES_MODEL <- c(
@@ -67,23 +67,25 @@ MODEL_INFO <- list(
   "0" = list(
     formula = (
       cbind(hom.own.count, size - hom.own.count) ~
-        state +
-        race +
-        edu.hs +
-        emp.ue +
-        inc.inc.trans
+      state +
+      race +
+      edu.hs +
+      emp.ue +
+      inc.inc.trans
     )
   ),
 
   # The base model
   "1" = list(
     formula = brms::bf(
-      hom.own.count | trials(size) ~
+      (
+        hom.own.count | trials(size) ~
         state +
         race +
         edu.hs +
         emp.ue +
-        inc.inc.trans,
+        inc.inc.trans
+      ),
       phi ~ hom.tot.log
     ),
     prior = PRIOR_BETA_BIN_1
@@ -92,12 +94,14 @@ MODEL_INFO <- list(
   # Model 1 with race interactions
   "2" = list(
     formula = brms::bf(
-      hom.own.count | trials(size) ~
+      (
+        hom.own.count | trials(size) ~
         state +
         race +
         edu.hs : race +
         emp.ue : race +
-        inc.inc.trans : race,
+        inc.inc.trans : race
+      ),
       phi ~ hom.tot.log
     ),
     prior = PRIOR_BETA_BIN_1
@@ -109,11 +113,13 @@ MODEL_INFO <- list(
   # significant in the opposite direction making the sum not significant.
   "3" = list(
     formula = brms::bf(
-      hom.own.count | trials(size) ~
+      (
+        hom.own.count | trials(size) ~
         state +
         race +
         edu.hs : race +
-        inc.inc.trans : race,
+        inc.inc.trans : race
+      ),
       phi ~ hom.tot.log
     ),
     prior = PRIOR_BETA_BIN_1
@@ -123,10 +129,12 @@ MODEL_INFO <- list(
   # negative association with home ownership.
   "4" = list(
     formula = brms::bf(
-      hom.own.count | trials(size) ~
+      (
+        hom.own.count | trials(size) ~
         state +
         race +
-        inc.inc.trans : race,
+        inc.inc.trans : race
+      ),
       phi ~ hom.tot.log
     ),
     prior = PRIOR_BETA_BIN_1
@@ -135,9 +143,11 @@ MODEL_INFO <- list(
   # Model 4 with inc.inc.trans removed to test for significance.
   "5" = list(
     formula = brms::bf(
-      hom.own.count | trials(size) ~
+      (
+        hom.own.count | trials(size) ~
         state +
-        race,
+        race
+      ),
       phi ~ hom.tot.log
     ),
     prior = PRIOR_BETA_BIN_1
@@ -146,9 +156,11 @@ MODEL_INFO <- list(
   # Model 4 with state removed to test for significance.
   "6" = list(
     formula = brms::bf(
-      hom.own.count | trials(size) ~
+      (
+        hom.own.count | trials(size) ~
         race +
-        inc.inc.trans : race,
+        inc.inc.trans : race
+      ),
       phi ~ hom.tot.log
     ),
     prior = PRIOR_BETA_BIN_1
@@ -157,10 +169,12 @@ MODEL_INFO <- list(
   # Model 4 with no interaction to test for significance.
   "7" = list(
     formula = brms::bf(
-      hom.own.count | trials(size) ~
+      (
+        hom.own.count | trials(size) ~
         state +
         race +
-        inc.inc.trans,
+        inc.inc.trans
+      ),
       phi ~ hom.tot.log
     ),
     prior = PRIOR_BETA_BIN_1
@@ -169,10 +183,12 @@ MODEL_INFO <- list(
   # Model 4 with hom.tot.log removed to test for significance.
   "8" = list(
     formula = brms::bf(
-      hom.own.count | trials(size) ~
+      (
+        hom.own.count | trials(size) ~
         state +
         race +
-        inc.inc.trans : race,
+        inc.inc.trans : race
+      ),
       phi ~ 1
     ),
     prior = PRIOR_BETA_BIN_2

@@ -2,10 +2,12 @@ sensitivity_analysis <- function() {
 
   # Make the RMSE and Pearson's R tables
   initialize(FINAL_PRIOR_TYPE, FALSE)
-  means_final <- load_model(FINAL_MODEL) |>
+  means_final <- (
+    load_model(FINAL_MODEL) |>
     brms::posterior_epred(ndraws = 4000) |>
     colMeans() |>
     x => x / MODEL_DATA[["size"]]
+  )
 
   purrr::map(
     PRIOR_TYPE_LIST,
@@ -16,10 +18,12 @@ sensitivity_analysis <- function() {
 
       initialize(prior_type, FALSE)
 
-      means <- load_model(FINAL_MODEL) |>
+      means <- (
+        load_model(FINAL_MODEL) |>
         brms::posterior_epred(ndraws = 4000) |>
         colMeans() |>
         x => x / MODEL_DATA[["size"]]
+      )
 
       tibble::tibble(
         prior_type = prior_type,
