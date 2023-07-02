@@ -30,12 +30,14 @@ initialize <- function(
   source("analysis_exploratory_app.R")
   source("analysis_model.R")
   source("analysis_sensitivity.R")
+  source("plot_prediction_old.R")
 
   # Load data
   load_shape_data()
   load_census_data()
   load_model_data()
   load_app_data()
+  load_state_data_old()
 
   options(scipen = 999) # Turn off scientific notation
 }

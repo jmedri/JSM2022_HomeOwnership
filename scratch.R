@@ -182,3 +182,50 @@ plot_prediction(
   data = MODEL_DATA,
   new_data = list(inc.inc = 30000)
 )
+
+purrr::walk(
+  c(
+    # "model_bay_betabin.RDS",
+    # "model_bay_gaus.RDS",
+    # "model_mle_bin.RDS",
+    "model_mle_gaus.RDS"
+  ),
+  function(x) {
+    model <- readRDS(file.path("data", "input", x))
+    save_rds(model[["model"]], file.path("data", "input", paste0(x, ".2")))
+  }
+)
+
+readRDS("data/input/model_bay_betabin.RDS")[["model"]][["data"]] |> names()
+readRDS("data/input/model_bay_betabin.RDS")[["data"]] -> xxx
+read_csv("tmp.csv") -> yyy
+yyy |> names()
+xxx |> names()
+setdiff(yyy |> names(), xxx |> names())
+setdiff(xxx |> names(), yyy |> names())
+
+
+readRDS("data/input/model_bay_betabin.RDS") -> yyy
+readRDS("data/input/model_bay_gaus.RDS") -> yyy
+readRDS("data/input/model_mle_gaus.RDS") -> yyy
+readRDS("data/input/model_mle_bin.RDS") -> yyy
+
+ncol(yyy$data)
+names(yyy$data)
+
+prepare_model_data(yyy$data) |> ncol()
+
+yyy$data
+names(yyy$data)
+
+yyy$model
+names(yyy$data)
+yyy$formula
+yyy$vars
+
+yyy$formula_str
+cbind(yyy$data$weights, yyy$data$hom.tot)
+
+yyy$model
+yyy$data
+ncol(yyy$data)

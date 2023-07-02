@@ -526,8 +526,8 @@ APP_UI <- shiny::bootstrapPage(
           shiny::radioButtons(
             "pm2_sp",
             "Separate Plots?",
-            choices = c("Yes", "No"),
-            selected = "No",
+            choices = c("Yes" = TRUE, "No" = FALSE),
+            selected = FALSE,
             inline = TRUE
           ),
           #5.1.10 Include Action Button
@@ -541,7 +541,7 @@ APP_UI <- shiny::bootstrapPage(
         shiny::mainPanel(
           shiny::fluidRow(
             shiny::plotOutput(
-              outputId = "pmplot2",
+              outputId = "pm2plot",
               height = 600
             )
           )
@@ -641,6 +641,23 @@ APP_SERVER <- function(input, output) {
         title = "Predicted values for selected model"
       )
     )
+  })
+  output$pm2plot <-
+    renderPlot({
+      if (input$pm2go == 0) return("")
+      isolate(
+        plot_prediction_app_old(
+          model_which = input$pm2_model,
+          race = input$pm2_races,
+          state = input$pm2_st,
+          edu.hs = input$pm2_hs,
+          emp.ue = input$pm2_ue,
+          inc.inc = input$pm2_inc,
+          val.hom = input$pm2_val,
+          separate_y = as.logical(input$pm2_sp),
+          title = "Predicted values for selected model"
+      )
+    )  
   })
   #Close Server Bracket
 }
