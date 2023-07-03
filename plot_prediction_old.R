@@ -156,7 +156,7 @@ plot_prediction_old <- function(
         pred_draws,
         ggplot2::aes(x = value * 100, y = race, fill = race, color = race)
       ) +
-      ggplot2::ylab("Race")
+      ggplot2::ylab("Group")
     )
   } else {
     ggplot_out <- (
@@ -205,7 +205,8 @@ plot_prediction_old <- function(
     ggplot_out +
     ggplot2::scale_discrete_manual(
       values = RACE_COLORS_OLD,
-      aesthetics = c("fill", "color")
+      aesthetics = c("fill", "color"),
+      name = "Group"
     )
   )
 

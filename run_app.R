@@ -634,10 +634,10 @@ APP_SERVER <- function(input, output) {
         model_name = input$pm_model,
         race = input$pm_groups,
         state = input$pm_st,
-        HS = as.numeric(input$pm_hs),
-        UE = as.numeric(input$pm_ue),
-        Inc = as.numeric(input$pm_inc),
-        HTot = as.numeric(input$pm_htot),
+        HS = if (is.na(as.numeric(input$pm_hs))) NULL else as.numeric(input$pm_hs),
+        UE = if (is.na(as.numeric(input$pm_ue))) NULL else as.numeric(input$pm_ue),
+        Inc = if (is.na(as.numeric(input$pm_inc))) NULL else as.numeric(input$pm_inc),
+        HTot = if (is.na(as.numeric(input$pm_htot))) NULL else as.numeric(input$pm_htot),
         separate_y = as.logical(input$pm_sp),
         title = "Predicted values for selected model"
       )
@@ -652,11 +652,11 @@ APP_SERVER <- function(input, output) {
           race = input$pm2_races,
           state = input$pm2_st,
           year = if (input$pm2_y == "All") "All" else as.integer(input$pm2_y),
-          edu.hs = as.numeric(input$pm2_hs),
-          emp.ue = as.numeric(input$pm2_ue),
-          inc.inc = as.numeric(input$pm2_inc),
-          val.hom = as.numeric(input$pm2_val),
-          pop.share.ratio = as.numeric(input$pm2_psr),
+          edu.hs = if (is.na(as.numeric(input$pm2_hs))) NULL else as.numeric(input$pm2_hs),
+          emp.ue = if (is.na(as.numeric(input$pm2_ue))) NULL else as.numeric(input$pm2_ue),
+          inc.inc = if (is.na(as.numeric(input$pm2_inc))) NULL else as.numeric(input$pm2_inc),
+          val.hom = if (is.na(as.numeric(input$pm2_val))) NULL else as.numeric(input$pm2_val),
+          pop.share.ratio = if (is.na(as.numeric(input$pm2_psr))) NULL else as.numeric(input$pm2_psr),
           separate_y = as.logical(input$pm2_sp),
           title = "Predicted values for selected model"
       )

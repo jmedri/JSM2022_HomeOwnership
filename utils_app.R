@@ -2518,7 +2518,7 @@ plot_prediction <- function(
           slab_color = race
         )
       ) +
-      ggplot2::ylab("Race")
+      ggplot2::ylab("Group")
     )
   } else {
     ggplot_out <- (
