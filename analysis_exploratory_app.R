@@ -1,7 +1,7 @@
 do_all_exploratory_analyses_app <- function() {
-  #Exporting plots to Article (County data)
+  # Exporting plots to Article (County data)
 
-  #Scatterplot of NY (not broken by race)
+  # Scatterplot of NY (not broken by race)
   (
     plot_app(
       area = "County",
@@ -27,7 +27,7 @@ do_all_exploratory_analyses_app <- function() {
     dpi = 300
   )
 
-  #Scatterplot of NY (broken by race)
+  # Scatterplot of NY (broken by race)
   (
     plot_app(
       area = "County",
@@ -52,7 +52,7 @@ do_all_exploratory_analyses_app <- function() {
     dpi = 300
   )
 
-  #Boxplots of homeownership that shows differences between races
+  # Boxplots of homeownership that shows differences between races
   plot_app(
     area = "County",
     Group1 = "WhiteNH", 
@@ -69,7 +69,7 @@ do_all_exploratory_analyses_app <- function() {
     dpi = 300
   )
 
-  #Choropleth of homeownership (greens)
+  # Choropleth of homeownership (greens)
   plot_choropleth_app(
     col_pal = "Greens",
     Group1 = "Total",
@@ -83,7 +83,7 @@ do_all_exploratory_analyses_app <- function() {
     dpi = 300
   )
 
-  #Choropleth of homeownership (grays)
+  # Choropleth of homeownership (grays)
   plot_choropleth_app(
     col_pal = "Greys",
     Group1 = "Total",

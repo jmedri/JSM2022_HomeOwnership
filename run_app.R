@@ -1,4 +1,4 @@
-#Define Libraries and Set Working Directory
+# Define Libraries and Set Working Directory
 library(shiny)
 library(shinythemes)
 library(shinyWidgets)
@@ -10,9 +10,9 @@ packageVersion("shinyWidgets")
 source("initialize.R")
 initialize()
 
-#Define UI
+# Define UI
 APP_UI <- shiny::bootstrapPage(
-  #Define Theme
+  # Define Theme
   shiny::navbarPage(
     theme = shinythemes::shinytheme("flatly"),
     "U.S. Home Ownership Visualizations",
@@ -39,7 +39,7 @@ APP_UI <- shiny::bootstrapPage(
               choices = STATES_APP
             )
           ),
-          # 1.1.2 Specify year            
+          # 1.1.2 Specify year
           shiny::radioButtons(
             "bp_y",
             "Years",
@@ -55,7 +55,7 @@ APP_UI <- shiny::bootstrapPage(
             selected = FALSE,
             inline = TRUE
           ),
-          #1.1.4 Specify Variable y
+          # 1.1.4 Specify Variable y
           shinyWidgets::pickerInput(
             "bp_var",
             "Variable:",
@@ -86,7 +86,7 @@ APP_UI <- shiny::bootstrapPage(
             choices = RACES_APP,
             selected = "None"
           ),
-          #1.1.6 Include Action Button
+          # 1.1.6 Include Action Button
           shiny::actionButton(
             "bpgo",
             "Click here to Plot",
@@ -126,7 +126,7 @@ APP_UI <- shiny::bootstrapPage(
               choices = STATES_APP
             )
           ),
-          # 2.1.2 Specify year            
+          # 2.1.2 Specify year
           shiny::radioButtons(
             "sc_y",
             "Years",
@@ -141,21 +141,21 @@ APP_UI <- shiny::bootstrapPage(
             choices = SMOOTHERS_APP,
             selected = "loess"
           ),
-          #2.1.4 Specify Variable y
+          # 2.1.4 Specify Variable y
           shinyWidgets::pickerInput(
             "sc_vary",
             "Variable y:",
             choices = VARS_APP,
             selected = "Own"
           ),
-          #2.1.5 Specify Variable x
+          # 2.1.5 Specify Variable x
           shinyWidgets::pickerInput(
             "sc_varx",
             "Variable x:",
             choices = VARS_APP,
             selected = "Inc"
           ),
-          #2.1.6.1 Conditional Groups
+          # 2.1.6.1 Conditional Groups
           shinyWidgets::pickerInput(
             "sc.gr_1",
             "Racial/Ethnic Group 1:",
@@ -180,7 +180,7 @@ APP_UI <- shiny::bootstrapPage(
             choices = RACES_APP,
             selected = "None"
           ),
-          #2.1.7 Include Action Button
+          # 2.1.7 Include Action Button
           shiny::actionButton(
             "scgo",
             "Click here to Plot",
@@ -219,15 +219,15 @@ APP_UI <- shiny::bootstrapPage(
               selected = "All",
               choices = STATES_APP
             )
-          ),      
-          #3.1.2 Specify Variable
+          ),
+          # 3.1.2 Specify Variable
           shinyWidgets::pickerInput(
             "ts_var",
             "Variable:",
             choices = VARS_APP,
             selected = "Own"
           ),
-          #3.1.3.1 Conditional Groups
+          # 3.1.3.1 Conditional Groups
           shinyWidgets::pickerInput(
             "ts.gr_1",
             "Racial/Ethnic Group 1:",
@@ -252,7 +252,7 @@ APP_UI <- shiny::bootstrapPage(
             choices = RACES_APP,
             selected = "None"
           ),
-          #3.1.4 Include Action Button
+          # 3.1.4 Include Action Button
           shiny::actionButton(
             "tsgo",
             "Click here to Plot",
@@ -292,14 +292,14 @@ APP_UI <- shiny::bootstrapPage(
               choices = STATES_APP
             )
           ),
-          # 4.1.2 Specify year            
+          # 4.1.2 Specify year
           shiny::radioButtons(
             "ch_y",
             "Years",
             choices = YEARS,
             inline = TRUE
           ),
-          #4.1.3 Specify Variable
+          # 4.1.3 Specify Variable
           shinyWidgets::pickerInput(
             "ch_var",
             "Variable:",
@@ -338,7 +338,7 @@ APP_UI <- shiny::bootstrapPage(
             choices = RACES_APP,
             selected = "None"
           ),
-          #1.1.6 Include Action Button
+          # 1.1.6 Include Action Button
           shiny::actionButton(
             "chgo",
             "Click here to Plot",
@@ -361,7 +361,7 @@ APP_UI <- shiny::bootstrapPage(
       "Predictive Models",
       shiny::sidebarLayout(
         shiny::sidebarPanel(
-          #5.1.1 Model Type
+          # 5.1.1 Model Type
           shiny::tags$div(
             shinyWidgets::pickerInput(
               "pm_model",
@@ -371,14 +371,14 @@ APP_UI <- shiny::bootstrapPage(
             ),
             style = "display:inline-block"
           ),
-          #5.1.2 Select Race
+          # 5.1.2 Select Race
           shiny::checkboxGroupInput(
             "pm_groups",
             "Select Racial/Ethnic Group(s):",
             choices = RACES_MODEL_APP,
             selected = RACES_MODEL_APP
           ),
-          #5.1.3 Input State
+          # 5.1.3 Input State
           shiny::tags$div(
             shinyWidgets::pickerInput(
               "pm_st",
@@ -388,7 +388,7 @@ APP_UI <- shiny::bootstrapPage(
             ),
             style = "display:inline-block"
           ),
-          #5.1.5 Input High School
+          # 5.1.5 Input High School
           shiny::conditionalPanel(
             condition = paste0(MODEL_VARS_JS_APP, "[input.pm_model].includes('hs')"),
             shiny::numericInput(
@@ -397,7 +397,7 @@ APP_UI <- shiny::bootstrapPage(
               value = 90
             )
           ),
-          #5.1.6 Input Unemployment
+          # 5.1.6 Input Unemployment
           shiny::conditionalPanel(
             condition = paste0(MODEL_VARS_JS_APP, "[input.pm_model].includes('ue')"),
             shiny::numericInput(
@@ -406,7 +406,7 @@ APP_UI <- shiny::bootstrapPage(
               value = 5
             )
           ),
-          #5.1.7 Input Income
+          # 5.1.7 Input Income
           shiny::conditionalPanel(
             condition = paste0(MODEL_VARS_JS_APP, "[input.pm_model].includes('inc')"),
             shiny::numericInput(
@@ -415,7 +415,7 @@ APP_UI <- shiny::bootstrapPage(
               value = 60000
             )
           ),
-          #5.1.8 Input Population
+          # 5.1.8 Input Population
           shiny::conditionalPanel(
             condition = paste0(MODEL_VARS_JS_APP, "[input.pm_model].includes('tot')"),
             shiny::numericInput(
@@ -424,7 +424,7 @@ APP_UI <- shiny::bootstrapPage(
               value = 10000
             )
           ),
-          #5.1.10 Not Overlaid
+          # 5.1.10 Not Overlaid
           shiny::radioButtons(
             "pm_sp",
             "Separate Plots?",
@@ -432,14 +432,14 @@ APP_UI <- shiny::bootstrapPage(
             selected = FALSE,
             inline = TRUE
           ),
-          #5.1.10 Include Action Button
+          # 5.1.10 Include Action Button
           shiny::actionButton(
             "pmgo",
             "Click here to Plot",
             style = "background-color: #2d3e50"
           )
         ),
-        #5.2 Plot
+        # 5.2 Plot
         shiny::mainPanel(
           shiny::fluidRow(
             shiny::plotOutput(
@@ -454,7 +454,7 @@ APP_UI <- shiny::bootstrapPage(
       "Predictive Models (JSM 2022)",
       shiny::sidebarLayout(
         shiny::sidebarPanel(
-          #5.1.1 Model Type
+          # 5.1.1 Model Type
           shiny::radioButtons(
             "pm2_model",
             "Model Type:",
@@ -465,7 +465,7 @@ APP_UI <- shiny::bootstrapPage(
               "Bayesian Beta Binomial" = "bay_betabin"
             )
           ),
-          #5.1.2 Select Race
+          # 5.1.2 Select Race
           shiny::checkboxGroupInput(
             "pm2_races",
             "Select Racial/Ethnic Group(s):",
@@ -473,7 +473,7 @@ APP_UI <- shiny::bootstrapPage(
             selected = c("White", "Black", "Asian"),
             inline = TRUE
           ),
-          #5.1.3 Input State
+          # 5.1.3 Input State
           shiny::tags$div(
             shinyWidgets::pickerInput(
               "pm2_st",
@@ -483,46 +483,47 @@ APP_UI <- shiny::bootstrapPage(
             ),
             style = "display:inline-block"
           ),
-          #5.1.4 Input Year
+          # 5.1.4 Input Year
           shiny::tags$div(
-            shiny::numericInput(
+            shiny::radioButtons(
               "pm2_y",
               "Input Year:",
-              value = 2021
-            ),
-            style = "display:inline-block"
+              selected = "All",
+              choices = c("All", as.character(YEARS)),
+              inline = TRUE
+            )
           ),
-          #5.1.5 Input High School
+          # 5.1.5 Input High School
           shiny::numericInput(
             "pm2_hs",
             "Input High School Completion % in State:",
             value = 90
           ),
-          #5.1.6 Input Unemployment
+          # 5.1.6 Input Unemployment
           shiny::numericInput(
             "pm2_ue",
             "Input Unemployment % in State:",
             value = 5
           ),
-          #5.1.7 Input Income
+          # 5.1.7 Input Income
           shiny::numericInput(
             "pm2_inc",
             "Input Household Annual Income US$:",
             value = 60000
           ),
-          #5.1.8 Input Home Value
+          # 5.1.8 Input Home Value
           shiny::numericInput(
             "pm2_val",
             "Input Home Value US$:",
             value = 200000
           ),
-          #5.1.9 Input Population Share %
+          # 5.1.9 Input Population Share %
           shiny::numericInput(
             "pm2_psr",
             "Input Race Population Share Ratio %:",
             value = 100
           ),
-          #5.1.10 Not Overlaid
+          # 5.1.10 Not Overlaid
           shiny::radioButtons(
             "pm2_sp",
             "Separate Plots?",
@@ -530,14 +531,14 @@ APP_UI <- shiny::bootstrapPage(
             selected = FALSE,
             inline = TRUE
           ),
-          #5.1.10 Include Action Button
+          # 5.1.10 Include Action Button
           shiny::actionButton(
             "pm2go",
             "Click here to Plot",
             style = "background-color: #2d3e50"
           )
         ),
-        #5.2 Plot
+        # 5.2 Plot
         shiny::mainPanel(
           shiny::fluidRow(
             shiny::plotOutput(
@@ -550,11 +551,11 @@ APP_UI <- shiny::bootstrapPage(
     )
   )
 )
-#Close UI
+# Close UI
 
-#Define Server
+# Define Server
 APP_SERVER <- function(input, output) {
-  #2.1 Box Plot Output
+  # 2.1 Box Plot Output
   output$boxplot <- shiny::renderPlot({
     if (input$bpgo == 0) return ("")
     shiny::isolate(
@@ -572,7 +573,7 @@ APP_SERVER <- function(input, output) {
       )
     )
   })
-  #2.2 Scatter Plot Output
+  # 2.2 Scatter Plot Output
   output$scatterplot <- shiny::renderPlot({
     if (input$scgo == 0) return("")
     shiny::isolate(
@@ -591,7 +592,7 @@ APP_SERVER <- function(input, output) {
       )
     )
   })
-  #2.3 Time Series Plot Output
+  # 2.3 Time Series Plot Output
   output$tseries <- shiny::renderPlot({
     if (input$tsgo == 0) return("")
     shiny::isolate(
@@ -607,7 +608,7 @@ APP_SERVER <- function(input, output) {
       )
     )
   })
-  #2.4 Choropleth Maps Output
+  # 2.4 Choropleth Maps Output
   output$choropleths <- shiny::renderPlot({
     if (input$chgo == 0) return("")
     shiny::isolate(
@@ -625,7 +626,7 @@ APP_SERVER <- function(input, output) {
       )
     )
   })
-  #2.5 Predictive Models Output
+  # 2.5 Predictive Models Output
   output$pmplot <- shiny::renderPlot({
     if (input$pmgo == 0) return("")
     shiny::isolate(
@@ -650,18 +651,19 @@ APP_SERVER <- function(input, output) {
           model_which = input$pm2_model,
           race = input$pm2_races,
           state = input$pm2_st,
-          edu.hs = input$pm2_hs,
-          emp.ue = input$pm2_ue,
-          inc.inc = input$pm2_inc,
-          val.hom = input$pm2_val,
-          pop.share.ratio = input$pm2_psr,
+          year = if (input$pm2_y == "All") "All" else as.integer(input$pm2_y),
+          edu.hs = as.numeric(input$pm2_hs),
+          emp.ue = as.numeric(input$pm2_ue),
+          inc.inc = as.numeric(input$pm2_inc),
+          val.hom = as.numeric(input$pm2_val),
+          pop.share.ratio = as.numeric(input$pm2_psr),
           separate_y = as.logical(input$pm2_sp),
           title = "Predicted values for selected model"
       )
-    )  
+    )
   })
-  #Close Server Bracket
+  # Close Server Bracket
 }
 
-#Launch App
+# Launch App
 shiny::shinyApp(APP_UI, APP_SERVER)

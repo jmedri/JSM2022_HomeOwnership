@@ -73,17 +73,17 @@ process_app_housing_data <- function(Table = "S2501", Year = 2020) {
     c(
       "GEO_ID", "NAME",
       "S2503_C02_001E",
-      #Income,,
+      # Income
       "S2503_C02_002E", "S2503_C02_003E", "S2503_C02_004E",
       "S2503_C02_005E", "S2503_C02_006E", "S2503_C02_007E",
       "S2503_C02_008E", "S2503_C02_009E", "S2503_C02_010E",
       "S2503_C02_011E", "S2503_C02_012E", "S2503_C02_013E",
-      #Housing Costs,
+      # Housing Costs
       "S2503_C02_014E", "S2503_C02_015E", "S2503_C02_016E",
       "S2503_C02_017E", "S2503_C02_018E", "S2503_C02_019E",
       "S2503_C02_020E", "S2503_C02_021E", "S2503_C02_022E",
       "S2503_C02_023E", "S2503_C02_024E",
-      #Housing Costs Percentage,
+      # Housing Costs Percentage
       "S2503_C02_026E", "S2503_C02_027E", "S2503_C02_028E",
       "S2503_C02_030E", "S2503_C02_031E", "S2503_C02_032E",
       "S2503_C02_034E", "S2503_C02_035E", "S2503_C02_036E",
@@ -94,17 +94,17 @@ process_app_housing_data <- function(Table = "S2501", Year = 2020) {
     c(
       "GEO_ID", "NAME",
       "S2503_C04_001E",
-      #Income,,
+      # Income
       "S2503_C04_002E", "S2503_C04_003E", "S2503_C04_004E",
       "S2503_C04_005E", "S2503_C04_006E", "S2503_C04_007E",
       "S2503_C04_008E", "S2503_C04_009E", "S2503_C04_010E",
       "S2503_C04_011E", "S2503_C04_012E", "S2503_C04_013E",
-      #Housing Costs,
+      # Housing Costs
       "S2503_C04_014E", "S2503_C04_015E", "S2503_C04_016E",
       "S2503_C04_017E", "S2503_C04_018E", "S2503_C04_019E",
       "S2503_C04_020E", "S2503_C04_021E", "S2503_C04_022E",
       "S2503_C04_023E", "S2503_C04_024E",
-      #Housing Costs Percentage,
+      # Housing Costs Percentage
       "S2503_C04_026E", "S2503_C04_027E", "S2503_C04_028E",
       "S2503_C04_030E", "S2503_C04_031E", "S2503_C04_032E",
       "S2503_C04_034E", "S2503_C04_035E", "S2503_C04_036E",
@@ -115,24 +115,24 @@ process_app_housing_data <- function(Table = "S2501", Year = 2020) {
     c(
       "GEO_ID", "NAME",
       "S2504_C02_001E",
-      #Units
+      # Units
       "S2504_C02_002E", "S2504_C02_003E", "S2504_C02_004E", "S2504_C02_005E",
       "S2504_C02_006E", "S2504_C02_007E", "S2504_C02_008E",
-      #Year Built
+      # Year Built
       "S2504_C02_009E", "S2504_C02_010E", "S2504_C02_011E", "S2504_C02_012E",
       "S2504_C02_013E", "S2504_C02_014E", "S2504_C02_015E",
-      #Rooms
+      # Rooms
       "S2504_C02_016E", "S2504_C02_017E", "S2504_C02_018E", "S2504_C02_019E",
       "S2504_C02_020E",
-      #Bedrooms
+      # Bedrooms
       "S2504_C02_021E", "S2504_C02_022E", "S2504_C02_023E", "S2504_C02_024E",
-      #Facilities
+      # Facilities
       "S2504_C02_025E", "S2504_C02_026E",
-      #Vehicle
+      # Vehicle
       "S2504_C02_027E", "S2504_C02_028E", "S2504_C02_029E", "S2504_C02_030E",
-      #Telephone
+      # Telephone
       "S2504_C02_031E",
-      #Fuel
+      # Fuel
       "S2504_C02_032E", "S2504_C02_033E", "S2504_C02_034E", "S2504_C02_035E",
       "S2504_C02_036E", "S2504_C02_037E", "S2504_C02_038E"
     )
@@ -140,24 +140,24 @@ process_app_housing_data <- function(Table = "S2501", Year = 2020) {
     c(
       "GEO_ID", "NAME",
       "S2504_C04_001E",
-      #Units
+      # Units
       "S2504_C04_002E", "S2504_C04_003E", "S2504_C04_004E", "S2504_C04_005E",
       "S2504_C04_006E", "S2504_C04_007E", "S2504_C04_008E",
-      #Year Built
+      # Year Built
       "S2504_C04_009E", "S2504_C04_010E", "S2504_C04_011E", "S2504_C04_012E",
       "S2504_C04_013E", "S2504_C04_014E", "S2504_C04_015E",
-      #Rooms
+      # Rooms
       "S2504_C04_016E", "S2504_C04_017E", "S2504_C04_018E", "S2504_C04_019E",
       "S2504_C04_020E",
-      #Bedrooms
+      # Bedrooms
       "S2504_C04_021E", "S2504_C04_022E", "S2504_C04_023E", "S2504_C04_024E",
-      #Facilities
+      # Facilities
       "S2504_C04_025E", "S2504_C04_026E",
-      #Vehicle
+      # Vehicle
       "S2504_C04_027E", "S2504_C04_028E", "S2504_C04_029E", "S2504_C04_030E",
-      #Telephone
+      # Telephone
       "S2504_C04_031E",
-      #Fuel
+      # Fuel
       "S2504_C04_032E", "S2504_C04_033E", "S2504_C04_034E", "S2504_C04_035E",
       "S2504_C04_036E", "S2504_C04_037E", "S2504_C04_038E"
     )
@@ -165,31 +165,31 @@ process_app_housing_data <- function(Table = "S2501", Year = 2020) {
     c(
       "GEO_ID", "NAME",
       "S2506_C01_001E",
-      #Value
+      # Value
       "S2506_C01_002E", "S2506_C01_003E", "S2506_C01_004E",
       "S2506_C01_005E", "S2506_C01_006E", "S2506_C01_007E",
       "S2506_C01_008E", "S2506_C01_009E",
-      #Status
+      # Status
       "S2506_C01_011E", "S2506_C01_012E",
       "S2506_C01_013E", "S2506_C01_014E",
-      #Income (12 months)
+      # Income (12 months)
       "S2506_C01_015E", "S2506_C01_016E", "S2506_C01_017E",
       "S2506_C01_018E", "S2506_C01_019E", "S2506_C01_020E",
       "S2506_C01_021E", "S2506_C01_022E", "S2506_C01_023E",
-      #Ratio
+      # Ratio
       "S2506_C01_024E", "S2506_C01_025E",
       "S2506_C01_026E", "S2506_C01_027E",
-      #Housing Costs
+      # Housing Costs
       "S2506_C01_029E", "S2506_C01_030E", "S2506_C01_031E", "S2506_C01_032E",
       "S2506_C01_033E", "S2506_C01_034E", "S2506_C01_035E", "S2506_C01_036E",
       "S2506_C01_037E", "S2506_C01_038E", "S2506_C01_039E",
-      #Housing Costs percentage
+      # Housing Costs percentage
       "S2506_C01_041E", "S2506_C01_042E", "S2506_C01_043E",
       "S2506_C01_045E", "S2506_C01_046E", "S2506_C01_047E",
       "S2506_C01_049E", "S2506_C01_050E", "S2506_C01_051E",
       "S2506_C01_053E", "S2506_C01_054E", "S2506_C01_055E",
       "S2506_C01_057E", "S2506_C01_058E", "S2506_C01_059E",
-      #Real State Taxes
+      # Real State Taxes
       "S2506_C01_061E", "S2506_C01_062E", "S2506_C01_063E",
       "S2506_C01_064E", "S2506_C01_065E"
     )
@@ -197,31 +197,31 @@ process_app_housing_data <- function(Table = "S2501", Year = 2020) {
     c(
       "GEO_ID", "NAME",
       "S2506_C02_001E",
-      #Value
+      # Value
       "S2506_C02_002E", "S2506_C02_003E", "S2506_C02_004E",
       "S2506_C02_005E", "S2506_C02_006E", "S2506_C02_007E",
       "S2506_C02_008E", "S2506_C02_009E",
-      #Status
+      # Status
       "S2506_C02_011E", "S2506_C02_012E",
       "S2506_C02_013E", "S2506_C02_014E",
-      #Income (12 months)
+      # Income (12 months)
       "S2506_C02_015E", "S2506_C02_016E", "S2506_C02_017E",
       "S2506_C02_018E", "S2506_C02_019E", "S2506_C02_020E",
       "S2506_C02_021E", "S2506_C02_022E", "S2506_C02_023E",
-      #Ratio
+      # Ratio
       "S2506_C02_024E", "S2506_C02_025E",
       "S2506_C02_026E", "S2506_C02_027E",
-      #Housing Costs
+      # Housing Costs
       "S2506_C02_029E", "S2506_C02_030E", "S2506_C02_031E", "S2506_C02_032E",
       "S2506_C02_033E", "S2506_C02_034E", "S2506_C02_035E", "S2506_C02_036E",
       "S2506_C02_037E", "S2506_C02_038E", "S2506_C02_039E",
-      #Housing Costs percentage
+      # Housing Costs percentage
       "S2506_C02_041E", "S2506_C02_042E", "S2506_C02_043E",
       "S2506_C02_045E", "S2506_C02_046E", "S2506_C02_047E",
       "S2506_C02_049E", "S2506_C02_050E", "S2506_C02_051E",
       "S2506_C02_053E", "S2506_C02_054E", "S2506_C02_055E",
       "S2506_C02_057E", "S2506_C02_058E", "S2506_C02_059E",
-      #Real State Taxes
+      # Real State Taxes
       "S2506_C02_061E", "S2506_C02_062E", "S2506_C02_063E",
       "S2506_C02_064E", "S2506_C02_065E"
     )
@@ -229,31 +229,31 @@ process_app_housing_data <- function(Table = "S2501", Year = 2020) {
     c(
       "GEO_ID", "NAME",
       "S2506_C02_001E",
-      #Value
+      # Value
       "S2506_C02_002E", "S2506_C02_003E", "S2506_C02_004E",
       "S2506_C02_005E", "S2506_C02_006E", "S2506_C02_007E",
       "S2506_C02_008E", "S2506_C02_009E",
-      #Status
+      # Status
       "S2506_C02_011E", "S2506_C02_012E",
       "S2506_C02_013E", "S2506_C02_014E",
-      #Income (12 months)
+      # Income (12 months)
       "S2506_C02_016E", "S2506_C02_017E", "S2506_C02_018E",
       "S2506_C02_019E", "S2506_C02_020E", "S2506_C02_021E",
       "S2506_C02_022E", "S2506_C02_023E", "S2506_C02_024E",
-      #Ratio
+      # Ratio
       "S2506_C02_025E", "S2506_C02_026E",
       "S2506_C02_027E", "S2506_C02_028E",
-      #Housing Costs
+      # Housing Costs
       "S2506_C02_030E", "S2506_C02_031E", "S2506_C02_032E", "S2506_C02_033E",
       "S2506_C02_034E", "S2506_C02_035E", "S2506_C02_036E", "S2506_C02_037E",
       "S2506_C02_038E", "S2506_C02_039E", "S2506_C02_040E",
-      #Housing Costs percentage
+      # Housing Costs percentage
       "S2506_C02_042E", "S2506_C02_043E", "S2506_C02_044E",
       "S2506_C02_046E", "S2506_C02_047E", "S2506_C02_048E",
       "S2506_C02_050E", "S2506_C02_051E", "S2506_C02_052E",
       "S2506_C02_054E", "S2506_C02_055E", "S2506_C02_056E",
       "S2506_C02_058E", "S2506_C02_059E", "S2506_C02_060E",
-      #Real State Taxes
+      # Real State Taxes
       "S2506_C02_062E", "S2506_C02_063E", "S2506_C02_064E",
       "S2506_C02_065E", "S2506_C02_066E"
     )
@@ -261,27 +261,27 @@ process_app_housing_data <- function(Table = "S2501", Year = 2020) {
     c(
       "GEO_ID", "NAME",
       "S2507_C01_001E",
-      #Value
+      # Value
       "S2507_C01_002E", "S2507_C01_003E", "S2507_C01_004E",
       "S2507_C01_005E", "S2507_C01_006E", "S2507_C01_007E",
       "S2507_C01_008E", "S2507_C01_009E", "S2507_C01_010E",
-      #Income (12 months)
+      # Income (12 months)
       "S2507_C01_011E", "S2507_C01_012E", "S2507_C01_013E",
       "S2507_C01_014E", "S2507_C01_015E", "S2507_C01_016E",
       "S2507_C01_017E", "S2507_C01_018E", "S2507_C01_019E",
-      #Ratio
+      # Ratio
       "S2507_C01_020E", "S2507_C01_021E",
       "S2507_C01_022E", "S2507_C01_023E",
-      #Housing Costs
+      # Housing Costs
       "S2507_C01_025E", "S2507_C01_026E", "S2507_C01_027E", "S2507_C01_028E",
       "S2507_C01_029E", "S2507_C01_030E", "S2507_C01_031E", "S2507_C01_032E",
-      #Housing Costs percentage
+      # Housing Costs percentage
       "S2507_C01_034E", "S2507_C01_035E", "S2507_C01_036E",
       "S2507_C01_038E", "S2507_C01_039E", "S2507_C01_040E",
       "S2507_C01_042E", "S2507_C01_043E", "S2507_C01_044E",
       "S2507_C01_046E", "S2507_C01_047E", "S2507_C01_048E",
       "S2507_C01_050E", "S2507_C01_051E", "S2507_C01_052E",
-      #Real State Taxes
+      # Real State Taxes
       "S2507_C01_054E", "S2507_C01_055E", "S2507_C01_056E",
       "S2507_C01_057E", "S2507_C01_058E"
     )
@@ -289,27 +289,27 @@ process_app_housing_data <- function(Table = "S2501", Year = 2020) {
     c(
       "GEO_ID", "NAME",
       "S2507_C02_001E",
-      #Value
+      # Value
       "S2507_C02_002E", "S2507_C02_003E", "S2507_C02_004E",
       "S2507_C02_005E", "S2507_C02_006E", "S2507_C02_007E",
       "S2507_C02_008E", "S2507_C02_009E", "S2507_C02_010E",
-      #Income (12 months)
+      # Income (12 months)
       "S2507_C02_011E", "S2507_C02_012E", "S2507_C02_013E",
       "S2507_C02_014E", "S2507_C02_015E", "S2507_C02_016E",
       "S2507_C02_017E", "S2507_C02_018E", "S2507_C02_019E",
-      #Ratio
+      # Ratio
       "S2507_C02_020E", "S2507_C02_021E",
       "S2507_C02_022E", "S2507_C02_023E",
-      #Housing Costs
+      # Housing Costs
       "S2507_C02_025E", "S2507_C02_026E", "S2507_C02_027E", "S2507_C02_028E",
       "S2507_C02_029E", "S2507_C02_030E", "S2507_C02_031E", "S2507_C02_032E",
-      #Housing Costs percentage
+      # Housing Costs percentage
       "S2507_C02_034E", "S2507_C02_035E", "S2507_C02_036E",
       "S2507_C02_038E", "S2507_C02_039E", "S2507_C02_040E",
       "S2507_C02_042E", "S2507_C02_043E", "S2507_C02_044E",
       "S2507_C02_046E", "S2507_C02_047E", "S2507_C02_048E",
       "S2507_C02_050E", "S2507_C02_051E", "S2507_C02_052E",
-      #Real State Taxes
+      # Real State Taxes
       "S2507_C02_054E", "S2507_C02_055E", "S2507_C02_056E",
       "S2507_C02_057E", "S2507_C02_058E"
     )
@@ -350,18 +350,18 @@ process_app_housing_data <- function(Table = "S2501", Year = 2020) {
     c(
       "GEO_ID", "NAME",
       "S2503.totalowned",
-      #Income,,
+      # Income
       "S2503.income.5k-", "S2503.income.5-10k", "S2503.income.10-15k",
       "S2503.income.15-20k", "S2503.income.20-25k", "S2503.income.25-35k",
       "S2503.income.35-50k", "S2503.income.50-75k", "S2503.income.75-100k",
       "S2503.income.100-150k", "S2503.income.150k+", "S2503.income.median",
-      #Housing Costs,
+      # Housing Costs
       "S2503.cost.300-", "S2503.cost.300-500", "S2503.cost.500-800",
       "S2503.cost.800-1k", "S2503.cost.1-1.5k", "S2503.cost.1.5-2k",
       "S2503.cost.2-2.5k", "S2503.cost.2.5-3k", "S2503.cost.3k+",
       "S2503.cost.Nocashrent", "S2503.cost.median",
       "Year", "Table",
-      #Housing Costs Percentage,
+      # Housing Costs Percentage
       "S2503.costp.20-", "S2503.costp.20-30", "S2503.costp.30+",
       "S2503.costp.median"
     )
@@ -369,28 +369,28 @@ process_app_housing_data <- function(Table = "S2501", Year = 2020) {
     c(
       "GEO_ID", "NAME",
       "S2504.totalowned",
-      #Units
+      # Units
       "S2504.unit.1det", "S2504.unit.1att", "S2504.unit.2", "S2504.unit.3-4",
       "S2504.unit.5-9", "S2504.unit.10+", "S2504.unit.other",
-      #Year Built
+      # Year Built
       "S2504.ybuilt.2014+", "S2504.ybuilt.2010-2013",
       "S2504.ybuilt.2000-2009", "S2504.ybuilt.1980-1999",
       "S2504.ybuilt.1960-1979", "S2504.ybuilt.1940-1959",
       "S2504.ybuilt.1939-",
-      #Rooms
+      # Rooms
       "S2504.rooms.1", "S2504.rooms.2-3", "S2504.rooms.4-5",
       "S2504.rooms.6-7", "S2504.rooms.8+",
-      #Bedrooms
+      # Bedrooms
       "S2504.bedrooms.0", "S2504.bedrooms.1",
       "S2504.bedrooms.2-3", "S2504.bedrooms.4+",
-      #Facilities
+      # Facilities
       "S2504.facilities.plumbingok", "S2504.facilities.kitchenok",
-      #Vehicle
+      # Vehicle
       "S2504.vehicles.0", "S2504.vehicles.1",
       "S2504.vehicles.2", "S2504.vehicles.3+",
-      #Telephone
+      # Telephone
       "S2504.telephone.service",
-      #Fuel
+      # Fuel
       "S2504.fuel.utgas", "S2504.fuel.btLPgas", "S2504.fuel.elect",
       "S2504.fuel.oilkeros", "S2504.fuel.coalcoke", "S2504.fuel.other",
       "S2504.fuel.nofuel",
@@ -400,30 +400,30 @@ process_app_housing_data <- function(Table = "S2501", Year = 2020) {
     c(
       "GEO_ID", "NAME",
       "S2506.totalmort",
-      #Value
+      # Value
       "S2506.value.50k-", "S2506.value.50-100k", "S2506.value.100-300k",
       "S2506.value.300-500k", "S2506.value.500-750k", "S2506.value.750-1M",
       "S2506.value.1M+", "S2506.value.median",
-      #Status
+      # Status
       "S2506.status.2ndmort", "S2506.status.homeequity",
       "S2506.status.both", "S2506.status.none",
-      #Income (12 months)
+      # Income (12 months)
       "S2506.income.10k-", "S2506.income.10-25k", "S2506.income.25-35k",
       "S2506.income.35-50k", "S2506.income.50-75k", "S2506.income.75-100k",
       "S2506.income.100-150k", "S2506.income.150k+", "S2506.income.median",
-      #Ratio
+      # Ratio
       "S2506.ratio.2-", "S2506.ratio.2-3",
       "S2506.ratio.3-4", "S2506.ratio.4+",
-      #Housing Costs
+      # Housing Costs
       "S2506.cost.200-", "S2506.cost.200-400", "S2506.cost.400-600",
       "S2506.cost.600-800", "S2506.cost.800-1k", "S2506.cost.1-1.5k",
       "S2506.cost.1.5-2k", "S2506.cost.2-2.5k", "S2506.cost.2.5-3k",
       "S2506.cost.3k+", "S2506.cost.median",
-      #Real State Taxes
+      # Real State Taxes
       "S2506.tax.800-", "S2506.tax.800-1.5k", "S2506.tax.1.5k+",
       "S2506.tax.No", "S2506.tax.median",
       "Year", "Table",
-      #Housing Costs percentage
+      # Housing Costs percentage
       "S2506.costp.20-", "S2506.costp.20-30", "S2506.costp.30+",
       "S2506.costp.median"
     )
@@ -431,26 +431,26 @@ process_app_housing_data <- function(Table = "S2501", Year = 2020) {
     c(
       "GEO_ID", "NAME",
       "S2507.totalmort",
-      #Value
+      # Value
       "S2507.value.50k-", "S2507.value.50-100k", "S2507.value.100-199k",
       "S2507.value.200-299k", "S2507.value.300-500k", "S2507.value.500-750k",
       "S2507.value.750-1M", "S2507.value.1M+", "S2507.value.median",
-      #Income (12 months)
+      # Income (12 months)
       "S2507.income.10k-", "S2507.income.10-25k", "S2507.income.25-35k",
       "S2507.income.35-50k", "S2507.income.50-75k", "S2507.income.75-100k",
       "S2507.income.100-150k", "S2507.income.150k+", "S2507.income.median",
-      #Ratio
+      # Ratio
       "S2507.ratio.2-", "S2507.ratio.2-3",
       "S2507.ratio.3-4", "S2507.ratio.4+",
-      #Housing Costs
+      # Housing Costs
       "S2507.cost.200-", "S2507.cost.200-399", "S2507.cost.400-599",
       "S2507.cost.600-999", "S2507.cost.1-1.3k", "S2507.cost.1.3-1.5k",
       "S2507.cost.1.5k+", "S2507.cost.median",
-      #Real State Taxes
+      # Real State Taxes
       "S2507.tax.800-", "S2507.tax.800-1.5k", "S2507.tax.1.5k+",
       "S2507.tax.No", "S2507.tax.median",
       "Year", "Table",
-      #Housing Costs percentage
+      # Housing Costs percentage
       "S2507.costp.20-", "S2507.costp.20-30", "S2507.costp.30+",
       "S2507.costp.median"
     )
@@ -1036,77 +1036,77 @@ process_app_race_data <- function(Table = "S2501", Year = 2020) {
   # Define and name working variables
   vars_old <- if (Table == "S1501") {
     c(
-      #GEOID and NAME
+      # GEOID and NAME
       "GEO_ID", "NAME",
-      #Total in the survey
+      # Total in the survey
       "S1501_C01_001E", "S1501_C01_006E",
-      #Total broken by race
-      #Total by educational attainment (considering both age groups)
+      # Total broken by race
+      # Total by educational attainment (considering both age groups)
       "S1501_C01_003E", "S1501_C01_004E", "S1501_C01_005E", "S1501_C01_009E",
       "S1501_C01_010E", "S1501_C01_011E", "S1501_C01_012E", "S1501_C01_013E",
-      #Total by educational attainment broken by race
-      #White
+      # Total by educational attainment broken by race
+      # White
       "S1501_C01_028E", "S1501_C01_029E", "S1501_C01_030E",
-      #White alone, not Hispanic or Latino
+      # White alone, not Hispanic or Latino
       "S1501_C01_031E", "S1501_C01_032E", "S1501_C01_033E",
-      #Black
+      # Black
       "S1501_C01_034E", "S1501_C01_035E", "S1501_C01_036E",
-      #American Indian and Alaska Native,
+      # American Indian and Alaska Native
       "S1501_C01_037E", "S1501_C01_038E", "S1501_C01_039E",
-      #Asian
+      # Asian
       "S1501_C01_040E", "S1501_C01_041E", "S1501_C01_042E",
-      #Native Hawaiian and Other Pacific
+      # Native Hawaiian and Other Pacific
       "S1501_C01_043E", "S1501_C01_044E", "S1501_C01_045E",
-      #Other
+      # Other
       "S1501_C01_046E", "S1501_C01_047E", "S1501_C01_048E",
-      #Two+
+      # Two+
       "S1501_C01_049E", "S1501_C01_050E", "S1501_C01_051E",
-      #Hispanic
+      # Hispanic
       "S1501_C01_052E", "S1501_C01_053E", "S1501_C01_054E"
     )
   } else if ((Table == "S1903") & (Year <= 2016)) {
     c(
-      #GEOID and NAME
+      # GEOID and NAME
       "GEO_ID", "NAME",
-      #Total household and median income in the survey
+      # Total household and median income in the survey
       "S1903_C01_001E", "S1903_C02_001E",
-      #Total households broken by race (percents...)
+      # Total households broken by race (percents...)
       "S1903_C01_002E", "S1903_C01_003E", "S1903_C01_004E", "S1903_C01_005E",
       "S1903_C01_006E", "S1903_C01_007E", "S1903_C01_008E", "S1903_C01_009E",
       "S1903_C01_010E",
-      #Median Income broken by Race
+      # Median Income broken by Race
       "S1903_C02_002E", "S1903_C02_003E", "S1903_C02_004E", "S1903_C02_005E",
       "S1903_C02_006E", "S1903_C02_007E", "S1903_C02_008E", "S1903_C02_009E",
       "S1903_C02_010E"
     )
   } else if ((Table == "S1903") & (Year >= 2017)) {
     c(
-      #GEOID and NAME
+      # GEOID and NAME
       "GEO_ID", "NAME",
-      #Total household and median income in the survey
+      # Total household and median income in the survey
       "S1903_C01_001E", "S1903_C03_001E",
-      #Total households broken by race (totals)
+      # Total households broken by race (totals)
       "S1903_C01_002E", "S1903_C01_003E", "S1903_C01_004E", "S1903_C01_005E",
       "S1903_C01_006E", "S1903_C01_007E", "S1903_C01_008E", "S1903_C01_009E",
       "S1903_C01_010E",
-      #Median Income broken by Income
+      # Median Income broken by Income
       "S1903_C03_002E", "S1903_C03_003E", "S1903_C03_004E", "S1903_C03_005E",
       "S1903_C03_006E", "S1903_C03_007E", "S1903_C03_008E", "S1903_C03_009E",
       "S1903_C03_010E"
     )
   } else if (Table == "S2301") {
     c(
-      #GEOID and NAME
+      # GEOID and NAME
       "GEO_ID", "NAME",
-      #Total households in the survey
+      # Total households in the survey
       "S2301_C01_001E",
-      #Total households broken by race (totals)
+      # Total households broken by race (totals)
       "S2301_C01_012E", "S2301_C01_013E", "S2301_C01_014E", "S2301_C01_015E",
       "S2301_C01_016E", "S2301_C01_017E", "S2301_C01_018E", "S2301_C01_019E",
       "S2301_C01_020E",
-      #Labor Force Part Rate, Employment / Pop Rate, Unemployment Rate Totals
+      # Labor Force Part Rate, Employment / Pop Rate, Unemployment Rate Totals
       "S2301_C02_001E", "S2301_C03_001E", "S2301_C04_001E",
-      #Same as above but broken by race / ethnicity
+      # Same as above but broken by race / ethnicity
       "S2301_C02_012E", "S2301_C03_012E", "S2301_C04_012E",
       "S2301_C02_013E", "S2301_C03_013E", "S2301_C04_013E",
       "S2301_C02_014E", "S2301_C03_014E", "S2301_C04_014E",
@@ -1119,30 +1119,30 @@ process_app_race_data <- function(Table = "S2501", Year = 2020) {
     )
   } else if ((Table == "S2502") & (Year <= 2016)) {
     c(
-      #GEOID and NAME
+      # GEOID and NAME
       "GEO_ID", "NAME",
-      #Total and owned households in the survey
+      # Total and owned households in the survey
       "S2502_C01_001E", "S2502_C02_001E",
-      #Total households broken by race (percentages)
+      # Total households broken by race (percentages)
       "S2502_C01_002E", "S2502_C01_003E", "S2502_C01_004E", "S2502_C01_005E",
       "S2502_C01_006E", "S2502_C01_007E", "S2502_C01_008E", "S2502_C01_009E",
       "S2502_C01_010E",
-      #Total owner-occupied housing units broken by race (percentages)
+      # Total owner-occupied housing units broken by race (percentages)
       "S2502_C02_002E", "S2502_C02_003E", "S2502_C02_004E", "S2502_C02_005E",
       "S2502_C02_006E", "S2502_C02_007E", "S2502_C02_008E", "S2502_C02_009E",
       "S2502_C02_010E"
     )
   } else if ((Table == "S2502") & (Year >= 2017)) {
     c(
-      #GEOID and NAME
+      # GEOID and NAME
       "GEO_ID", "NAME",
-      #Total and owned households in the survey
+      # Total and owned households in the survey
       "S2502_C01_001E", "S2502_C03_001E",
-      #Total households broken by race (totals)
+      # Total households broken by race (totals)
       "S2502_C01_002E", "S2502_C01_003E", "S2502_C01_004E", "S2502_C01_005E",
       "S2502_C01_006E", "S2502_C01_007E", "S2502_C01_008E", "S2502_C01_009E",
       "S2502_C01_010E",
-      #Total owner-occupied housing units broken by race (totals)
+      # Total owner-occupied housing units broken by race (totals)
       "S2502_C03_002E", "S2502_C03_003E", "S2502_C03_004E", "S2502_C03_005E",
       "S2502_C03_006E", "S2502_C03_007E", "S2502_C03_008E", "S2502_C03_009E",
       "S2502_C03_010E"
