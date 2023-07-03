@@ -1,16 +1,21 @@
-# FIXME: CHANGE THE FILE NAMES!!!
 MODEL_FILES <- list(
-  "mle_gaus" = file.path(INPUT_DIR, "model_mle_gaus.RDS.2"),
-  "mle_bin" = file.path(INPUT_DIR, "model_mle_bin.RDS.2"),
-  "bay_gaus2" = file.path(INPUT_DIR, "model_bay_gaus2.RDS.2"),
-  "bay_betabin" = file.path(INPUT_DIR, "model_bay_betabin.RDS.2")
+  "mle_gaus" = file.path(INPUT_DIR, "model_mle_gaus.rds"),
+  "mle_bin" = file.path(INPUT_DIR, "model_mle_bin.rds"),
+  "bay_gaus2" = file.path(INPUT_DIR, "model_bay_gaus2.rds"),
+  "bay_betabin" = file.path(INPUT_DIR, "model_bay_betabin.rds")
 )
 
-RACES_MODEL_OLD <- c("White", "Black", "Asian", "Other")
+RACES_OLD <- c("White", "Black", "Asian", "Other")
+RACE_COLORS_OLD <- c(
+  "White" = "#e41a1c",
+  "Black" = "#377eb8",
+  "Asian" = "#4daf4a",
+  "Other" = "#984ea3"
+)
 
 prepare_model_data_old <- function(data) {
   data |>
-  dplyr::filter(race %in% RACES_MODEL_OLD) |>
+  dplyr::filter(race %in% RACES_OLD) |>
   dplyr::mutate(
     inc.inc.trans = inc.inc / 100000,
     val.tax.trans = val.tax / 10000,
@@ -46,7 +51,7 @@ plot_prediction_old <- function(
   #' "edu.hs", "emp.ue", "inc.inc", "val.hom", "pop.share.ratio", "hom.tot".
   #' If any of these are missing the default values will be taken from the real data.
   #' If "state" = "All" or "year" = "All" the average prediction over all states or years
-  #' is given. "race" must be a string vector which is a subset of RACES_MODEL_OLD. Only the
+  #' is given. "race" must be a string vector which is a subset of RACES_OLD. Only the
   #' races in "race" will be displayed.
   #' @param separate_y If TRUE show predicted distribution for each race on a separate baseline.
   #' If FALSE overlay them on the same baseline.
@@ -61,7 +66,7 @@ plot_prediction_old <- function(
 
   NUM_DRAWS <- 1000
   ALL_LIST <- list(
-    race = RACES_MODEL_OLD,
+    race = RACES_OLD,
     state = STATES,
     year = YEARS
   )
@@ -162,6 +167,7 @@ plot_prediction_old <- function(
       ggplot2::ylab("Density")
     )
   }
+
   ggplot_out <- (
     ggplot_out +
     ggdist::stat_halfeye(alpha = fill_alpha, .width = .95,
@@ -185,7 +191,7 @@ plot_prediction_old <- function(
     ggplot_out <- (
       ggplot_out +
       ggplot2::labs(
-        subtitle = stringr::str_c("Density, median, and 0.95 interval")
+        subtitle = stringr::str_c("Density, median, and 95% interval")
       )
     )
   }
@@ -193,12 +199,22 @@ plot_prediction_old <- function(
   if (x_lim_full) {
     ggplot_out <- ggplot_out + ggplot2::coord_cartesian(xlim = c(0, 1))
   }
+
+  # Colors
+  ggplot_out <- (
+    ggplot_out +
+    ggplot2::scale_discrete_manual(
+      values = RACE_COLORS_OLD,
+      aesthetics = c("fill", "color")
+    )
+  )
+
   ggplot_out
 }
 
 plot_prediction_app_old <- function(
   model_which,
-  race = RACES_MODEL_OLD,
+  race = RACES_OLD,
   state = "All",
   year = "All",
   edu.hs = NULL,
@@ -217,7 +233,7 @@ plot_prediction_app_old <- function(
   #' @description Helper function for app interface to plot predictions
   #' @param model_which One of the strings "mle_gaus", "mle_bin", "bay_gaus", "bay_betabin".
   #' @param race Races to predict and plot. If "All" plots all races, else must be a subset
-  #' of RACES_MODEL_OLD.
+  #' of RACES_OLD.
   #' @param state Which state to predict. If "All" will show the predicition for whole US.
   #' @param year Which year to predict. If "All" will show the prediciton for all years.
   #' @param edu.hs Covariate value. If omitted gets default value from data.
@@ -242,7 +258,7 @@ plot_prediction_app_old <- function(
       emp.ue = emp.ue / 100,
       inc.inc = inc.inc,
       val.hom = val.hom,
-      pop.share.ratio = pop.share.ratio
+      pop.share.ratio = pop.share.ratio / 100
     ) |>
     purrr::discard(\(x) length(x) == 0)
   )
@@ -263,92 +279,6 @@ plot_prediction_app_old <- function(
   )
 }
 
-# FIXME: DELETE OLD CODE
-# do_examples <- function() {
-#   # Some races, Alaska, 2019, other covariates default, MLE Gaussian
-#   ggplot_out <- plot_prediction_app_old(
-#     "mle_gaus",
-#     race = c("White", "Black", "Asian"),
-#     state = "Alaska",
-#     year = 2019,
-#     separate_y = TRUE,
-#     title = "Predicted homeownership by race"
-#   )
-#   ggplot2::ggsave("temp1.png", ggplot_out, width = 10, height = 10)
-
-#   # All races, all states, 2019, other covariates default, MLE Gaussian
-#   ggplot_out <- plot_prediction_app_old(
-#     "mle_gaus",
-#     race = "All",
-#     state = "Alaska",
-#     year = 2019,
-#     separate_y = TRUE,
-#     title = "Predicted homeownership by race"
-#   )
-#   ggplot2::ggsave("temp2.png", ggplot_out, width = 10, height = 10)
-
-#   # All races, all states, all years, other covariates default, MLE Gaussian
-#   ggplot_out <- plot_prediction_app_old(
-#     "mle_gaus",
-#     race = "All",
-#     state = "Alaska",
-#     year = "All",
-#     separate_y = TRUE,
-#     title = "Predicted homeownership by race"
-#   )
-#   ggplot2::ggsave("temp3.png", ggplot_out, width = 10, height = 10)
-
-#   # All races, all states, all years, some covariates set, MLE Gaussian
-#   ggplot_out <- plot_prediction_app_old(
-#     "mle_gaus",
-#     race = "All",
-#     state = "All",
-#     year = "All",
-#     edu.hs = 0.6,
-#     emp.ue = .1,
-#     inc.inc = 100000,
-#     val.hom = 1000000,
-#     pop.share.ratio = 1,
-#     separate_y = TRUE,
-#     title = "Predicted homeownership by race"
-#   )
-#   ggplot2::ggsave("temp4.png", ggplot_out, width = 10, height = 10)
-
-#   # All races, all states, all years, some covariates set, Bayesian Gaussian
-#   ggplot_out <- plot_prediction_app_old(
-#     "bay_gaus",
-#     race = "All",
-#     state = "All",
-#     year = "All",
-#     edu.hs = 0.6,
-#     emp.ue = .1,
-#     inc.inc = 100000,
-#     val.hom = 1000000,
-#     pop.share.ratio = 1,
-#     separate_y = TRUE,
-#     title = "Predicted homeownership by race"
-#   )
-#   ggplot2::ggsave("temp5.png", ggplot_out, width = 10, height = 10)
-
-#   # All races, all states, all years, some covariates set, Bayesian Gaussian, same y
-#   ggplot_out <- plot_prediction_app_old(
-#     "bay_gaus",
-#     race = "All",
-#     state = "All",
-#     year = "All",
-#     edu.hs = 0.6,
-#     emp.ue = .1,
-#     inc.inc = 100000,
-#     val.hom = 1000000,
-#     pop.share.ratio = 1,
-#     separate_y = FALSE,
-#     title = "Predicted homeownership by race"
-#   )
-#   ggplot2::ggsave("temp6.png", ggplot_out, width = 10, height = 10)
-# }
-
 load_state_data_old <- function() {
   STATE_DATA_OLD <<- readr::read_csv(file.path(INPUT_DIR, "state_data_old.csv"))
 }
-
-# do_examples()

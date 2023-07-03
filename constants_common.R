@@ -151,7 +151,7 @@ GGPLOT_BASE_SIZE_BIG <- 20
 GGPLOT_BASE_SIZE_SMALL <- 16
 
 RACE_COLORS <- c(
-  Total = "#000000",
+  Total = "#808080",
   WhiteNH = "#e41a1c",
   Hispanic = "#984ea3",
   Black = "#377eb8",

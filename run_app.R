@@ -518,9 +518,9 @@ APP_UI <- shiny::bootstrapPage(
           ),
           #5.1.9 Input Population Share %
           shiny::numericInput(
-            "pm2_shr",
-            "Input Race Population Share %:",
-            value = 25
+            "pm2_psr",
+            "Input Race Population Share Ratio %:",
+            value = 100
           ),
           #5.1.10 Not Overlaid
           shiny::radioButtons(
@@ -555,9 +555,9 @@ APP_UI <- shiny::bootstrapPage(
 #Define Server
 APP_SERVER <- function(input, output) {
   #2.1 Box Plot Output
-  output$boxplot <- renderPlot({
+  output$boxplot <- shiny::renderPlot({
     if (input$bpgo == 0) return ("")
-    isolate(
+    shiny::isolate(
       plot_app(
         Plot = "BP",
         area = input$bp_area,
@@ -573,9 +573,9 @@ APP_SERVER <- function(input, output) {
     )
   })
   #2.2 Scatter Plot Output
-  output$scatterplot <- renderPlot({
+  output$scatterplot <- shiny::renderPlot({
     if (input$scgo == 0) return("")
-    isolate(
+    shiny::isolate(
       plot_app(
         Plot = "SC",
         area = input$sc_area,
@@ -592,9 +592,9 @@ APP_SERVER <- function(input, output) {
     )
   })
   #2.3 Time Series Plot Output
-  output$tseries <- renderPlot({
+  output$tseries <- shiny::renderPlot({
     if (input$tsgo == 0) return("")
-    isolate(
+    shiny::isolate(
       plot_app(
         Plot = "TS",
         Stated = input$ts_st,
@@ -608,9 +608,9 @@ APP_SERVER <- function(input, output) {
     )
   })
   #2.4 Choropleth Maps Output
-  output$choropleths <- renderPlot({
+  output$choropleths <- shiny::renderPlot({
     if (input$chgo == 0) return("")
-    isolate(
+    shiny::isolate(
       plot_choropleth_app(
         area = input$ch_area,
         Stated = input$ch_st,
@@ -626,9 +626,9 @@ APP_SERVER <- function(input, output) {
     )
   })
   #2.5 Predictive Models Output
-  output$pmplot <- renderPlot({
+  output$pmplot <- shiny::renderPlot({
     if (input$pmgo == 0) return("")
-    isolate(
+    shiny::isolate(
       plot_prediction_app(
         model_name = input$pm_model,
         race = input$pm_groups,
@@ -643,9 +643,9 @@ APP_SERVER <- function(input, output) {
     )
   })
   output$pm2plot <-
-    renderPlot({
+    shiny::renderPlot({
       if (input$pm2go == 0) return("")
-      isolate(
+      shiny::isolate(
         plot_prediction_app_old(
           model_which = input$pm2_model,
           race = input$pm2_races,
@@ -654,6 +654,7 @@ APP_SERVER <- function(input, output) {
           emp.ue = input$pm2_ue,
           inc.inc = input$pm2_inc,
           val.hom = input$pm2_val,
+          pop.share.ratio = input$pm2_psr,
           separate_y = as.logical(input$pm2_sp),
           title = "Predicted values for selected model"
       )

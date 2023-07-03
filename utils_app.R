@@ -2389,6 +2389,193 @@ plot_app <- function(
   }
 }
 
+plot_prediction <- function(
+  model,
+  data,
+  new_data,
+  separate_y = FALSE,
+  x_lim_full = FALSE,
+  fill_alpha = 0.3,
+  title = NULL,
+  show_subtitle = TRUE,
+  base_size = 20,
+  interval_size = 5,
+  num_draws = 1000
+) {
+  #' @title Plot predicted home ownership.
+  #' @description Plots posterior predicted distributions for Bayesian models.
+  #' @note This function needs library(ggdist) and library(brms)!
+  #' 
+  #' @param model the fitted model (e.g. output of lm function)
+  #' @param data data model was fitted on
+  #' @param new_data list of new covariates for prediction. Must have keys "state", "race", "year"
+  #'                 and can optionally have any other keys including:
+  #'                 "edu.hs", "emp.ue", "inc.inc", "val.hom", "hom.tot".
+  #'                 If any of these are missing the default values will be taken from the real data.
+  #'                 If "state" = "All" or "year" = "All" the average prediction over all state or years
+  #'                 is given. "race" must be a string vector which is a subset of RACES_MODEL. Only the
+  #'                 races in "race" will be displayed.
+  #' @param separate_y If TRUE show predicted distribution for each race on a separate baseline.
+  #'                   If FALSE overlay them on the same baseline.
+  #' @param x_lim_full If TRUE show the entire x-axis from 0 to 1. If FALSE show only the range of
+  #'                   of the plotted values.
+  #' @param fill_alpha Alpha value to fill in the density.
+  #' @param title title of plot. If NULL not title is plotted.
+  #' @param show_subtitle If TRUE show a subtitle explaining the plotted point and interval within the density.
+  #' @param base_size The base size of the ggplot2 theme.
+  #' @param interval_size thickness of the part showing the median and .95 interval.
+  #' @param num_draws number of posterior draws to use when estimating the prediction
+
+  # Check which variables need to be expanded to all possible values
+  for (var_name in c("race", "state")) {
+    if (
+      !(var_name %in% names(new_data)) ||
+      (
+        (length(new_data[[var_name]]) == 1) &&
+        (new_data[[var_name]] == "All")
+      )
+    ) {
+      new_data[[var_name]] <- if (var_name == "race") {
+        RACES_MODEL
+      } else if (var_name == "state") {
+        STATES
+      } else {
+        stop("Impossible.")
+      }
+    }
+  }
+
+  new_data <- do.call(tidyr::expand_grid, new_data)
+
+  new_data <- (
+    dplyr::inner_join(
+      new_data,
+      data[
+        c(
+          "state",
+          "race",
+          setdiff(colnames(data), colnames(new_data))
+        )
+      ],
+      by = c("state", "race")
+    ) |>
+    get_model_data()
+  )
+
+  if ("brmsfit" %in% class(model)) {
+    pred_draws <- brms::posterior_predict(
+      model,
+      newdata = new_data,
+      ndraws = num_draws
+    )
+  } else if (
+    ("glm" %in% class(model)) &&
+    (model[["family"]][["family"]] == "binomial")
+  ) {
+    pred_draws <- (
+      purrr::map(
+        seq_len(num_draws),
+        function(...) {
+          rbinom(
+            n = nrow(new_data),
+            size = new_data[["size"]],
+            prob = predict(model, newdata = new_data, type = "response")
+          )
+        }
+      ) |>
+      x => do.call(rbind, x)
+    )
+  } else {
+    stop("Model class not supported.")
+  }
+
+  # Convert to a proportion by dividing by size
+  pred_draws <- sweep(pred_draws, 2, new_data[["size"]], `/`)
+
+  pred_draws <- purrr::map_dfr(
+    unique(new_data[["race"]]),
+    function(race) {
+      pred_draws_race <- pred_draws[, new_data[["race"]] == race, drop = FALSE]
+      size_race <- new_data[new_data[["race"]] == race, "size", drop = TRUE]
+      pred_draws_race <- sweep(pred_draws_race, 2, size_race, `*`)
+      pred_draws_race <- rowSums(pred_draws_race) / sum(size_race)
+      tibble::tibble(
+        value = pred_draws_race,
+        race = factor(race, levels = RACES_MODEL)
+      )
+    }
+  )
+
+  if (separate_y) {
+    ggplot_out <- (
+      ggplot2::ggplot(
+        pred_draws,
+        ggplot2::aes(
+          x = value * 100,
+          y = race,
+          fill = race,
+          color = race,
+          slab_color = race
+        )
+      ) +
+      ggplot2::ylab("Race")
+    )
+  } else {
+    ggplot_out <- (
+      ggplot2::ggplot(
+        pred_draws,
+        ggplot2::aes(
+          x = value * 100,
+          fill = race,
+          color = race,
+          slab_color = race
+        )
+      ) +
+      ggplot2::ylab("Density")
+    )
+  }
+  ggplot_out <- (
+    ggplot_out +
+    ggdist::stat_halfeye(
+      alpha = fill_alpha,
+      .width = .95,
+      interval_size = interval_size,
+      interval_alpha = 1,
+      point_alpha = 1
+    ) +
+    ggplot2::xlab("Home Ownership Rate (%)") +
+    ggplot2::theme_classic(base_size = base_size) +
+    ggplot2::scale_color_manual(
+      values = RACE_COLORS,
+      name = "Group",
+      aesthetics = c("color", "fill", "slab_color")
+    )
+  )
+
+  if (!separate_y) {
+    ggplot_out <- ggplot_out + ggplot2::expand_limits(y = 0)
+  }
+
+  if (!is.null(title)) {
+    ggplot_out <- ggplot_out + ggplot2::labs(title = title)
+  }
+
+  if (show_subtitle) {
+    ggplot_out <- (
+      ggplot_out +
+      ggplot2::labs(
+        subtitle = stringr::str_c("Density, median, and 95% interval")
+      )
+    )
+  }
+
+  if (x_lim_full) {
+    ggplot_out <- ggplot_out + ggplot2::coord_cartesian(xlim = c(0, 1))
+  }
+
+  ggplot_out
+}
+
 plot_prediction_app <- function(
   model_name,
   race = RACES_MODEL,
