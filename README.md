@@ -1,11 +1,10 @@
 # JSM2022_HomeOwnership
 
-Code for the data processing the model fitting for the article titled "Exploring Racial and Ethnic Differences in US Home Ownership with
-Bayesian Beta-Binomial Regression" (Jhonathan Medri, Tejasvi Channagiri, and Lu Lu, 2023) to the [Journal of Data Science](https://jds-online.org/journal/JDS) (JDS). This is a follow-up to a presentation at the Joint Statistical Meeting (JSM) 2022 Data Expo Challenge administered by the Sections on Statistical Computing, Statistical Graphics, and Government Statistics of the American Statistical Association (ASA).
+Code for the data processing the model fitting for the article titled "Exploring Racial and Ethnic Differences in US Home Ownership with Bayesian Beta-Binomial Regression" (Jhonathan Medri, Tejasvi Channagiri, and Lu Lu, 2023) submitted to the [Journal of Data Science](https://jds-online.org/journal/JDS) (JDS). This is a follow-up to a presentation given  at the Joint Statistical Meeting (JSM) 2022 Data Expo Challenge administered by the Sections on Statistical Computing, Statistical Graphics, and Government Statistics of the American Statistical Association (ASA).
 
 ## US Census Bureau ACS Data
 
-The sociodemographic data was obtained from [data.census.gov](https://data.census.gov/cedsci/). The following tables were used:
+The sociodemographic data was obtained from [data.census.gov](https://data.census.gov/). The following tables were used:
 
 * S1501: Educational attainment.
 * S1903: Median income in the past 12 months.
@@ -48,7 +47,7 @@ The Shiny app requires the following additional packages.
 
 ## Reproducing Analyses
 
-The following files must be downloaded from the supplemental data and placed into the directory "input". These files have been downloaded directly from US Census Bureau websites [data.census.gov](https://data.census.gov).
+The following raw data files are already included in the repository in the "data/input" directory. These files have been downloaded directly from US Census Bureau websites [data.census.gov](https://data.census.gov) and [www.census.gov](https://www.census.gov).
 
 * DP05.zip
 * B98001.zip
@@ -73,17 +72,18 @@ The following files must be downloaded from the supplemental data and placed int
 * cb_2020_us_county_20m.zip
 * cb_2020_us_state_20m.zip
 
-Then run the scripts "do_process_data.R" and "do_analysis.R" in that order to reproduce all data processing and analyses. The data processing is expected to take less than 10 minutes on a standard PC, while the analysis make take between 2 to 5 hours, since it fits several models using MCMC.
+To reproduce all data processing and analyses, run the scripts "do_process_data.R" and "do_analysis.R" in that order. The data processing is expected to take less than 10 minutes on a standard PC, while the analysis make take between 2 to 5 hours, since it fits several models using MCMC.
 
 ## Shiny App
 
 We developed a Shiny app to allow users the ability to further explore the data and model presented here. The app has the following visualization options:
 
-* Box Plots: visualize the distribution of different variables in our data.
-* Scatter Plots: visualize the relationship between two differerent variables in our data.
-* Time Series Plots: visualize the trend of different variables in our data.
-* Choropleth Maps: visualize the distribution of different variables across the United States main land.
-* Predictive Models: visualize the posterior predictive home ownership rates from our final selected model.
+* Box Plots: Visualize the distribution of different variables in our data.
+* Scatter Plots: Visualize the relationship between two differerent variables in our data.
+* Time Series Plots: Visualize the temporal trend of different variables in our data.
+* Choropleth Maps: Visualize the spatial distribution of different variables across the mainland United States.
+* Predictive Models: Visualize the posterior predictive home ownership rates from our fitted models. This version has been revised since JSM 2022.
+* Predictive Models (JSM 2022): Visualize the posterior predictive home ownership rates from our fitted model. This version was presented as JSM 2022.
 
 While the publication focused on data for the year 2020, the Shiny app allows users to explore data from years 2015 to 2020. Moreover, many variables not considered in the modeling are available for visualization. The app also allows visualizing data at the state level (over the whole US) or at the county level (for individual states).
 

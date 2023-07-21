@@ -1,3 +1,6 @@
+# Do not remove!
+# Required for the Predictive Models (JSM 2022) feature of the app.
+
 MODEL_FILES <- list(
   "mle_gaus" = file.path(INPUT_DIR, "model_mle_gaus.rds"),
   "mle_bin" = file.path(INPUT_DIR, "model_mle_bin.rds"),
