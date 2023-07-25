@@ -11,7 +11,7 @@ plot_var_hist <- function() {
     tidyr::pivot_longer(
       dplyr::any_of(setdiff(COLUMNS_PAPER_NEW, "sampsize"))
     ) |>
-    ggplot2::ggplot(mapping = aes(x = value, weight = sampsize, fill = race)) +
+    ggplot2::ggplot(mapping = ggplot2::aes(x = value, weight = sampsize, fill = race)) +
     ggplot2::geom_histogram(bins = 10) +
     ggplot2::theme_classic(base_size = GGPLOT_BASE_SIZE_BIG) +
     ggplot2::facet_grid(rows = vars(race), cols = vars(name), scales = "free") +
@@ -605,26 +605,6 @@ plot_loo_pareto_k_all <- function() {
       )
     }
   )
-}
-
-make_outlier_tables <- function() {
-  CENSUS_DATA |>
-  dplyr::filter(
-    race == "Hispanic",
-    (0.3 <= hom.own) & (hom.own <= 0.4)
-  ) |>
-  dplyr::arrange(dplyr::desc(size)) |>
-  dplyr::select(county, hom.own, pop.share, pop.share.ratio, size) |>
-  save_csv(file.path(OUTPUT_DIR, "outliers", "hispanic_homown_0.3_0.4.csv"))
-
-  CENSUS_DATA |>
-  dplyr::filter(
-    race == "Black",
-    (0.55 <= hom.own) & (hom.own <= 0.7)
-  ) |>
-  dplyr::arrange(dplyr::desc(size)) |>
-  dplyr::select(county, hom.own, pop.share, pop.share.ratio, size) |>
-  save_csv(file.path(OUTPUT_DIR, "outliers", "black_homown_0.55_0.7.csv"))
 }
 
 get_model_draws <- function(model_name, with_state, do_exp) {
@@ -1228,8 +1208,6 @@ do_all_model_analyses <- function() {
   plot_post_pred_density_all()
   plot_post_pred_stat_all()
   plot_var_hist()
-  do_missing_value_analysis()
-  make_outlier_tables()
   make_model_coef_table()
   make_mean_vs_model_table()
   make_model_effect_county("New York/New York County")

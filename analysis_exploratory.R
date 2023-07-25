@@ -129,7 +129,7 @@ plot_pair <- function(
     ) |>
     purrr::discard(is.null) |>
     purrr::map(as.symbol) |>
-    x => do.call(aes, x)
+    x => do.call(ggplot2::aes, x)
   )
 
   ggplot_out <- ggplot2::ggplot(
@@ -215,7 +215,7 @@ plot_histogram <- function(
     ) |>
     purrr::discard(is.null) |>
     purrr::map(as.symbol) |>
-    x => do.call(aes, x)
+    x => do.call(ggplot2::aes, x)
   )
 
   ggplot_out <- ggplot2::ggplot(
@@ -237,7 +237,7 @@ plot_histogram <- function(
         ggplot2::geom_density() +
         ggplot2::geom_vline(
           data = data_median,
-          aes(xintercept = median),
+          ggplot2::aes(xintercept = median),
           size = line_size
         ) +
         ggplot2::labs(subtitle = "with median line")
@@ -722,7 +722,7 @@ make_data_summary <- function() {
     ggplot2::facet_wrap(dplyr::vars(var), ncol = 1, scales = "free") +
     ggplot2::theme_classic(GGPLOT_BASE_SIZE_BIG) +
     ggplot2::ylab("Group") +
-    ggplot2::xlab("Mean (+/-SD)") +
+    ggplot2::xlab("Mean +/- SD") +
     ggplot2::scale_y_discrete(
       labels = function(x) {
         x |>
@@ -975,7 +975,7 @@ do_binomial_model_analysis <- function() {
 
   # log(phi) vs. log(population) plot
   (
-    ggplot2::ggplot(phi_data, aes(log(county_size), log(phi))) +
+    ggplot2::ggplot(phi_data, ggplot2::aes(log(county_size), log(phi))) +
     ggplot2::geom_point() +
     ggplot2::geom_smooth(
       formula = y ~ x,
@@ -991,8 +991,8 @@ do_binomial_model_analysis <- function() {
       linewidth = 2,
       linetype = "dashed"
     ) +
-    ggplot2::xlab("Log(sample size)") +
-    ggplot2::ylab("Log(phi estimate)") +
+    ggplot2::xlab("Log population") +
+    ggplot2::ylab("Log precision estimate") +
     ggplot2::theme_classic(base_size = GGPLOT_BASE_SIZE_SMALL)
   ) |>
   save_ggplot(
@@ -1004,30 +1004,34 @@ do_binomial_model_analysis <- function() {
 
 do_missing_value_analysis <- function() {
   data <- (
-    get_model_data(
-      drop_size_0 = FALSE,
-      drop_na = FALSE
-    ) |>
+    CENSUS_DATA |>
     dplyr::select(
       race,
       size,
       edu.hs,
       emp.ue,
-      inc.inc.trans,
+      inc.inc.trans = inc.inc, # To correspond with model variables
       hom.own
     ) |>
+    dplyr::filter(race %in% RACES_MODEL) |>
+    dplyr::mutate(
+      edu.hs = is.na(edu.hs),
+      emp.ue = is.na(emp.ue),
+      inc.inc.trans = is.na(inc.inc.trans),
+      hom.own = is.na(hom.own)
+    ) |>
+    dplyr::mutate(All = edu.hs | emp.ue | inc.inc.trans | hom.own) |>
     tidyr::pivot_longer(
       !c(race, size),
       names_to = "variable",
-      values_to = "value"
+      values_to = "missing"
     ) |>
+    dplyr::mutate(missing = ifelse(missing, 1, 0)) |>
+    # Make the "All" race data
     x => dplyr::bind_rows(
       x,
-      x |> dplyr::mutate(variable = "All"),
-      x |> dplyr::mutate(race = "All"),
-      x |> dplyr::mutate(variable = "All", race = "All")
+      x |> dplyr::mutate(race = "All")
     ) |>
-    dplyr::mutate(missing = ifelse(is.na(value), 1, 0)) |>
     dplyr::reframe(
       data = list(
         list(weight_type = "size", missing_type = "Present", count = sum((1 - missing) * size)),
@@ -1045,7 +1049,7 @@ do_missing_value_analysis <- function() {
         COLUMNS_PAPER_NEW
       ),
       missing_type = factor(missing_type, c("Present", "Missing")),
-      race = factor(race, c("All", RACES_MODEL))
+      race = factor(race, c(RACES_MODEL, "All"))
     ) |>
     dplyr::arrange(variable, race, weight_type, missing_type)
   )
@@ -1121,6 +1125,9 @@ do_missing_value_analysis <- function() {
   ) |>
   dplyr::mutate(
     missing_pct = stringr::str_c(size, "/", obs),
+    variable = factor(variable, c("All", "ownersp", "income", "hsedu", "unemp"))
+  ) |>
+  dplyr::mutate(
     variable = ifelse(
       variable == "All",
       "All",
@@ -1128,19 +1135,28 @@ do_missing_value_analysis <- function() {
     )
   ) |>
   tidyr::pivot_wider(
-    id_cols = variable,
-    names_from = race,
+    id_cols = race,
+    names_from = variable,
     values_from = missing_pct
   ) |>
-  dplyr::rename_with(function(x) " ", variable) |>
-  xtable::xtable(align = "rl|lllll") |>
+  dplyr::select(
+    race,
+    `$\\mathit{ownersp}$`,
+    `$\\mathit{income}$`,
+    `$\\mathit{hsedu}$`,
+    `$\\mathit{unemp}$`,
+    All
+  ) |>
+  dplyr::rename_with(function(x) " ", race) |>
+  xtable::xtable(align = "rl|llll|l") |>
   save_tex_formatted(
     file.path(
       OUTPUT_EXPLORATORY_DIR,
       "missing_values",
       stringr::str_c("missing_table.tex")
     ),
-    sanitize.text.function = base::I
+    sanitize.text.function = base::I,
+    hline_after_extra = 4
   )
 }
 
@@ -1305,6 +1321,26 @@ make_size_table <- function() {
   )
 }
 
+make_outlier_tables <- function() {
+  CENSUS_DATA |>
+  dplyr::filter(
+    race == "Hispanic",
+    (0.3 <= hom.own) & (hom.own <= 0.4)
+  ) |>
+  dplyr::arrange(dplyr::desc(size)) |>
+  dplyr::select(county, hom.own, pop.share, pop.share.ratio, size) |>
+  save_csv(file.path(OUTPUT_DIR, "outliers", "hispanic_homown_0.3_0.4.csv"))
+
+  CENSUS_DATA |>
+  dplyr::filter(
+    race == "Black",
+    (0.55 <= hom.own) & (hom.own <= 0.7)
+  ) |>
+  dplyr::arrange(dplyr::desc(size)) |>
+  dplyr::select(county, hom.own, pop.share, pop.share.ratio, size) |>
+  save_csv(file.path(OUTPUT_DIR, "outliers", "black_homown_0.55_0.7.csv"))
+}
+
 do_all_exploratory_analyses <- function() {
   plot_pair_all(
     CENSUS_DATA,
@@ -1325,6 +1361,7 @@ do_all_exploratory_analyses <- function() {
   plot_state_ranges()
   make_binomial_model()
   do_binomial_model_analysis()
+  make_outlier_tables()
   do_missing_value_analysis()
   make_model_formula_table()
   make_size_table()
