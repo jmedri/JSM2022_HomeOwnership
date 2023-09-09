@@ -1,7 +1,8 @@
 initialize <- function(
   PRIOR_TYPE = "1",
   SAMPLE_PRIOR = FALSE,
-  MCMC_ITERS = 2000
+  MCMC_ITERS = 2000,
+  load_data = TRUE
 ) {
   #' @title Initialize the R environment for the analysis.
   #' @description This function initializes the R environment for the analysis.
@@ -33,11 +34,13 @@ initialize <- function(
   source("plot_prediction_old.R")
 
   # Load data
-  load_shape_data()
-  load_census_data()
-  load_model_data()
-  load_app_data()
-  load_state_data_old()
+  if (load_data) {
+    load_shape_data()
+    load_census_data()
+    load_model_data()
+    load_app_data()
+    load_state_data_old()
+  }
 
   options(scipen = 999) # Turn off scientific notation
 }

@@ -1,11 +1,6 @@
-source("do_load_libraries.R")
-source("constants_common.R")
-source("constants_app.R")
-source("utils_common.R")
-source("utils_app.R")
-source("utils_shape_data.R")
-source("utils_census_data.R")
+source("initialize.R")
 
+initialize(load_data = FALSE)
 process_shape_data_all()
 process_census_data_all()
 process_app_data_all()
