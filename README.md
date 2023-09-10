@@ -89,8 +89,44 @@ While the publication focused on data for the year 2020, the Shiny app allows us
 
 To run the app the data must have already been processed using the "do_process_data.R" script. Then the "run_app.R" script must be run. The app should start up in less than a minute after the "run_app.R" is run.
 
+## Figure List
+
+The following figures/tables are used in the publication should be produced by running the "do_analysis.R" script (see [Reproducing Analyses](#reproducing-analyses)). When reproducing the analysis, some figures/tables may look slightly different due to randomness in the MCMC initialization, though we expect posterior mean estimates to remain nearly identical. They are listed in order of appearance in the publication.
+
+* Table 1: "data/output_exploratory/census_data_by_race_means.csv" (only part of this data is shown in the publication).
+* Figure 1a: "data/output_exploratory/data_exploration/sc_imd_ny.pdf".
+* Figure 1b: "data/output_exploratory/data_exploration/sc_imd_raceny.pdf".
+* Figure 2a: "data/output_exploratory/data_exploration/bp_imd.pdf".
+* Figure 2b: "data/output_exploratory/data_exploration/choro_greys.pdf".
+* Table 2: "data/output_exploratory/model_formula_table/model_formula_table.tex".
+* Table 3a: "data/output_1_posterior/model_coef/model_coef_4.csv".
+* Table 3b: "data/output_1_posterior/model_coef/model_coef_4_exp.csv".
+* Table 4a: "data/output_1_posterior/model_effect_cases/FloridaHillsboroughCounty_4.tex".
+* Table 4b: "data/output_1_posterior/model_effect_cases/NewYorkNewYorkCounty_4.tex".
+* Table S1: "data/output_exploratory/size_table/size_table.tex".
+* Table S2: "data/output_exploratory/county_ranges.tex".
+* Figure S1: "data/output_exploratory/census_data_by_race_dot_chart.pdf".
+* Table S3: Made by hand with information from [data.census.gov](https://data.census.gov/).
+* Table S4: "data/output_exploratory/missing_values/missing_table.tex".
+* Figure S2: "data/output_exploratory/state_ranges.pdf".
+* Figure S3a: "data/output_exploratory/binomial_analysis/overdispersion.pdf".
+* Figure S3b: "data/output_exploratory/binomial_analysis/phi_scatter.pdf".
+* Figure S4: "data/output_1_posterior/loo_analysis/loo_figure.pdf".
+* Figure S5a:
+  * Density: "data/output_1_posterior/post_pred_density/post_pred_density_4.pdf".
+  * Mean: "data/output_1_posterior/post_pred_stat_mean/post_pred_stat_mean_4.pdf".
+  * Variance: "data/output_1_posterior/post_pred_stat_variance/post_pred_stat_variance_4.pdf".
+* Figure S5b:
+  * Density: "data/output_1_prior/post_pred_density/post_pred_density_4.pdf".
+  * Mean: "data/output_1_prior/post_pred_stat_mean/post_pred_stat_mean_4.pdf".
+  * Variance: "data/output_1_prior/post_pred_stat_variance/post_pred_stat_variance_4.pdf".
+* Table S5a: "data/output_1_posterior/model_coef/model_coef_4_state.csv".
+* Table S5b: "data/output_1_posterior/model_coef/model_coef_4_state_exp.csv".
+* Figures S6, S7: Made by taking screenshots after running "run_app.R" (see [Shiny App](#shiny-app)).
+
 ## Contact
 
 The maintainers of this repository are:
+
 * Tejasvi Channagiri (tchannagiri@gmail.com)
 * Jhonathan Medri (jm192@usf.edu)

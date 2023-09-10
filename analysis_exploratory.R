@@ -996,7 +996,7 @@ do_binomial_model_analysis <- function() {
     ggplot2::theme_classic(base_size = GGPLOT_BASE_SIZE_SMALL)
   ) |>
   save_ggplot(
-    file.path(OUTPUT_EXPLORATORY_DIR, "prior_estimates", "phi_scatter.pdf"),
+    file.path(OUTPUT_EXPLORATORY_DIR, "binomial_analysis", "phi_scatter.pdf"),
     width = GGPLOT_WIDTH / 2,
     height = GGPLOT_HEIGHT / 2
   )
