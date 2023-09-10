@@ -1329,7 +1329,7 @@ make_outlier_tables <- function() {
   ) |>
   dplyr::arrange(dplyr::desc(size)) |>
   dplyr::select(county, hom.own, pop.share, pop.share.ratio, size) |>
-  save_csv(file.path(OUTPUT_DIR, "outliers", "hispanic_homown_0.3_0.4.csv"))
+  save_csv(file.path(OUTPUT_EXPLORATORY_DIR, "outliers", "hispanic_homown_0.3_0.4.csv"))
 
   CENSUS_DATA |>
   dplyr::filter(
@@ -1338,7 +1338,7 @@ make_outlier_tables <- function() {
   ) |>
   dplyr::arrange(dplyr::desc(size)) |>
   dplyr::select(county, hom.own, pop.share, pop.share.ratio, size) |>
-  save_csv(file.path(OUTPUT_DIR, "outliers", "black_homown_0.55_0.7.csv"))
+  save_csv(file.path(OUTPUT_EXPLORATORY_DIR, "outliers", "black_homown_0.55_0.7.csv"))
 }
 
 do_all_exploratory_analyses <- function() {
